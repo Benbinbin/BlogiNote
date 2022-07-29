@@ -1,0 +1,45 @@
+{
+  "name": "bloginote",
+  "version": "1.0.0",
+  "description": "A static website for blogs and notes with flexible layouts and multiple optimizations.",
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Benbinbin/BlogiNote.git"
+  },
+  "keywords": [
+    "blog",
+    "note",
+    "markdown",
+    "nuxt",
+    "content",
+    "static",
+    "remark"
+  ],
+  "author": "Benbinbin",
+  "license": "MIT",
+  "devDependencies": {
+    "@iconify/vue": "^3.2.1",
+    "@nuxt/content": "npm:@nuxt/content-edge@latest",
+    "@nuxtjs/color-mode": "^3.1.4",
+    "@nuxtjs/eslint-config-typescript": "^10.0.0",
+    "@nuxtjs/tailwindcss": "^5.1.2",
+    "eslint": "^8.17.0",
+    "nuxt": "^3.0.0-rc.6",
+    "sass": "^1.52.3",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "rehype-katex": "^6.0.2",
+    "remark-math": "^5.1.1",
+    "remark-sub": "file:./markdownPlugins/remark-sub",
+    "remark-super": "file:./markdownPlugins/remark-super",
+    "remark-critic-markup": "file:./markdownPlugins/remark-critic-markup"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.associations": {
+    "*.css": "scss"
+  },
+  "editor.formatOnSave": false,
+  "cSpell.words": [
+    "bloginote",
+    "flexi",
+    "iconify",
+    "katex",
+    "nuxi",
+    "nuxtjs",
+    "rehype"
+  ]
+}

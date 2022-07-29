@@ -1,0 +1,21 @@
+{
+  "name": "remark-super",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "superscript transformer plugin for Remark",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "markdown",
+    "superscript",
+    "remark",
+    "plugin"
+  ],
+  "author": "Benbinbin",
+  "license": "MIT",
+  "dependencies": {
+    "unist-util-visit": "^4.1.0"
+  }
+}
