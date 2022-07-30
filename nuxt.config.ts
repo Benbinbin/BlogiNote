@@ -17,7 +17,11 @@ const cleanContentFiles = (folderPath = 'public/article') => {
 
 // then copy all other type of files except .md from "content" folder to public folder
 // so all the assets can link to inside the markdown file by relative path
-const copyContentFiles = (src, dest, ignore = []) => {
+const copyContentFiles = (srcFolderName, destFolderName, ignore = []) => {
+  // url isn't case-sensitive but folder name is case-sensitive
+  // change the all folders name to lowercase first
+  const src = srcFolderName.toLowerCase()
+  const dest = destFolderName.toLowerCase()
   const exists = fs.existsSync(src)
   const stats = exists && fs.statSync(src)
   const isDirectory = exists && stats.isDirectory()
