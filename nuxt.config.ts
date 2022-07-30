@@ -1,15 +1,12 @@
 import { defineNuxtConfig } from 'nuxt'
 
 // Refer to: https://github.com/nuxt/content/issues/106#issuecomment-1002820342
-
 const fs = require('fs')
 const path = require('path')
 
 // clean the "article" folder (copy from the "content" folder) first
 const cleanContentFiles = (folderPath = 'public/article') => {
   const exists = fs.existsSync(folderPath)
-  console.log(exists)
-
   if (exists) {
     fs.rmSync(folderPath, { recursive: true })
   }

@@ -249,7 +249,6 @@ const maxScale = ref(1.5)
 // scroll mouse (or use trackpad) to zoom
 const scrollToZoomCatalogHandler = (event) => {
   if (sidebarFloat.value && floatCatalogType.value === 'tree' && catalogList.value) {
-    // console.log(event)
     event.stopPropagation()
     event.preventDefault()
     const delta = (event.wheelDelta ? event.wheelDelta : -event.deltaY)
@@ -269,17 +268,12 @@ const scrollToZoomCatalogHandler = (event) => {
     let mouseRelativeX = event.offsetX
     let mouseRelativeY = event.offsetY
 
-    // console.log(event)
-    // console.log(event.offsetX, event.offsetY)
-
     if (event.target !== event.currentTarget) {
       const eventTargetRect = event.target.getBoundingClientRect()
       const catalogListRect = catalogList.value.getBoundingClientRect()
       mouseRelativeX += eventTargetRect.x - catalogListRect.x
       mouseRelativeY += eventTargetRect.y - catalogListRect.y
     }
-
-    // console.log(mouseRelativeX, mouseRelativeY)
 
     // adjust the x and y translate (on the opposite direction) to compensate the offset when scale to imitate scale origin as the mouse point
     const coefficient = delta > 0 ? dScale : -dScale

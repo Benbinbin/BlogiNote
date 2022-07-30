@@ -5,8 +5,6 @@ const route = useRoute()
 
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent<ParsedContent>(route.path).findOne())
 
-console.log(data)
-
 const flexiMode = useFlexiMode()
 
 /**
@@ -124,39 +122,37 @@ onMounted(() => {
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>
-    <ClientOnly>
-      <NuxtLayout name="base">
-        <div
-          ref="articleContainer"
-          class="article-container container mx-auto lg:max-w-4xl px-6 md:px-12 py-12 selection:text-white"
-          :class="flexiMode === 'blog' ? 'selection:bg-purple-400 ' : 'selection:bg-green-400'"
-        >
-          <ContentRenderer v-if="!pending && data" :value="data">
-            <template #empty>
-              <div>
-                <h1>Article is empty</h1>
-              </div>
-            </template>
-          </ContentRenderer>
-        </div>
-      </NuxtLayout>
-
-      <CatalogSidebar
-        v-if="!pending && data?.body?.toc && data.body.toc.links.length > 0"
-        :catalogs="data.body.toc.links"
-      />
-
-      <button
-        class="p-2 hidden sm:flex justify-center items-center fixed  bottom-16 right-4 z-40 border  transition-colors duration-300 rounded-lg"
-        :class="showCatalog ? (flexiMode === 'blog' ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-green-500 bg-green-100 hover:bg-green-50 border-green-200') : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
-        @click="showCatalog = !showCatalog"
+    <NuxtLayout name="base">
+      <div
+        ref="articleContainer"
+        class="article-container container mx-auto lg:max-w-4xl px-6 md:px-12 py-12 selection:text-white"
+        :class="flexiMode === 'blog' ? 'selection:bg-purple-400 ' : 'selection:bg-green-400'"
       >
-        <IconCustom name="entypo:list" class="w-5 h-5" />
-      </button>
-      <Teleport to="body">
-        <ImageLightbox />
-      </Teleport>
-    </ClientOnly>
+        <ContentRenderer v-if="!pending && data" :value="data">
+          <template #empty>
+            <div>
+              <h1>Article is empty</h1>
+            </div>
+          </template>
+        </ContentRenderer>
+      </div>
+    </NuxtLayout>
+
+    <CatalogSidebar
+      v-if="!pending && data?.body?.toc && data.body.toc.links.length > 0"
+      :catalogs="data.body.toc.links"
+    />
+
+    <button
+      class="p-2 hidden sm:flex justify-center items-center fixed  bottom-16 right-4 z-40 border  transition-colors duration-300 rounded-lg"
+      :class="showCatalog ? (flexiMode === 'blog' ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-green-500 bg-green-100 hover:bg-green-50 border-green-200') : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
+      @click="showCatalog = !showCatalog"
+    >
+      <IconCustom name="entypo:list" class="w-5 h-5" />
+    </button>
+    <Teleport to="body">
+      <ImageLightbox />
+    </Teleport>
   </div>
 </template>
 
