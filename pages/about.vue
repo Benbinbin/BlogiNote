@@ -4,6 +4,9 @@
 
 <template>
   <div>
+    <Head>
+      <Title>About</Title>
+    </Head>
     <NuxtLayout name="base">
       <ContentDoc class="about-me-content-container container mx-auto lg:max-w-4xl px-6 md:px-12 py-12">
         <template #not-found>

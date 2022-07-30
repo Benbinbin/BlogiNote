@@ -59,6 +59,9 @@ onUnmounted(() => {
 
 <template>
   <div>
+    <Head>
+      <Title>Home</Title>
+    </Head>
     <NuxtLayout name="base">
       <div class="container px-8 py-16 mx-auto ">
         <div
