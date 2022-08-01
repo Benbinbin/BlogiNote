@@ -15,46 +15,6 @@ const queryCategoryArticlesParams: QueryBuilderParams = {
   limit: 5,
   only: ['title', 'description', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 }
-
-const showSeriesModal = ref(false)
-const seriesModalName = ref('')
-const setSeriesModal = (series) => {
-  if (series) {
-    seriesModalName.value = series
-    showSeriesModal.value = true
-  } else {
-    seriesModalName.value = ''
-    showSeriesModal.value = false
-  }
-}
-
-watch(showSeriesModal, () => {
-  const body = document.body
-
-  if (body && showSeriesModal.value) {
-    body.classList.add('modal-open')
-  }
-
-  if (body && !showSeriesModal.value) {
-    body.classList.remove('modal-open')
-  }
-})
-
-const indexKeyListener = function (event) {
-  if (event.key === 'Escape') {
-    setSeriesModal('')
-  }
-}
-
-onMounted(() => {
-  if (document) {
-    document.addEventListener('keyup', indexKeyListener)
-  }
-})
-
-onUnmounted(() => {
-  document.removeEventListener('keyup', indexKeyListener)
-})
 </script>
 
 <template>
@@ -143,16 +103,16 @@ onUnmounted(() => {
                       #{{ tag }}
                     </NuxtLink>
                   </div>
-                  <button
+                  <NuxtLink
                     v-if="article.series"
-                    class="px-2 py-1 flex justify-center items-center space-x-1 text-green-400 hover:text-green-500 bg-green-50 transition-colors duration-300 rounded"
-                    @click="setSeriesModal(article.series)"
+                    :to="{ path: '/list', query: { series: article.series} }"
+                    class="w-fit px-2 py-1 flex justify-center items-center space-x-1 text-green-400 hover:text-green-500 bg-green-50 transition-colors duration-300 rounded"
                   >
                     <IconCustom name="bi:collection" class="w-4 h-4" />
                     <p class="text-xs">
                       {{ article.series }}
                     </p>
-                  </button>
+                  </NuxtLink>
                 </div>
                 <div
                   v-for="article in list"
@@ -193,13 +153,13 @@ onUnmounted(() => {
                         #{{ tag }}
                       </NuxtLink>
                     </div>
-                    <button
+                    <NuxtLink
                       v-if="article.series"
+                      :to="{ path: '/list', query: { series: article.series} }"
                       class="shrink-0 px-2 py-1 flex justify-center items-center text-green-400 hover:text-green-500 bg-green-50 transition-colors duration-300 rounded"
-                      @click="setSeriesModal(article.series)"
                     >
                       <IconCustom name="bi:collection" class="w-4 h-4" />
-                    </button>
+                    </NuxtLink>
                   </div>
                 </div>
               </ContentList>
@@ -208,7 +168,6 @@ onUnmounted(() => {
         </template>
       </div>
     </NuxtLayout>
-    <SeriesModal v-if="showSeriesModal && seriesModalName" :series="seriesModalName" @close="setSeriesModal('')" />
   </div>
 </template>
 
@@ -225,9 +184,5 @@ onUnmounted(() => {
 
 .scroll-container::-webkit-scrollbar {
   display: none;
-}
-
-.modal-open {
-  overflow: hidden;
 }
 </style>

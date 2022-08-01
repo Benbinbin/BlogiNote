@@ -1,9 +1,6 @@
 // flexible mode
 export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
 
-// list page detail
-export const useShowListDetail = () => useState<Boolean>('showListDetail', () => false)
-
 // article page catalog
 export const useShowCatalog = () => useState<Boolean>('showCatalog', () => true)
 export const useSidebarFloat = () => useState<Boolean>('sidebarFloat', () => false)
