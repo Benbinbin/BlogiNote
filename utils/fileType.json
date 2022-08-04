@@ -1,0 +1,14 @@
+{
+  "default": {
+    "iconName": "bi:file-earmark-text"
+  },
+  "markdown": {
+    "iconName": "bi:markdown-fill"
+  },
+  "json": {
+    "iconName": "bi:filetype-json"
+  },
+  "csv": {
+    "iconName": "bi:filetype-csv"
+  }
+}

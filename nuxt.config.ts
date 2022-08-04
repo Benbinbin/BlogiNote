@@ -87,9 +87,9 @@ export default defineNuxtConfig({
   // },
   // https://content.nuxtjs.org
   content: {
-    // navigation: {
-    // fields: ['navTitle', 'description', 'cover', 'series', 'seriesOrder']
-    // },
+    navigation: {
+      fields: ['_id', '_type']
+    },
     highlight: {
       // See the available themes on https://github.com/shikijs/shiki/blob/main/docs/themes.md#all-theme
       theme: 'one-dark-pro',

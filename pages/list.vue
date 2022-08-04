@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { NavItem, ParsedContent } from '@nuxt/content/dist/runtime/types'
+import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
+import fileTypeMap from '@/utils/fileType.json'
 
 interface MyCustomParsedContent extends ParsedContent {
   tags: string[]
@@ -14,14 +15,11 @@ const route = useRoute()
  */
 // the fetchContentNavigation() composable seems not work with queryBuilder argument at latest @nuxt/content version
 // https://github.com/nuxt/content/issues/1399
-// need to get the whole tree structure first then find the article folder item
-const { data: navData } = await useAsyncData('navigation', () => fetchContentNavigation())
+// need to use where method to build a more complex queryBuilder
+const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
+const { data: articleArr } = await useAsyncData('articleTree', () => fetchContentNavigation(queryBuilder))
 
-let articleFolder
-
-if (Array.isArray(navData.value) && navData.value.findIndex(item => item.title.toLowerCase() === 'article') !== -1) {
-  articleFolder = navData.value.find(elem => elem.title.toLowerCase() === 'article')
-}
+const articleTree = articleArr.value[0]
 
 const currentCategory = ref(route.query.category as string || 'all')
 const showMoreCategory = ref(false)
@@ -52,8 +50,8 @@ const categoryTags: ArrayObject = {}
 const categorySeries: ArrayObject = {}
 
 // get article's tags and series in different catalog
-if (articleFolder && articleFolder.children.length > 0) {
-  for (const category of articleFolder.children as NavItem[]) {
+if (articleTree && articleTree.children.length > 0) {
+  for (const category of articleTree.children) {
     const { data } = await useAsyncData(`${category.title}-tags`, () => queryContent<MyCustomParsedContent>('article', category.title.toLowerCase()).only(['tags', 'series']).find())
 
     const categoryTagsArr = []
@@ -135,7 +133,7 @@ watch([currentCategory, currentTags, currentSeries], () => {
  */
 const { pending, data: articleList } = await useAsyncData('articles', () => {
   return queryContent<MyCustomParsedContent>('article')
-    .only(['title', 'description', '_path', 'contentType', 'cover', 'series', 'seriesOrder', 'tags'])
+    .only(['title', 'description', '_path', 'contentType', '_type', 'series', 'seriesOrder', 'tags'])
     .find()
 })
 
@@ -168,7 +166,11 @@ watch(() => route.fullPath, () => {
     if (tags.length > 0) {
       currentArticleList = currentArticleList.filter((item) => {
         return tags.some((tag) => {
-          return item.tags.includes(tag)
+          if (item.tags) {
+            return item.tags.includes(tag)
+          } else {
+            return false
+          }
         })
       })
     }
@@ -191,6 +193,20 @@ watch(() => route.fullPath, () => {
  */
 const showListDetail = ref(true)
 
+/**
+ *
+ * set the article list icon
+ *
+ */
+const getFileTypeIcon = (type) => {
+  const fileType = fileTypeMap[type]
+
+  if (!fileType) {
+    return fileTypeMap.default.iconName
+  } else {
+    return fileType.iconName
+  }
+}
 </script>
 
 <template>
@@ -226,7 +242,7 @@ const showListDetail = ref(true)
               <p class="px-2 py-1 sm:hidden">
                 Category
               </p>
-              <ul v-if="articleFolder" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
+              <ul v-if="articleTree" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
                 <li>
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
@@ -237,7 +253,7 @@ const showListDetail = ref(true)
                     <p>all</p>
                   </button>
                 </li>
-                <template v-for="category in articleFolder.children as NavItem[]">
+                <template v-for="category in articleTree.children">
                   <li v-if="category.children" :key="category._path">
                     <button
                       class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
@@ -394,10 +410,7 @@ const showListDetail = ref(true)
               class="block px-4 py-2 text-gray-600 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded-lg space-y-2"
             >
               <div class="flex items-start">
-                <IconCustom
-                  :name="(!item.contentType || item.contentType === 'blog') ? 'ant-design:file-markdown-filled' : 'bi:filetype-json'"
-                  class="shrink-0 p-1 w-6 h-6 sm:w-7 sm:h-7"
-                />
+                <IconCustom :name="getFileTypeIcon(item._type)" class="shrink-0 p-1 w-6 h-6 sm:w-7 sm:h-7" />
                 <h2 class="grow font-bold text-base sm:text-lg">
                   {{ item.title }}
                 </h2>

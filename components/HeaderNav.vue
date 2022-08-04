@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import type { NavItem } from '@nuxt/content/dist/runtime/types'
+const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
+const { data } = await useAsyncData('articleTree', () => fetchContentNavigation(queryBuilder))
 
-/**
- * set sub nav panel
- */
-const { data: navData } = await useAsyncData('navigation', () => fetchContentNavigation())
-
-let articleFolder
-
-if (Array.isArray(navData.value) && navData.value.findIndex(item => item.title === 'Article') !== -1) {
-  articleFolder = navData.value.find(elem => elem.title.toLowerCase() === 'article')
-}
+const articleTree = data.value[0]
 
 const showSubNav = ref(false)
 
@@ -122,7 +114,7 @@ const changeFlexiMode = () => {
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
       >
-        <div v-if="articleFolder" class="sub-nav-items-container max-w-full px-6 py-8">
+        <div v-if="articleTree" class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink
             to="/list"
             class="sub-nav-item-card"
@@ -134,7 +126,7 @@ const changeFlexiMode = () => {
               All
             </p>
           </NuxtLink>
-          <template v-for="category in articleFolder.children as NavItem[]">
+          <template v-for="category in articleTree.children">
             <NuxtLink
               v-if="category.children"
               :key="category._path"

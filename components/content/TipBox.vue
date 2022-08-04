@@ -28,12 +28,12 @@ const defaultTypeMap = {
     textColorClass: 'text-yellow-500',
     borderColorClass: 'border-yellow-400'
   },
-  important: {
-    icon: 'bi:stars',
-    name: 'Important',
-    bgColorClass: 'bg-yellow-100',
-    textColorClass: 'text-yellow-500',
-    borderColorClass: 'border-yellow-400'
+  announce: {
+    icon: 'bi:megaphone',
+    name: 'Announce',
+    bgColorClass: 'bg-purple-100',
+    textColorClass: 'text-purple-500',
+    borderColorClass: 'border-purple-400'
   },
   warning: {
     icon: 'bi:exclamation-triangle-fill',
