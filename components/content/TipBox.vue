@@ -76,6 +76,13 @@ const defaultTypeMap = {
     bgColorClass: 'bg-red-100',
     textColorClass: 'text-red-500',
     borderColorClass: 'border-red-300'
+  },
+  tldr: {
+    icon: 'bi:chat-left-text-fill',
+    name: 'TL;DR',
+    bgColorClass: 'bg-gray-100',
+    textColorClass: 'text-gray-700',
+    borderColorClass: 'border-gray-300'
   }
 }
 

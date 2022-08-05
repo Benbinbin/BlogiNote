@@ -6,7 +6,7 @@ BlogiNote is a static website template based on [Nuxt Content](https://content.n
 
 It can be used to show your blog posts and learning notes, because BlogiNote has flexible layouts and multiple optimizations for long or short content.
 
-:link: [Demo](#)
+:link: [Demo](http://bloginote.vercel.app/)
 
 
 ## Features

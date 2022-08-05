@@ -4,18 +4,48 @@ cover: write.jpg
 
 # Write an article
 
-BlogiNote usually use Markdown file to generate website page, so this tutorial main part is showing you how to write a Markdown file with the basic syntax and extended syntax (which also called [MDC](https://content.nuxtjs.org/guide/writing/mdc/) for short)
+This tutorial will show all you need to know about how to write an article.
+
+## Where to write
+
+::TipBox{type="tldr"}
+* Writing articles inside the :file_folder: `/content/article` folder
+* The :page_facing_up: `/content/index.md` file set the introduction content for Home Page
+* The :page_facing_up: `/content/about.md` file set the content for About Page
+::
+
+You will may get confused because the project contains :dizzy_face: a mess of sub-folders or files. But don't be panic, **most of the time you can just focus the :file_folder: `/content` folder**, which is the container for all article files.
+
+Browser the :file_folder: `/content` folder, you can see a bunch of `*.md` file. Yep, they're the article files, which written in a special syntax call Markdown. You can read the next chapter *[How to write](#how-to-write)* learning more about it.
+
+There're two special articles:
+
+* :page_facing_up: `/content/index.md` this file setting the introduction content of the [Home Page](/) (the content of purple box at the top of Home Page)
+
+* :page_facing_up: `/content/about.md` this file setting the content of [About Page](/about)
+
+You can rewrite :page_facing_up: `/content/index.md` and :page_facing_up: `/content/about.md` these two files to change the content in Home Page or About Page
+
+The :file_folder: `/content/article` sub folder contains all other article, like this article is under the path `/content/article/tutorial`. You can delete all the existed articles inside the :file_folder: `/content/article` folder (but please keep the `/content/article` folder), then create a new markdown file inside the :file_folder: `/content/article` folder and start to :pencil: write you own article.
+
+## How to write
+BlogiNote usually use Markdown file to generate website page, so this part will show you how to write a markdown file. BlogiNote support basic Markdown syntax and MarkDown Components extended syntax (also called [MDC](https://content.nuxtjs.org/guide/writing/mdc/) for short)
 
 
 ::TipBox{type="tip"}
-you should know some basic syntax about it, you can learning it from the following two websites:
+You can also learning Markdown basic syntax from the following two websites, which explain more details:
 
-* [CommonMark](https://commonmark.org/): this website show the most basic syntax, like how to mark a header, a link, an image and so on
+* [CommonMark](https://commonmark.org/): this website shows the most basic syntax, like how to mark a header, a link, an image and so on
 
-* [GitHub Flavored Markdown Spec (gfm)](https://github.github.com/gfm/): this website show the gfm syntax, which is another Markdown extended syntax created by Github, like supporting the footnote
+* [GitHub Flavored Markdown Spec (GFM)](https://github.github.com/gfm/): this website shows the GFM syntax, which is another Markdown extended syntax created by Github, like supporting the footnote
 ::
 
-## Cover
+## Add a cover
+
+::TipBox{type="tldr"}
+* Put image files inside the :file_folder: `/public/covers` folder
+* Add the `cover: image_file_path` property at the top of your markdown file
+::
 
 Before we jump into the :sleeping: boring but useful syntax about Markdown, let's add some colorful cover for this article first.
 
