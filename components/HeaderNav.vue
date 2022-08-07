@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data } = await useAsyncData('articleTree', () => fetchContentNavigation(queryBuilder))
+const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
 
-const articleTree = data.value[0]
+const articleFolder = data.value[0]
 
 const showSubNav = ref(false)
 
@@ -114,7 +114,7 @@ const changeFlexiMode = () => {
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
       >
-        <div v-if="articleTree" class="sub-nav-items-container max-w-full px-6 py-8">
+        <div v-if="articleFolder" class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink
             to="/list"
             class="sub-nav-item-card"
@@ -126,7 +126,7 @@ const changeFlexiMode = () => {
               All
             </p>
           </NuxtLink>
-          <template v-for="category in articleTree.children">
+          <template v-for="category in articleFolder.children">
             <NuxtLink
               v-if="category.children"
               :key="category._path"

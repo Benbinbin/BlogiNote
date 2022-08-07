@@ -17,9 +17,9 @@ const route = useRoute()
 // https://github.com/nuxt/content/issues/1399
 // need to use where method to build a more complex queryBuilder
 const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data: articleArr } = await useAsyncData('articleTree', () => fetchContentNavigation(queryBuilder))
+const { data: articleArr } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
 
-const articleTree = articleArr.value[0]
+const articleFolder = articleArr.value[0]
 
 const currentCategory = ref(route.query.category as string || 'all')
 const showMoreCategory = ref(false)
@@ -50,8 +50,8 @@ const categoryTags: ArrayObject = {}
 const categorySeries: ArrayObject = {}
 
 // get article's tags and series in different catalog
-if (articleTree && articleTree.children.length > 0) {
-  for (const category of articleTree.children) {
+if (articleFolder && articleFolder.children.length > 0) {
+  for (const category of articleFolder.children) {
     const { data } = await useAsyncData(`${category.title}-tags`, () => queryContent<MyCustomParsedContent>('article', category.title.toLowerCase()).only(['tags', 'series']).find())
 
     const categoryTagsArr = []
@@ -242,7 +242,7 @@ const getFileTypeIcon = (type) => {
               <p class="px-2 py-1 sm:hidden">
                 Category
               </p>
-              <ul v-if="articleTree" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
+              <ul v-if="articleFolder" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
                 <li>
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
@@ -253,7 +253,7 @@ const getFileTypeIcon = (type) => {
                     <p>all</p>
                   </button>
                 </li>
-                <template v-for="category in articleTree.children">
+                <template v-for="category in articleFolder.children">
                   <li v-if="category.children" :key="category._path">
                     <button
                       class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"

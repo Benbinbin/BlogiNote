@@ -6,7 +6,6 @@ const props = defineProps<{
   rootName: string;
   rootTree: NavItem[];
   rootIndex: number;
-  // path: number[]
 }>()
 
 const emits = defineEmits(['set-tree'])
@@ -70,6 +69,10 @@ const setFolderNavPath = (path) => {
 
   currentTree.value = treeTemp
   folderNavArr.value = folderNavArrTemp
+
+  nextTick(() => {
+    rejudgeShowScrollBtn()
+  })
 }
 
 const addFolderNav = (title, index) => {
@@ -81,6 +84,10 @@ const addFolderNav = (title, index) => {
   })
 
   currentTree.value = currentTree.value[index].children
+
+  nextTick(() => {
+    rejudgeShowScrollBtn()
+  })
 }
 
 const setTreeHandler = () => {
@@ -99,10 +106,21 @@ const scrollPos = ref<'start' | 'middle' | 'end'>('start')
 
 const folderNavContainer = ref(null)
 
-onMounted(() => {
-  if (folderNavContainer.value && folderNavContainer.value.scrollWidth <= folderNavContainer.value.clientWidth) {
-    showScrollBtn.value = false
+const rejudgeShowScrollBtn = () => {
+  console.log(folderNavContainer.value.scrollWidth)
+  console.log(folderNavContainer.value.clientWidth)
+
+  if (folderNavContainer.value) {
+    if (folderNavContainer.value.scrollWidth <= folderNavContainer.value.clientWidth) {
+      showScrollBtn.value = false
+    } else {
+      showScrollBtn.value = true
+    }
   }
+}
+
+onMounted(() => {
+  rejudgeShowScrollBtn()
 })
 
 const scrollFolderNavHandler = (direction) => {

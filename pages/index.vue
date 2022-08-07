@@ -5,7 +5,7 @@ import fileTypeMap from '@/utils/fileType.json'
 const flexiMode = useFlexiMode()
 
 const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data } = await useAsyncData('articleTree', () => fetchContentNavigation(queryBuilder))
+const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
 
 /**
  *
@@ -13,9 +13,9 @@ const { data } = await useAsyncData('articleTree', () => fetchContentNavigation(
  * data in a tree structure
  *
  */
-const articleTree = data.value[0]
+const articleFolder = data.value[0]
 const currentTree = ref([])
-currentTree.value = articleTree.children
+currentTree.value = articleFolder.children
 
 let folderNavPath = []
 
@@ -33,7 +33,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
     folderNavPath = path
   }
 
-  let treeTemp = articleTree.children
+  let treeTemp = articleFolder.children
 
   const folderNavArrTemp = [
     {
@@ -106,8 +106,8 @@ const getFileTypeIcon = (type) => {
             <img src="/avatar.png" alt="avatar" class="hidden sm:block w-28 h-28 rounded-full">
           </div>
         </div>
-        <div v-if="articleTree" class="py-8 space-y-8">
-          <template v-for="category in articleTree.children">
+        <div v-if="articleFolder" class="py-8 space-y-8">
+          <template v-for="category in articleFolder.children">
             <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
               <div class="flex justify-between items-start">
                 <h2 class="pl-1 font-bold text-lg border-l-8 text-purple-500 border-purple-500">
@@ -228,7 +228,7 @@ const getFileTypeIcon = (type) => {
         </div>
       </div>
       <div
-        v-if="articleTree && articleTree.children.length > 0"
+        v-if="articleFolder && articleFolder.children.length > 0"
         v-show="flexiMode === 'note'"
         class="container px-8 mx-auto"
       >
