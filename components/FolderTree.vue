@@ -107,14 +107,23 @@ const scrollPos = ref<'start' | 'middle' | 'end'>('start')
 const folderNavContainer = ref(null)
 
 const rejudgeShowScrollBtn = () => {
-  console.log(folderNavContainer.value.scrollWidth)
-  console.log(folderNavContainer.value.clientWidth)
+  // console.log(folderNavContainer.value.scrollWidth)
+  // console.log(folderNavContainer.value.clientWidth)
 
+  // show of hide the scroll button
   if (folderNavContainer.value) {
     if (folderNavContainer.value.scrollWidth <= folderNavContainer.value.clientWidth) {
       showScrollBtn.value = false
     } else {
       showScrollBtn.value = true
+    }
+
+    if (folderNavContainer.value.scrollLeft + folderNavContainer.value.clientWidth >= folderNavContainer.value.scrollWidth) {
+      scrollPos.value = 'end'
+    } else if (folderNavContainer.value.scrollLeft === 0) {
+      scrollPos.value = 'start'
+    } else {
+      scrollPos.value = 'middle'
     }
   }
 }
@@ -150,6 +159,14 @@ const folderNavScrollingHandler = () => {
   <div
     :class="expand ? (rootTree.length <= 2 ? 'col-span-1 sm:col-span-2 row-span-2' : (rootTree.length <= 4 ? 'col-span-1 sm:col-span-2 row-span-3' : 'col-span-1 sm:col-span-2 row-span-4')) : 'col-span-1 self-start'"
   >
+    <button
+      v-show="!expand"
+      class="group w-full px-4 py-2 flex items-center gap-1 hover:text-yellow-500 hover:bg-yellow-50 rounded-lg transition-colors duration-300"
+      @click="expand = true"
+    >
+      <IconCustom name="ph:folder-fill" class="w-6 h-6 text-yellow-400" />
+      {{ props.rootName }}
+    </button>
     <div v-show="expand" class="w-full">
       <div class="w-full flex justify-between items-center">
         <button
@@ -157,12 +174,12 @@ const folderNavScrollingHandler = () => {
           @click="setTreeHandler"
         >
           <IconCustom name="ph:folder-open-fill" class="w-4 h-4 text-yellow-400 group-active:text-white" />
-          {{ folderNavArr.length > 1 ? folderNavArr[0].title : props.rootName }}
+          {{ folderNavArr[0].title }}
         </button>
         <div
           v-show="folderNavArr.length > 1"
           ref="folderNavContainer"
-          class="folder-nav-container grow flex justify-start items-center shadow-[-6px_0px_6px_-1px_rgba(255,255,255,0.5)_inset] overflow-x-auto -translate-x-1 translate-y-px scroll-smooth"
+          class="folder-nav-container grow flex justify-start items-center overflow-x-auto -translate-x-1 translate-y-px scroll-smooth"
           @scroll.passive="folderNavScrollingHandler"
         >
           <button
@@ -229,14 +246,6 @@ const folderNavScrollingHandler = () => {
         </template>
       </div>
     </div>
-    <button
-      v-show="!expand"
-      class="group w-full px-4 py-2 flex items-center gap-1 hover:text-yellow-500 hover:bg-yellow-50 rounded-lg transition-colors duration-300"
-      @click="expand = true"
-    >
-      <IconCustom name="ph:folder-fill" class="w-6 h-6 text-yellow-400" />
-      {{ props.rootName }}
-    </button>
   </div>
 </template>
 
