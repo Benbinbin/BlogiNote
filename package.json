@@ -26,7 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "@iconify/vue": "^3.2.1",
-    "@nuxt/content": "npm:@nuxt/content-edge@latest",
+    "@nuxt/content": "npm:@nuxt/content-edge@2.1.0-27637385.04f9dad",
     "@nuxtjs/color-mode": "^3.1.4",
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
     "@nuxtjs/tailwindcss": "^5.1.2",
