@@ -55,7 +55,7 @@ const changeFlexiMode = () => {
       class="px-4 py-3 flex justify-between items-center text-sm bg-gray-50 border-b"
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
-      <NuxtLink :to="'/'" class="hover:">
+      <NuxtLink to="/">
         <img src="@/assets/avatar.png" alt="avatar" class="w-8 h-8 rounded-full">
       </NuxtLink>
       <div class="flex items-center gap-6">

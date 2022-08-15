@@ -51,7 +51,15 @@ const changeFlexiMode = () => {
  * toggle catalog
  *
  */
-const showCatalog = useShowCatalog()
+const showBlogCatalog = useShowBlogCatalog()
+const showNoteCatalog = useShowNoteCatalog()
+const toggleCatalogHandler = () => {
+  if (flexiMode.value === 'blog') {
+    showBlogCatalog.value = !showBlogCatalog.value
+  } else {
+    showNoteCatalog.value = !showNoteCatalog.value
+  }
+}
 </script>
 
 <template>
@@ -136,7 +144,12 @@ const showCatalog = useShowCatalog()
           v-show="showCategoryOptions"
           class="options-container px-4 relative -z-10 grow flex items-center gap-4 text-sm overflow-x-auto"
         >
-          <NuxtLink to="/list" class="option-item" :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'" @click="showCategoryOptions = false">
+          <NuxtLink
+            to="/list"
+            class="option-item"
+            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            @click="showCategoryOptions = false"
+          >
             all
           </NuxtLink>
           <template v-for="item in categoryArr as NavItem[]">
@@ -158,8 +171,8 @@ const showCatalog = useShowCatalog()
         v-if="route.path && route.path.startsWith('/article')"
         v-show="!showMoreOptions && !showCategoryOptions"
         class="py-3 px-6 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="showCatalog ? (flexiMode === 'blog' ? 'text-purple-500' : 'text-green-500') : ' text-gray-500'"
-        @click="showCatalog = !showCatalog"
+        :class="flexiMode === 'blog' ? (showBlogCatalog ? 'text-purple-500' : ' text-gray-500') : (showNoteCatalog ? 'text-green-500' : ' text-gray-500')"
+        @click="toggleCatalogHandler"
       >
         <IconCustom name="entypo:list" class="w-6 h-6" />
         <p class="text-xs">

@@ -9,11 +9,14 @@ const props = defineProps<{data: ParsedContent}>()
  * toc for markdown article
  *
  */
-const showCatalog = useShowCatalog()
+const showCatalog = useShowBlogCatalog()
+
+const article = ref(null)
 
 // set active heading
-const article = ref(null)
-const activeHeadings = useActiveHeadings()
+const activeHeadings = ref(new Set<string>())
+provide('activeHeadings', activeHeadings)
+
 let observer
 onMounted(() => {
   // get headings list
@@ -43,75 +46,8 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect()
   }
-  activeHeadings.value.clear()
 })
 
-/**
- *
- * math formula
- * support double click to copy the formula
- *
- */
-const clipboard = ref(null)
-
-const addListener = (list, prefix, suffix) => {
-  list.forEach((element) => {
-    // add event listener for double click
-    element.addEventListener('dblclick', (event) => {
-      const target = event.currentTarget as HTMLElement
-
-      // after click set the math element border color to 'border-purple-400'
-      target.style.borderColor = '#c084fc'
-
-      // get the LaTeX source code of math formula
-      // refer to https://github.com/KaTeX/KaTeX/issues/645
-      const formulaElem = target.querySelector('annotation')
-
-      if (formulaElem && formulaElem.textContent) {
-        // add '$' or '$$' prefix and suffix for inline math or block math
-        const formula = prefix + formulaElem.textContent + suffix
-
-        if (clipboard.value) {
-          // write the formula to clipboard and set the math element border color based on the promise resolve result
-          clipboard.value.writeText(formula).then(() => {
-            target.style.borderColor = '#4ade80'
-            const timer = setTimeout(() => {
-              target.style.borderColor = 'transparent'
-              clearTimeout(timer)
-            }, 800)
-          })
-            .catch(() => {
-              target.style.borderColor = '#f87171'
-
-              const timer = setTimeout(() => {
-                target.style.borderColor = 'transparent'
-                clearTimeout(timer)
-              }, 800)
-            })
-        }
-      } else {
-        target.style.borderColor = '#f87171'
-
-        const timer = setTimeout(() => {
-          target.style.borderColor = 'transparent'
-          clearTimeout(timer)
-        }, 800)
-      }
-    })
-  })
-}
-
-onMounted(() => {
-  clipboard.value = navigator.clipboard
-
-  if (article.value && clipboard.value) {
-    const mathInlineList = article.value.querySelectorAll('.math-inline')
-    const mathBlockList = article.value.querySelectorAll('.math-display')
-
-    if (mathInlineList.length > 0) { addListener(mathInlineList, '$', '$') }
-    if (mathBlockList.length > 0) { addListener(mathBlockList, '$$\n', '\n$$') }
-  }
-})
 </script>
 
 <template>
@@ -124,7 +60,10 @@ onMounted(() => {
       </template>
     </ContentRenderer>
 
-    <CatalogSidebar v-if="data?.body?.toc && data.body.toc.links.length > 0" :catalogs="data.body.toc.links" />
+    <CatalogSidebarForBlog
+      v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
+      :catalogs="props.data.body.toc.links"
+    />
 
     <button
       v-if="data?.body?.toc"

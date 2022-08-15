@@ -1,13 +1,15 @@
 // flexible mode
-export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
+export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'note')
 
 // article page catalog
-export const useShowCatalog = () => useState<Boolean>('showCatalog', () => true)
-export const useSidebarFloat = () => useState<Boolean>('sidebarFloat', () => false)
-export const useToggleSidebarFloat = () => useState<Boolean>('toggleSidebarFloat', () => false)
-export const useFloatCatalogType = () => useState<'list' | 'tree'>('catalogType', () => 'list')
-export const useToggleAllCatalog = () => useState<'expand' | 'collapse' | ''>('toggleAllCatalog', () => '')
-export const useActiveHeadings = () => useState<Set<string>>('activeHeadings', () => new Set())
+export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => true)
+export const useShowNoteCatalog = () => useState<Boolean>('showNoteCatalog', () => true)
+export const useBlogSidebarFloat = () => useState<Boolean>('blogSidebarFloat', () => false)
+export const useNoteSidebarFloat = () => useState<Boolean>('noteSidebarFloat', () => true)
+export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSidebarFloat', () => false)
+export const useToggleNoteSidebarFloat = () => useState<Boolean>('toggleNoteSidebarFloat', () => true)
+export const useFloatBlogCatalogType = () => useState<'list' | 'tree'>('floatBlogCatalogType', () => 'list')
+export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNoteCatalogType', () => 'tree')
 
 // article page zoom image
 interface ZoomImageType {

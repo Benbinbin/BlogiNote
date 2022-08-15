@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Ref } from 'vue'
+
 const props = defineProps({
   elem: {
     type: Object,
@@ -9,11 +11,22 @@ const props = defineProps({
   order: {
     type: Number,
     default: 1
+  },
+  count: {
+    type: Number,
+    default: 1
   }
 })
 
 const emits = defineEmits(['spanAll'])
 
+const headingElem = ref(null)
+
+/**
+ *
+ * heading style mapping
+ *
+ */
 const headingArr = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 const headingColorMap = {
   h1: 'text-gray-800',
@@ -22,15 +35,6 @@ const headingColorMap = {
   h4: 'text-green-500',
   h5: 'text-blue-500',
   h6: 'text-gray-500'
-}
-
-const headingHighlightBgColorMap = {
-  h1: 'bg-gray-100',
-  h2: 'bg-purple-100',
-  h3: 'bg-red-100',
-  h4: 'bg-green-100',
-  h5: 'bg-blue-100',
-  h6: 'bg-gray-100'
 }
 
 const headingBtnMap = {
@@ -69,22 +73,37 @@ const borderColorMap = {
   h6: 'border-gray-100'
 }
 
-const expandState = ref(true)
-const headingElem = ref(null)
+/**
+ *
+ * expand or collapse heading section
+ */
+const initCollapseHeadings = ref(new Set<string>())
+const collapseHeadings = inject('collapseHeadings', initCollapseHeadings)
+
+const toggleExpandStateHandler = () => {
+  const id = props.elem.node.props.id
+  if (collapseHeadings.value.has(id)) {
+    collapseHeadings.value.delete(id)
+  } else {
+    collapseHeadings.value.add(id)
+  }
+}
+
 /**
  *
  * layout
  *
  */
 const layout = ref('waterfall')
-const divideColumns = ref(0)
+const divideColumns = inject<Ref<number>>('divideColumns')
+// const recommendColumns = inject<Ref<number>>('recommendColumns')
 const highlightTitle = ref(false)
 
 const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
   layout.value = value
 
   if (layout.value === 'compact') {
-    divideColumns.value = 3
+    // divideColumns.value = 3
     emits('spanAll', true)
   } else if (childrenSpanAllNum.value === 0) {
     emits('spanAll', false)
@@ -97,7 +116,7 @@ const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
       const timer = setTimeout(() => {
         highlightTitle.value = false
         clearTimeout(timer)
-      }, 1000)
+      }, 2000)
     })
   }
 }
@@ -119,6 +138,37 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
     emits('spanAll', true)
   }
 })
+
+/**
+ *
+ * active heading
+ *
+ */
+const activeHeadingId = inject<Ref<string>>('activeHeadingId')
+const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
+
+const highlightColorMap = {
+  h1: 'bg-gray-100',
+  h2: 'bg-purple-100',
+  h3: 'bg-red-100',
+  h4: 'bg-green-100',
+  h5: 'bg-blue-100',
+  h6: 'bg-gray-100'
+}
+
+watch(activeHeadingId, () => {
+  if (activeHeadingId.value === props.elem.node.props.id && headingElem.value) {
+    nextTick(() => {
+      headingElem.value.focus()
+      highlightTitle.value = true
+      const timer = setTimeout(() => {
+        highlightTitle.value = false
+        clearTimeout(timer)
+        setActiveHeadingId('')
+      }, 2000)
+    })
+  }
+})
 </script>
 
 <template>
@@ -131,19 +181,20 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
       v-if="headingArr.includes(props.elem.type)"
       ref="headingElem"
       tabindex="0"
-      class="container mx-auto lg:max-w-4xl p-2 my-1 flex flex-wrap items-center gap-2 rounded-md transition-colors duration-500"
-      :class="highlightTitle ? `${headingHighlightBgColorMap[props.elem.type]}` : ''"
+      class="container mx-auto lg:max-w-4xl p-2 my-2 flex flex-wrap items-center gap-2 rounded-md"
+      :class="highlightTitle ? `title-highlight-pulse ${highlightColorMap[props.elem.type]}` : ''"
       :style="props.elem.type === 'h1' ? 'justify-content: center': 'justify-content: flex-start'"
     >
       <div class="shrink-0 flex gap-0.5">
         <button
           class="p-1 flex justify-center items-center text-xs border rounded-md transition-colors duration-300"
-          :class="expandState ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
-          @click="expandState = !expandState"
+          :class="!collapseHeadings.has(props.elem.node.props.id) ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
+          @click="toggleExpandStateHandler"
         >
           <span>{{ props.elem.type.toUpperCase() }}</span>
         </button>
-        <sup class="text-xs opacity-30" :class="`${headingColorMap[props.elem.type]}`">{{ props.order }}</sup>
+        <sup class="text-xs opacity-30" :class="`${headingColorMap[props.elem.type]}`">{{
+          `${props.order}/${props.count}` }}</sup>
       </div>
 
       <ContentRendererMarkdown
@@ -188,7 +239,7 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
 
     <div
       v-if="props.elem.content.length>0"
-      v-show="expandState"
+      v-show="!collapseHeadings.has(props.elem.node.props.id)"
       class="container mx-auto lg:max-w-4xl"
       :class="layout===''"
     >
@@ -202,15 +253,16 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
 
     <div
       v-if="props.elem.children && props.elem.children.length > 0"
-      v-show="expandState"
+      v-show="!collapseHeadings.has(props.elem.node.props.id)"
       :class="layout === 'compact' ? 'gap-x-2' : ''"
-      :style="layout === 'compact' ? `columns: ${divideColumns}` : ''"
+      :style="layout === 'compact' ? `columns: ${Math.min(divideColumns, props.elem.children.length)}` : ''"
     >
       <ElementCard
         v-for="(subElem, index) in props.elem.children"
         :key="index"
         :elem="subElem"
         :order="index+1"
+        :count="props.elem.children.length"
         :class="layout === 'compact' ? `p-2 mb-2 h-fit border rounded break-inside-avoid ${borderColorMap[subElem.type]}` : ''"
         @span-all="childrenSpanAllHandler"
       />
@@ -218,6 +270,21 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
+.title-highlight-pulse {
+  animation: pulse 500ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: .5;
+    }
+  }
+}
 </style>

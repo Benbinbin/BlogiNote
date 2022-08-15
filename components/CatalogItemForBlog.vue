@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
+
 interface CatalogItem {
   id: string;
   depth: number;
@@ -10,20 +12,22 @@ const props = defineProps<{
   item: CatalogItem
 }>()
 
-const toggleAllCatalog = useToggleAllCatalog()
+const toggleAllCatalogState = inject<Ref<string>>('toggleAllCatalogState')
+const changeToggleAllCatalogState = inject<(value: 'expand' | 'collapse' | '') => void>('changeToggleAllCatalogState')
+
 const expand = ref(true)
 
-watch(toggleAllCatalog, () => {
-  if (toggleAllCatalog.value === 'expand') {
+watch(toggleAllCatalogState, () => {
+  if (toggleAllCatalogState.value === 'expand') {
     expand.value = true
-  } else if (toggleAllCatalog.value === 'collapse') {
+  } else if (toggleAllCatalogState.value === 'collapse') {
     expand.value = false
   }
 })
 
 const toggleCatalogHandler = () => {
   expand.value = !expand.value
-  toggleAllCatalog.value = ''
+  changeToggleAllCatalogState('')
 }
 
 const bgColorMap = {
@@ -71,19 +75,19 @@ const borderColorMap = {
 }
 
 // sidebar state float or not
-const sidebarFloat = useSidebarFloat()
-const toggleSidebarFloat = useToggleSidebarFloat()
+const sidebarFloatForBlog = useBlogSidebarFloat()
+const toggleBlogSidebarFloat = useToggleBlogSidebarFloat()
 // float catalog type
-const catalogType = useFloatCatalogType()
+const floatBlogCatalogType = useFloatBlogCatalogType()
 
 const buttonClass = ref('')
 const textClass = ref('')
 
-watch([sidebarFloat, toggleSidebarFloat, catalogType], () => {
+watch([sidebarFloatForBlog, toggleBlogSidebarFloat, floatBlogCatalogType], () => {
   const buttonClassArr = []
   const textClassArr = []
 
-  if ((sidebarFloat.value || toggleSidebarFloat.value) && catalogType.value === 'tree') {
+  if ((sidebarFloatForBlog.value || toggleBlogSidebarFloat.value) && floatBlogCatalogType.value === 'tree') {
     buttonClassArr.push('order-3 translate-x-[10px]')
     textClassArr.push('grow order-2')
   } else {
@@ -97,7 +101,7 @@ watch([sidebarFloat, toggleSidebarFloat, catalogType], () => {
     } else {
       buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapseWithChildren}`)
     }
-  } else if ((sidebarFloat.value || toggleSidebarFloat.value) && catalogType.value === 'tree') {
+  } else if ((sidebarFloatForBlog.value || toggleBlogSidebarFloat.value) && floatBlogCatalogType.value === 'tree') {
     buttonClassArr.push('border-transparent')
   } else {
     buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapse}`)
@@ -110,22 +114,23 @@ watch([sidebarFloat, toggleSidebarFloat, catalogType], () => {
 })
 
 // active heading
-const activeHeadings = useActiveHeadings()
+const initActiveHeadings = ref(new Set<string>())
+const activeHeadings = inject('activeHeadings', initActiveHeadings)
 </script>
 
 <template>
   <li
     draggable="false"
     class="flex"
-    :class="(sidebarFloat || toggleSidebarFloat) && catalogType === 'tree' ? 'flex-row justify-start items-center' : 'flex-col'"
+    :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'flex-row justify-start items-center' : 'flex-col'"
   >
     <div
       class="shrink-0 flex items-center"
-      :class="(sidebarFloat || toggleSidebarFloat) && catalogType === 'tree' ? 'pl-4 w-40 justify-between' : 'px-2'"
+      :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'pl-4 w-40 justify-between' : 'px-2'"
     >
       <div
         class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
-        :class="(sidebarFloat || toggleSidebarFloat) && catalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.item.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.item.depth].expand} border-dashed`)"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.item.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.item.depth].expand} border-dashed`)"
       >
         <p class="heading-mark text-xs font-thin" :class="`${textColorMap[props.item.depth]}`">
           H{{ props.item.depth }}
@@ -149,7 +154,7 @@ const activeHeadings = useActiveHeadings()
 
       <a
         :href="`#${props.item.id}`"
-        class="py-2 px-2 text-sm text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
+        class="py-2 px-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
         :class="textClass"
         :style="activeHeadings.has(props.item.id) ? 'font-weight: bold' : ''"
       >{{
@@ -167,9 +172,9 @@ const activeHeadings = useActiveHeadings()
       <ul
         v-if="props.item.children"
         v-show="expand"
-        :class="(sidebarFloat || toggleSidebarFloat) && catalogType === 'tree' ? `border-l ${borderColorMap[props.item.depth].expand} space-y-2 rounded-md` : ''"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.item.depth].expand} space-y-2 rounded-md` : ''"
       >
-        <CatalogItem v-for="subItem in props.item.children" :key="subItem.id" :item="subItem" />
+        <CatalogItemForBlog v-for="subItem in props.item.children" :key="subItem.id" :item="subItem" />
       </ul>
     </Transition>
   </li>

@@ -14,15 +14,80 @@ const flexiMode = useFlexiMode()
  * get data
  *
  */
-
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-console.log(data.value)
+// console.log(data.value)
+const articleContainer = ref(null)
+/**
+ *
+ * math formula
+ * support double click to copy the formula
+ *
+ */
+const clipboard = ref(null)
 
+const addListener = (list, prefix, suffix) => {
+  list.forEach((element) => {
+    // add event listener for double click
+    element.addEventListener('dblclick', (event) => {
+      const target = event.currentTarget as HTMLElement
+
+      // after click set the math element border color to 'border-purple-400'
+      target.style.borderColor = '#c084fc'
+
+      // get the LaTeX source code of math formula
+      // refer to https://github.com/KaTeX/KaTeX/issues/645
+      const formulaElem = target.querySelector('annotation')
+
+      if (formulaElem && formulaElem.textContent) {
+        // add '$' or '$$' prefix and suffix for inline math or block math
+        const formula = prefix + formulaElem.textContent + suffix
+
+        if (clipboard.value) {
+          // write the formula to clipboard and set the math element border color based on the promise resolve result
+          clipboard.value.writeText(formula).then(() => {
+            target.style.borderColor = '#4ade80'
+            const timer = setTimeout(() => {
+              target.style.borderColor = 'transparent'
+              clearTimeout(timer)
+            }, 800)
+          })
+            .catch(() => {
+              target.style.borderColor = '#f87171'
+
+              const timer = setTimeout(() => {
+                target.style.borderColor = 'transparent'
+                clearTimeout(timer)
+              }, 800)
+            })
+        }
+      } else {
+        target.style.borderColor = '#f87171'
+
+        const timer = setTimeout(() => {
+          target.style.borderColor = 'transparent'
+          clearTimeout(timer)
+        }, 800)
+      }
+    })
+  })
+}
+
+onMounted(() => {
+  clipboard.value = navigator.clipboard
+
+  if (articleContainer.value && clipboard.value) {
+    const mathInlineList = articleContainer.value.querySelectorAll('.math-inline')
+    const mathBlockList = articleContainer.value.querySelectorAll('.math-display')
+
+    if (mathInlineList.length > 0) { addListener(mathInlineList, '$', '$') }
+    if (mathBlockList.length > 0) { addListener(mathBlockList, '$$\n', '\n$$') }
+  }
+})
 </script>
 
 <template>
-  <div>
+  <div ref="articleContainer">
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>
@@ -37,7 +102,7 @@ console.log(data.value)
         v-if="!pending && data && data._type === 'markdown' && data.articleType === 'note'"
         v-show="flexiMode === 'note'"
         :data="data"
-        class="p-6"
+        class="px-4 py-12"
       />
       <div v-else-if="!pending && data && data._type === 'json'">
         <pre>{{ data }}</pre>
@@ -51,7 +116,6 @@ console.log(data.value)
 </template>
 
 <style lang="scss">
-
 .article-container {
   a {
     @apply text-blue-500 underline decoration-2 decoration-blue-400 hover:decoration-blue-500 visited:decoration-blue-100 hover:visited:decoration-blue-200 transition-colors duration-300;
@@ -138,7 +202,7 @@ console.log(data.value)
   }
 
   .math {
-    @apply px-2 py-1 border-2 border-transparent rounded-md select-none transition-colors duration-300;
+    @apply px-2 py-1 overflow-x-auto border-2 border-transparent rounded-md select-none transition-colors duration-300;
   }
 
   .critic-addition {
