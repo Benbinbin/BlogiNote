@@ -48,7 +48,7 @@ props.data.body.children.forEach((elem) => {
   }
 
   if (headingArr.includes(elem.tag)) {
-    headingIdArr.push(elem.props.id)
+    if (elem.tag !== 'h1') { headingIdArr.push(elem.props.id) }
 
     switch (elem.tag) {
       case 'h1':
@@ -158,29 +158,29 @@ const autoChangeColumns = ref(true)
 
 let resizeTimerForColumns = null
 
-const setColumns = () => {
-  recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
-  divideColumns.value = recommendColumns.value
-}
-
 onMounted(() => {
   if (document.documentElement.clientWidth && window) {
-    setColumns()
-  }
-
-  window.addEventListener('resize', () => {
-    if (!autoChangeColumns.value) { return }
-
-    if (resizeTimerForColumns) {
-      clearTimeout(resizeTimerForColumns)
+    if (document.documentElement.clientWidth >= 1000) {
+      recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
+      divideColumns.value = recommendColumns.value
+      layout.value = 'compact'
     }
 
-    resizeTimerForColumns = setTimeout(() => {
-      setColumns()
+    window.addEventListener('resize', () => {
+      if (resizeTimerForColumns) {
+        clearTimeout(resizeTimerForColumns)
+      }
 
-      resizeTimerForColumns = null
-    }, 300)
-  })
+      resizeTimerForColumns = setTimeout(() => {
+        recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
+        if (autoChangeColumns.value) {
+          divideColumns.value = recommendColumns.value
+        }
+
+        resizeTimerForColumns = null
+      }, 300)
+    })
+  }
 })
 
 const changeDivideColumnsHandler = (event) => {
@@ -194,6 +194,7 @@ const changeDivideColumnsHandler = (event) => {
     divideColumns.value = columns
   }
 }
+
 /**
  *
  * catalog
@@ -256,12 +257,13 @@ provide('setActiveHeadingId', setActiveHeadingId)
         :class="layout === 'compact' ? 'p-2 mb-2 border rounded break-inside-avoid' : ''"
       />
     </div>
+
     <CatalogSidebarForNote
       v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
       :catalogs="props.data.body.toc.links"
     />
 
-    <div class="hidden sm:block fixed top-20 right-4 z-40">
+    <div class="hidden md:block fixed top-20 right-4 z-40">
       <button
         class="p-1 flex justify-center items-center absolute -top-4 -left-4 rounded-full"
         :class="autoChangeColumns ? 'text-yellow-500 bg-yellow-100 hover:bg-yellow-50 border border-yellow-200' : 'text-gray-500 bg-gray-100 hover:bg-gray-50 border border-gray-200'"

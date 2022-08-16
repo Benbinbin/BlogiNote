@@ -107,9 +107,6 @@ const scrollPos = ref<'start' | 'middle' | 'end'>('start')
 const folderNavContainer = ref(null)
 
 const rejudgeShowScrollBtn = () => {
-  // console.log(folderNavContainer.value.scrollWidth)
-  // console.log(folderNavContainer.value.clientWidth)
-
   // show of hide the scroll button
   if (folderNavContainer.value) {
     if (folderNavContainer.value.scrollWidth <= folderNavContainer.value.clientWidth) {

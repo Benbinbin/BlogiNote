@@ -26,31 +26,11 @@ const toggleCollapseHeadings = inject<(string) => void>('toggleCollapseHeadings'
  *
  */
 const bgColorMap = {
-  2: {
-    expand: 'bg-purple-500',
-    collapse: 'bg-purple-200',
-    collapseWithChildren: 'bg-purple-400'
-  },
-  3: {
-    expand: 'bg-red-500',
-    collapse: 'bg-red-200',
-    collapseWithChildren: 'bg-red-400'
-  },
-  4: {
-    expand: 'bg-green-500',
-    collapse: 'bg-green-200',
-    collapseWithChildren: 'bg-green-400'
-  },
-  5: {
-    expand: 'bg-blue-500',
-    collapse: 'bg-blue-200',
-    collapseWithChildren: 'bg-blue-400'
-  },
-  6: {
-    expand: 'bg-gray-500',
-    collapse: 'bg-gray-200',
-    collapseWithChildren: 'bg-gray-400'
-  }
+  2: { expand: 'bg-purple-500', collapse: 'bg-purple-200' },
+  3: { expand: 'bg-red-500', collapse: 'bg-red-200' },
+  4: { expand: 'bg-green-500', collapse: 'bg-green-200' },
+  5: { expand: 'bg-blue-500', collapse: 'bg-blue-200' },
+  6: { expand: 'bg-gray-500', collapse: 'bg-gray-200' }
 }
 
 const textColorMap = {
@@ -62,13 +42,36 @@ const textColorMap = {
 }
 
 const borderColorMap = {
-  2: { active: 'border-purple-500', expand: 'border-purple-300', collapse: 'border-purple-100' },
-  3: { active: 'border-red-500', expand: 'border-red-300', collapse: 'border-red-100' },
-  4: { active: 'border-green-500', expand: 'border-green-300', collapse: 'border-green-100' },
-  5: { active: 'border-blue-500', expand: 'border-blue-300', collapse: 'border-blue-100' },
-  6: { active: 'border-gray-500', expand: 'border-gray-300', collapse: 'border-gray-100' }
+  2: { expand: 'border-purple-200', collapse: 'border-purple-50' },
+  3: { expand: 'border-red-200', collapse: 'border-red-50' },
+  4: { expand: 'border-green-200', collapse: 'border-green-50' },
+  5: { expand: 'border-blue-200', collapse: 'border-blue-50' },
+  6: { expand: 'border-gray-200', collapse: 'border-gray-50' }
 }
 
+const HeadingBtnTextColorMap = {
+  2: 'text-purple-400 hover:text-purple-500',
+  3: 'text-red-400 hover:text-red-500',
+  4: 'text-green-400 hover:text-green-500',
+  5: 'text-blue-400 hover:text-blue-500',
+  6: 'text-gray-400 hover:text-gray-500'
+}
+
+const headingBtnBgColorMap = {
+  2: 'bg-purple-500 hover:bg-purple-400',
+  3: 'bg-red-500 hover:bg-red-400',
+  4: 'bg-green-500 hover:bg-green-400',
+  5: 'bg-blue-500 hover:bg-blue-400',
+  6: 'bg-gray-500 hover:bg-gray-400'
+}
+
+const headingBtnBorderColorMap = {
+  2: 'border-purple-500',
+  3: 'border-red-500',
+  4: 'border-green-500',
+  5: 'border-blue-500',
+  6: 'border-gray-500'
+}
 /**
  *
  * sidebar float state and float catalog type
@@ -80,35 +83,30 @@ const toggleNoteSidebarFloat = useToggleNoteSidebarFloat()
 // float catalog type
 const floatNoteCatalogType = useFloatNoteCatalogType()
 
-const buttonClass = ref('')
-const textClass = ref('')
+const buttonStyle = ref('')
+const textStyle = ref('')
 
 watch([sidebarFloatForNote, toggleNoteSidebarFloat, floatNoteCatalogType], () => {
-  const buttonClassArr = []
-  const textClassArr = []
+  const buttonStyleArr = []
+  const textStyleArr = []
 
   if ((sidebarFloatForNote.value || toggleNoteSidebarFloat.value) && floatNoteCatalogType.value === 'tree') {
-    buttonClassArr.push('order-3 translate-x-[10px]')
-    textClassArr.push('grow order-2')
+    buttonStyleArr.push('order: 3')
+    buttonStyleArr.push('transform: translateX(10px)')
+
+    textStyleArr.push('flex-grow: 1')
+    textStyleArr.push('order: 2')
+
+    if (!props.item.children) { buttonStyleArr.push('display: none') }
   } else {
-    buttonClassArr.push('order-2 -translate-x-2.5')
-    textClassArr.push('order-3')
+    buttonStyleArr.push('order: 2')
+    buttonStyleArr.push('transform: translateX(-10px)')
+
+    textStyleArr.push('order: 3')
   }
 
-  if (props.item.children) {
-    if (!collapseHeadings.value.has(props.item.id)) {
-      buttonClassArr.push(`${borderColorMap[props.item.depth].expand} ${bgColorMap[props.item.depth].expand}`)
-    } else {
-      buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapseWithChildren}`)
-    }
-  } else if ((sidebarFloatForNote.value || toggleNoteSidebarFloat.value) && floatNoteCatalogType.value === 'tree') {
-    buttonClassArr.push('border-transparent')
-  } else {
-    buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapse}`)
-  }
-
-  buttonClass.value = buttonClassArr.join(' ')
-  textClass.value = textClassArr.join(' ')
+  buttonStyle.value = buttonStyleArr.join(';')
+  textStyle.value = textStyleArr.join(';')
 }, {
   immediate: true
 })
@@ -131,19 +129,27 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       class="shrink-0 flex items-center"
       :class="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree' ? 'pl-4 w-40 justify-between' : 'px-2'"
     >
-      <div
-        class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
-        :class="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree' ? 'border-transparent' : `pr-4 ${borderColorMap[props.item.depth].expand} border-dashed`"
+      <button
+        v-show="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree'"
+        class="shrink-0 order-1 p-1 mr-1 flex justify-center items-center text-xs font-thin border rounded transition-colors duration-300"
+        :class="collapseHeadings.has(props.item.id) ? `${HeadingBtnTextColorMap[props.item.depth]} ${headingBtnBorderColorMap[props.item.depth]}` : `text-white ${headingBtnBgColorMap[props.item.depth]} ${headingBtnBorderColorMap[props.item.depth]}`"
+        @click="toggleCollapseHeadings(props.item.id)"
       >
-        <p class="heading-mark text-xs font-thin" :class="`${textColorMap[props.item.depth]}`">
-          H{{ props.item.depth }}
-        </p>
-      </div>
+        H{{ props.item.depth }}
+      </button>
+
+      <span
+        v-show="!((sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree')"
+        class="shrink-0 self-stretch order-1 pr-4 py-2 flex justify-center items-center text-xs font-thin border-r border-dashed"
+        :class="`${textColorMap[props.item.depth]}  ${borderColorMap[props.item.depth].expand}`"
+      >
+        H{{ props.item.depth }}
+      </span>
 
       <button
-        class="shrink-0 flex justify-center items-center rounded-full border-[3px]"
-        :class="buttonClass"
-        :disabled="!props.item.children"
+        class="shrink-0 flex justify-center items-center opacity-80 rounded-full border-[3px]"
+        :class="collapseHeadings.has(props.item.id) ? `${bgColorMap[props.item.depth].collapse} ${borderColorMap[props.item.depth].collapse}` : `${bgColorMap[props.item.depth].expand} ${borderColorMap[props.item.depth].expand}`"
+        :style="buttonStyle"
         @click="toggleCollapseHeadings(props.item.id)"
       >
         <IconCustom
@@ -156,8 +162,8 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       </button>
 
       <button
-        class="py-2 px-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
-        :class="textClass"
+        class="p-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
+        :style="textStyle"
         @click="setActiveHeadingId(props.item.id)"
       >
         {{
@@ -166,7 +172,7 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       </button>
       <!-- <a
         :href="`#${props.item.id}`"
-        class="py-2 px-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
+        class="p-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
         :class="textClass"
         @click.prevent="setActiveHeadingId(props.item.id)"
       >{{

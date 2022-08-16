@@ -16,7 +16,6 @@ const flexiMode = useFlexiMode()
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-// console.log(data.value)
 const articleContainer = ref(null)
 /**
  *

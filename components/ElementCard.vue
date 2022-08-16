@@ -91,59 +91,11 @@ const toggleExpandStateHandler = () => {
 
 /**
  *
- * layout
- *
- */
-const layout = ref('waterfall')
-const divideColumns = inject<Ref<number>>('divideColumns')
-// const recommendColumns = inject<Ref<number>>('recommendColumns')
-const highlightTitle = ref(false)
-
-const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
-  layout.value = value
-
-  if (layout.value === 'compact') {
-    // divideColumns.value = 3
-    emits('spanAll', true)
-  } else if (childrenSpanAllNum.value === 0) {
-    emits('spanAll', false)
-  }
-
-  if (headingElem.value) {
-    nextTick(() => {
-      headingElem.value.focus()
-      highlightTitle.value = true
-      const timer = setTimeout(() => {
-        highlightTitle.value = false
-        clearTimeout(timer)
-      }, 2000)
-    })
-  }
-}
-
-const childrenSpanAllNum = ref(0)
-
-const childrenSpanAllHandler = (state) => {
-  if (state) {
-    childrenSpanAllNum.value += 1
-  } else {
-    childrenSpanAllNum.value -= 1
-  }
-}
-
-watch(childrenSpanAllNum, (newNum, oldNum) => {
-  if (oldNum > 0 && newNum === 0) {
-    emits('spanAll', false)
-  } else if (oldNum === 0 && newNum > 0) {
-    emits('spanAll', true)
-  }
-})
-
-/**
- *
  * active heading
  *
  */
+const highlightTitle = ref(false)
+
 const activeHeadingId = inject<Ref<string>>('activeHeadingId')
 const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
 
@@ -169,6 +121,105 @@ watch(activeHeadingId, () => {
     })
   }
 })
+
+/**
+ *
+ * layout
+ *
+ */
+const layout = ref('waterfall')
+
+const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
+  layout.value = value
+
+  if (layout.value === 'compact') {
+    // divideColumns.value = 3
+    emits('spanAll', true)
+  } else if (childrenSpanAllNum.value === 0) {
+    emits('spanAll', false)
+  }
+
+  if (headingElem.value) {
+    nextTick(() => {
+      headingElem.value.focus()
+      highlightTitle.value = true
+      const timer = setTimeout(() => {
+        highlightTitle.value = false
+        clearTimeout(timer)
+      }, 2000)
+    })
+  }
+}
+
+const toggleLayoutForContent = () => {
+  if (layout.value === 'waterfall') {
+    setLayoutHandler('compact')
+  } else {
+    setLayoutHandler('waterfall')
+  }
+}
+
+// compact layout
+const childrenSpanAllNum = ref(0)
+
+const childrenSpanAllHandler = (state) => {
+  if (state) {
+    childrenSpanAllNum.value += 1
+  } else {
+    childrenSpanAllNum.value -= 1
+  }
+}
+
+watch(childrenSpanAllNum, (newNum, oldNum) => {
+  if (oldNum > 0 && newNum === 0) {
+    emits('spanAll', false)
+  } else if (oldNum === 0 && newNum > 0) {
+    emits('spanAll', true)
+  }
+})
+
+// divide columns
+const childrenDivideColumns = ref(1)
+const divideColumns = inject<Ref<number>>('divideColumns')
+
+watch(divideColumns, () => {
+  if (syncChangeColumns.value) {
+    childrenDivideColumns.value = Math.min(divideColumns.value, props.elem.children.length)
+  }
+})
+
+const syncChangeColumns = ref(true)
+
+const changeSyncState = () => {
+  syncChangeColumns.value = !syncChangeColumns.value
+
+  if (syncChangeColumns.value) {
+    childrenDivideColumns.value = divideColumns.value
+  }
+}
+
+onMounted(() => {
+  if ((props.elem.children && props.elem.children.length > 1) && document.documentElement.clientWidth && document.documentElement.clientWidth >= 1000) {
+    const recommendColumns = Math.floor(document.documentElement.clientWidth / 500)
+
+    childrenDivideColumns.value = Math.min(recommendColumns, props.elem.children.length)
+
+    layout.value = 'compact'
+    emits('spanAll', true)
+  }
+})
+
+const changeChildrenDivideColumns = (event) => {
+  if (event.shiftKey) {
+    childrenDivideColumns.value += 1
+  } else if (event.ctrlKey || event.metaKey) {
+    childrenDivideColumns.value = Math.max(childrenDivideColumns.value - 1, 1)
+  } else {
+    let columns = childrenDivideColumns.value + 1
+    if (columns > divideColumns.value) { columns = 1 }
+    childrenDivideColumns.value = columns
+  }
+}
 </script>
 
 <template>
@@ -186,6 +237,8 @@ watch(activeHeadingId, () => {
       :style="props.elem.type === 'h1' ? 'justify-content: center': 'justify-content: flex-start'"
     >
       <div class="shrink-0 flex gap-0.5">
+        <sup v-if="props.count>1" class="text-xs opacity-30" :class="`${headingColorMap[props.elem.type]}`">{{
+          `${props.order}/${props.count}` }}</sup>
         <button
           class="p-1 flex justify-center items-center text-xs border rounded-md transition-colors duration-300"
           :class="!collapseHeadings.has(props.elem.node.props.id) ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
@@ -193,8 +246,6 @@ watch(activeHeadingId, () => {
         >
           <span>{{ props.elem.type.toUpperCase() }}</span>
         </button>
-        <sup class="text-xs opacity-30" :class="`${headingColorMap[props.elem.type]}`">{{
-          `${props.order}/${props.count}` }}</sup>
       </div>
 
       <ContentRendererMarkdown
@@ -206,28 +257,67 @@ watch(activeHeadingId, () => {
       <div />
 
       <div
-        class="shrink-0 flex justify-start items-center gap-2 opacity-10 hover:opacity-100 transition-opacity duration-300"
+        class="shrink-0 flex justify-start items-center gap-2 opacity-30 hover:opacity-100 transition-opacity duration-300"
       >
         <button
+          v-show="layout !== 'waterfall'"
+          v-if="props.elem.children && props.elem.children.length > 0"
           class="p-1 flex justify-center items-center border rounded-md transition-colors duration-300"
           :class="layout === 'waterfall' ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
           @click="setLayoutHandler('waterfall')"
         >
           <IconCustom name="tabler:layout-list" class="w-4 h-4" />
         </button>
+
         <button
-          class="p-1 flex justify-center items-center border rounded-md transition-colors duration-300"
+          v-show="layout !== 'card'"
+          v-if="props.elem.children && props.elem.children.length > 0"
+          class="p-1 flex md:hidden justify-center items-center border rounded-md transition-colors duration-300"
+          :class="layout === 'card' ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
+          @click="setLayoutHandler('card')"
+        >
+          <IconCustom name="tabler:versions" class="w-4 h-4" />
+        </button>
+
+        <button
+          v-show="layout !== 'compact'"
+          v-if="props.elem.children && props.elem.children.length > 0"
+          class="p-1 hidden md:flex justify-center items-center border rounded-md transition-colors duration-300"
           :class="layout === 'compact' ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
           @click="setLayoutHandler('compact')"
         >
           <IconCustom name="tabler:layout-board" class="w-4 h-4" />
         </button>
-        <button
-          class="p-1 flex justify-center items-center border rounded-md transition-colors duration-300"
-          :class="layout === 'card' ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
-          @click="setLayoutHandler('card')"
+
+        <div
+          v-if="props.elem.children && props.elem.children.length > 0"
+          v-show="layout === 'compact'"
+          class="hidden sm:block relative"
         >
-          <IconCustom name="tabler:versions" class="w-4 h-4" />
+          <button
+            class=" flex justify-center items-center absolute -top-3 -right-2 bg-white rounded-full"
+            :class="syncChangeColumns ? 'text-yellow-500 hover:text-yellow-400 ' : 'text-gray-500 hover:text-gray-400'"
+            @click="changeSyncState"
+          >
+            <IconCustom v-show="!syncChangeColumns" name="fluent:arrow-sync-circle-20-regular" class="w-5 h-5" />
+            <IconCustom v-show="syncChangeColumns" name="fluent:arrow-sync-circle-20-filled" class="w-5 h-5" />
+          </button>
+          <button
+            class="p-1 flex justify-center items-center border  transition-colors duration-300 rounded-md"
+            :class="`${ headingBtnMap[props.elem.type].expand }`"
+            @click="changeChildrenDivideColumns"
+          >
+            <span class="w-4 h-4 text-xs">{{ childrenDivideColumns }}</span>
+          </button>
+        </div>
+
+        <button
+          v-if="!props.elem.children || props.elem.children.length === 0"
+          class="p-1 hidden md:flex justify-center items-center border rounded-md transition-colors duration-300"
+          :class="layout === 'compact' ? `${headingBtnMap[props.elem.type].expand}` : `${headingBtnMap[props.elem.type].collapse}`"
+          @click="toggleLayoutForContent"
+        >
+          <IconCustom name="tabler:arrow-autofit-width" class="w-4 h-4" />
         </button>
       </div>
     </div>
@@ -255,7 +345,7 @@ watch(activeHeadingId, () => {
       v-if="props.elem.children && props.elem.children.length > 0"
       v-show="!collapseHeadings.has(props.elem.node.props.id)"
       :class="layout === 'compact' ? 'gap-x-2' : ''"
-      :style="layout === 'compact' ? `columns: ${Math.min(divideColumns, props.elem.children.length)}` : ''"
+      :style="layout === 'compact' ? `columns: ${childrenDivideColumns}` : ''"
     >
       <ElementCard
         v-for="(subElem, index) in props.elem.children"

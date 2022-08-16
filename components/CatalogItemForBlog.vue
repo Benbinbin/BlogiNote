@@ -132,7 +132,7 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
         class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
         :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.item.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.item.depth].expand} border-dashed`)"
       >
-        <p class="heading-mark text-xs font-thin" :class="`${textColorMap[props.item.depth]}`">
+        <p class="text-xs font-thin" :class="`${textColorMap[props.item.depth]}`">
           H{{ props.item.depth }}
         </p>
       </div>
