@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
+// import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
 
-const props = defineProps<{ data: ParsedContent }>()
+const props = defineProps<{ data: any }>()
 
 /**
  *
@@ -163,7 +163,8 @@ onMounted(() => {
     if (document.documentElement.clientWidth >= 1000) {
       recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
       divideColumns.value = recommendColumns.value
-      layout.value = 'compact'
+
+      if (articleTree.length > 1) { layout.value = 'compact' }
     }
 
     window.addEventListener('resize', () => {

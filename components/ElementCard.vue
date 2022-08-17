@@ -224,7 +224,7 @@ const changeChildrenDivideColumns = (event) => {
 
 <template>
   <div
-    class="focus:outline-none"
+    class="elem-card focus:outline-none"
     :class="(childrenSpanAllNum > 0 || layout === 'compact') ? 'my-2' : ''"
     :style="(childrenSpanAllNum > 0 || layout === 'compact') ? 'column-span: all' : ''"
   >
@@ -344,7 +344,8 @@ const changeChildrenDivideColumns = (event) => {
     <div
       v-if="props.elem.children && props.elem.children.length > 0"
       v-show="!collapseHeadings.has(props.elem.node.props.id)"
-      :class="layout === 'compact' ? 'gap-x-2' : ''"
+      class="card-container"
+      :class="layout === 'compact' ? 'gap-x-2' : (layout === 'card' ? 'flex gap-2 overflow-x-auto' : '')"
       :style="layout === 'compact' ? `columns: ${childrenDivideColumns}` : ''"
     >
       <ElementCard
@@ -353,7 +354,8 @@ const changeChildrenDivideColumns = (event) => {
         :elem="subElem"
         :order="index+1"
         :count="props.elem.children.length"
-        :class="layout === 'compact' ? `p-2 mb-2 h-fit border rounded break-inside-avoid ${borderColorMap[subElem.type]}` : ''"
+        :class="layout === 'compact' ? `p-2 mb-2 h-fit border rounded break-inside-avoid ${borderColorMap[subElem.type]}` : (layout === 'card' ? 'p-2 border rounded' : '')"
+        :style="layout === 'card' ? 'width: fit-content; max-width: 90%; height: fit-content; max-height: 60vh; flex-shrink: 0; overflow-y: auto' : ''"
         @span-all="childrenSpanAllHandler"
       />
     </div>
@@ -362,6 +364,20 @@ const changeChildrenDivideColumns = (event) => {
 
 <style scoped lang="scss">
 
+.elem-card {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
+}
 .title-highlight-pulse {
   animation: pulse 500ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
@@ -376,5 +392,11 @@ const changeChildrenDivideColumns = (event) => {
       opacity: .5;
     }
   }
+}
+
+.card-container {
+  &::-webkit-scrollbar {
+      display: none;
+    }
 }
 </style>

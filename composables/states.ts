@@ -1,5 +1,5 @@
 // flexible mode
-export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'note')
+export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
 
 // article page catalog
 export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => true)

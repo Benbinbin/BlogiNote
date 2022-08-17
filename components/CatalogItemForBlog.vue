@@ -3,13 +3,14 @@ import type { Ref } from 'vue'
 
 interface CatalogItem {
   id: string;
-  depth: number;
+  depth?: number;
   text: string;
   children?: CatalogItem[]
 }
 
 const props = defineProps<{
-  item: CatalogItem
+  item: CatalogItem,
+  depth: number
 }>()
 
 const toggleAllCatalogState = inject<Ref<string>>('toggleAllCatalogState')
@@ -97,14 +98,14 @@ watch([sidebarFloatForBlog, toggleBlogSidebarFloat, floatBlogCatalogType], () =>
 
   if (props.item.children) {
     if (expand.value) {
-      buttonClassArr.push(`${borderColorMap[props.item.depth].expand} ${bgColorMap[props.item.depth].expand}`)
+      buttonClassArr.push(`${borderColorMap[props.depth].expand} ${bgColorMap[props.depth].expand}`)
     } else {
-      buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapseWithChildren}`)
+      buttonClassArr.push(`${borderColorMap[props.depth].collapse} ${bgColorMap[props.depth].collapseWithChildren}`)
     }
   } else if ((sidebarFloatForBlog.value || toggleBlogSidebarFloat.value) && floatBlogCatalogType.value === 'tree') {
     buttonClassArr.push('border-transparent')
   } else {
-    buttonClassArr.push(`${borderColorMap[props.item.depth].collapse} ${bgColorMap[props.item.depth].collapse}`)
+    buttonClassArr.push(`${borderColorMap[props.depth].collapse} ${bgColorMap[props.depth].collapse}`)
   }
 
   buttonClass.value = buttonClassArr.join(' ')
@@ -130,10 +131,10 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
     >
       <div
         class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.item.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.item.depth].expand} border-dashed`)"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.depth].expand} border-dashed`)"
       >
-        <p class="text-xs font-thin" :class="`${textColorMap[props.item.depth]}`">
-          H{{ props.item.depth }}
+        <p class="text-xs font-thin" :class="`${textColorMap[props.depth]}`">
+          H{{ props.depth }}
         </p>
       </div>
 
@@ -172,9 +173,14 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
       <ul
         v-if="props.item.children"
         v-show="expand"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.item.depth].expand} space-y-2 rounded-md` : ''"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : ''"
       >
-        <CatalogItemForBlog v-for="subItem in props.item.children" :key="subItem.id" :item="subItem" />
+        <CatalogItemForBlog
+          v-for="subItem in props.item.children"
+          :key="subItem.id"
+          :item="subItem"
+          :depth="subItem.depth || props.depth+1"
+        />
       </ul>
     </Transition>
   </li>

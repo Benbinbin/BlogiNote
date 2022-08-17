@@ -1,13 +1,14 @@
 <script setup lang="ts">
 interface CatalogItem {
   id: string;
-  depth: number;
+  depth?: number;
   text: string;
   children?: CatalogItem[]
 }
 
 const props = defineProps<{
-  item: CatalogItem
+  item: CatalogItem,
+  depth: number
 }>()
 
 /**
@@ -132,23 +133,23 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       <button
         v-show="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree'"
         class="shrink-0 order-1 p-1 mr-1 flex justify-center items-center text-xs font-thin border rounded transition-colors duration-300"
-        :class="collapseHeadings.has(props.item.id) ? `${HeadingBtnTextColorMap[props.item.depth]} ${headingBtnBorderColorMap[props.item.depth]}` : `text-white ${headingBtnBgColorMap[props.item.depth]} ${headingBtnBorderColorMap[props.item.depth]}`"
+        :class="collapseHeadings.has(props.item.id) ? `${HeadingBtnTextColorMap[props.depth]} ${headingBtnBorderColorMap[props.depth]}` : `text-white ${headingBtnBgColorMap[props.depth]} ${headingBtnBorderColorMap[props.depth]}`"
         @click="toggleCollapseHeadings(props.item.id)"
       >
-        H{{ props.item.depth }}
+        H{{ props.depth }}
       </button>
 
       <span
         v-show="!((sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree')"
         class="shrink-0 self-stretch order-1 pr-4 py-2 flex justify-center items-center text-xs font-thin border-r border-dashed"
-        :class="`${textColorMap[props.item.depth]}  ${borderColorMap[props.item.depth].expand}`"
+        :class="`${textColorMap[props.depth]}  ${borderColorMap[props.depth].expand}`"
       >
-        H{{ props.item.depth }}
+        H{{ props.depth }}
       </span>
 
       <button
         class="shrink-0 flex justify-center items-center opacity-80 rounded-full border-[3px]"
-        :class="collapseHeadings.has(props.item.id) ? `${bgColorMap[props.item.depth].collapse} ${borderColorMap[props.item.depth].collapse}` : `${bgColorMap[props.item.depth].expand} ${borderColorMap[props.item.depth].expand}`"
+        :class="collapseHeadings.has(props.item.id) ? `${bgColorMap[props.depth].collapse} ${borderColorMap[props.depth].collapse}` : `${bgColorMap[props.depth].expand} ${borderColorMap[props.depth].expand}`"
         :style="buttonStyle"
         @click="toggleCollapseHeadings(props.item.id)"
       >
@@ -191,9 +192,14 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       <ul
         v-if="props.item.children"
         v-show="!collapseHeadings.has(props.item.id)"
-        :class="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree' ? `border-l ${borderColorMap[props.item.depth].expand} space-y-2 rounded-md` : ''"
+        :class="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : ''"
       >
-        <CatalogItemForNote v-for="subItem in props.item.children" :key="subItem.id" :item="subItem" />
+        <CatalogItemForNote
+          v-for="subItem in props.item.children"
+          :key="subItem.id"
+          :item="subItem"
+          :depth="subItem.depth || props.depth+1"
+        />
       </ul>
     </Transition>
   </li>
