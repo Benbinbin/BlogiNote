@@ -48,7 +48,7 @@ const doubleClickHandler = () => {
 <template>
   <img
     ref="image"
-    class="mx-auto"
+    class="mx-auto my-2"
     :src="props.src"
     :alt="props.alt"
     :width="props.width"

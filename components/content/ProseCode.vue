@@ -70,12 +70,16 @@ const copyHandler = () => {
       })
   }
 }
+
+// the regular expression to match the link
+// refer to https://stackoverflow.com/a/17773849/10699431
+const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
 </script>
 
 <template>
   <div class="my-4 bg-gray-900 rounded-lg overflow-hidden">
-    <div class="px-4 py-2 flex justify-between items-center border-b border-gray-600">
-      <div>
+    <div class="px-4 py-2 flex justify-between items-center gap-2 border-b border-gray-600">
+      <div class="flex items-center gap-2">
         <button v-show="codeLines > 3" @click="expand = !expand">
           <IconCustom
             name="material-symbols:arrow-forward-ios-rounded"
@@ -83,8 +87,24 @@ const copyHandler = () => {
             :class="expand ? 'rotate-90' : ''"
           />
         </button>
+        <div v-if="props.filename" class="flex items-center gap-2">
+          <NuxtLink
+            v-if="urlRegex.test(props.filename)"
+            :to="props.filename"
+            target="_blank"
+            class="code-filename-container no-underline overflow-x-auto transition-colors duration-300"
+            style="text-decoration-line: none; color: #94a3b8;"
+          >
+            <IconCustom name="bi:link-45deg" class="shrink-0 w-4 h-4" />
+            <!-- <span class="shrink-0 text-xs">{{ props.filename }}</span> -->
+          </NuxtLink>
+          <div v-else class="code-filename-container flex items-center gap-2 text-gray-400  overflow-x-auto">
+            <IconCustom name="bi:file-earmark-code" class="shrink-0 w-4 h-4 " />
+            <span class="shrink-0 text-xs">{{ props.filename }}</span>
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="shrink-0 flex items-center gap-4">
         <button
           :title="copyState === 'wait' ? 'copy code' : ''"
           class="flex justify-center items-center text-gray-500 hover:text-purple-500 transition-colors duration-300"
@@ -124,6 +144,13 @@ const copyHandler = () => {
 </template>
 
 <style lang="scss" scoped>
+
+.code-filename-container {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 :slotted(pre) {
   @apply p-0 overflow-x-auto;
   counter-reset: lines;

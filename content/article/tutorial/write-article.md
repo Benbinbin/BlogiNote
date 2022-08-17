@@ -29,16 +29,102 @@ You can rewrite :page_facing_up: `/content/index.md` and :page_facing_up: `/cont
 The :file_folder: `/content/article` sub folder contains all other article, like this article is under the path `/content/article/tutorial`. You can delete all the existed articles inside the :file_folder: `/content/article` folder (but please keep the `/content/article` folder), then create a new markdown file inside the :file_folder: `/content/article` folder and start to :pencil: write you own article.
 
 ## How to write
-BlogiNote usually use Markdown file to generate website page, so this part will show you how to write a markdown file. BlogiNote support basic Markdown syntax and MarkDown Components extended syntax (also called [MDC](https://content.nuxtjs.org/guide/writing/mdc/) for short)
+BlogiNote can consume three types of file to generate web page, they are **Markdown** file, **JSON** file and **CSV** file:
 
+* [:IconCustom{name='bi:markdown'} **Markdown file**]{.text-blue-500}
 
-::TipBox{type="tip"}
-You can also learning Markdown basic syntax from the following two websites, which explain more details:
+  The file extension name is `.md`. Open a file in this type, you can see plain text with some strange marks, like `###`, which means the level 3 heading. With some simple syntax rules, it can convert the plain text content to rich text content.
 
-* [CommonMark](https://commonmark.org/): this website shows the most basic syntax, like how to mark a header, a link, an image and so on
+  ::TipBox{type="tip"}
+  You can also learning Markdown basic syntax from the following two websites:
 
-* [GitHub Flavored Markdown Spec (GFM)](https://github.github.com/gfm/): this website shows the GFM syntax, which is another Markdown extended syntax created by Github, like supporting the footnote
+  * [CommonMark](https://commonmark.org/): this website shows the most basic syntax, like how to mark a header, a link, an image and so on
+
+  * [GitHub Flavored Markdown Spec (GFM)](https://github.github.com/gfm/): this website shows the GFM syntax, which is another Markdown extended syntax created by Github, like supporting the footnote
+  ::
+
+* [:IconCustom{name='bi:filetype-json'} **JSON file**]{.text-orange-500}
+
+  The file extension name is `.json`. Open a file in this type, you can see the content like a tree. The data of this file is in a nested hierarchical structure, layer by layer.
+
+* [:IconCustom{name='bi:filetype-csv'} **CSV file**]{.text-green-500}
+
+  The file extension name is `.csv`. Open a file in this type, you can see a lot of Comma, because `CSV` is the abbreviation of Comma-Separated Values. It's one of the most common file type for spreadsheet, you maybe edit many time of these files in Microsoft Excel
+
+### Markdown
+Because Markdown provides some useful syntax rules to mark the plain text content, you can easily write a blog post in rich text format, with heading, list, quote and so on.
+
+Most of the time, you will write a blog post in Markdown file, this part will show you how to write a markdown file.
+
+BlogiNote support basic Markdown syntax and MarkDown Components extended syntax (also called [MDC](https://content.nuxtjs.org/guide/writing/mdc/) for short)
+
+#### Basic Syntax
+##### Code
+::TipBox{type="announce"}
+Firstly, you should know the concept of **highlight theme** and the **preload programming languages**.
+
+**Highlight theme** is a color rules to decorate the code text based on the programming language.
+
+**Preload programming languages** is a subset of programming languages which are selected out from a large amount languages, and the serve will do some work under the hook to make the code block writing in these programming languages will be highlighted correctly.
+
+These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload programming languages*](./faq#add-some-preload-programming-languages) these two part of the [FAQ article](./faq).
 ::
+
+Markdown support two types of code:
+
+* inline code: the code inside the paragraph, writing inline code between the **backquote**
+
+  :memo: for example writing the markdown content as below :point_down:
+
+  ![inline code](./images/inline-code.png)
+
+  :gear: compiled to web page you will get the result like that :point_right: Markdown file extension name is `.md`
+
+  ::TipBox{type="tip"}
+  Usually the backquote key is under `Esc` key in your keyboard
+  ::
+
+* block code: the code show as a block, writing block code between three **backquote**
+
+  :memo: for example writing the markdown content as below :point_down:
+
+  ![block code](./images/block-code.png)
+
+  :gear: compiled to web page you will get the final result as below :point_down:
+
+  ```javascript
+  console.log('hello world!')
+  ```
+
+  ::TipBox{type="warning"}
+  In order to highlight the code correctly, you need to specify which programming language the code belongs to right after the three backquote
+  ::
+
+  you can also provide more information about your code block:
+
+  * **add the file name** inside the square brackets, like `[filename]`, to specify where the code come from, and you should separated this message should from other information with a blank space
+
+  ::TipBox{type="tip"}
+  you can also add a link to specify the source of the code block, the link should start with `https`, `http` or `www`
+  ::
+
+  * **highlight some lines** of your code block by adding some number inside the curly brackets, like `{2-4, 6}` to highlight the lines from second to fourth, and the sixth line
+
+  :memo: for example writing the markdown content as below :point_down:
+
+  ![block code with more info](./images/block-code-with-more-info.png)
+
+  :gear: compiled to web page you will get the final result as below :point_down:
+
+  ```javascript [/components/content/ProseCode.vue] {2-4, 6}
+  const languageColorMap = {
+    theme: '#a855f7',
+    bash: '#89e051',
+    shell: '#89e051',
+    html: '#e34c26',
+    javascript: '#f1e05a',
+  }
+  ```
 
 ## Add a cover
 
