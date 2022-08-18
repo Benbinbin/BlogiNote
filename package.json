@@ -41,5 +41,12 @@
     "remark-sub": "file:./markdownPlugins/remark-sub",
     "remark-super": "file:./markdownPlugins/remark-super",
     "remark-critic-markup": "file:./markdownPlugins/remark-critic-markup"
+  },
+  "resolutions": {
+    "nuxt": "3.0.0-rc.6",
+    "nuxi": "3.0.0-rc.6",
+    "@nuxt/vite-builder": "3.0.0-rc.6",
+    "@nuxt/kit": "3.0.0-rc.6",
+    "@nuxt/schema": "3.0.0-rc.6"
   }
 }
