@@ -67,7 +67,7 @@ Firstly, you should know the concept of **highlight theme** and the **preload pr
 
 **Preload programming languages** is a subset of programming languages which are selected out from a large amount languages, and the serve will do some work under the hook to make the code block writing in these programming languages will be highlighted correctly.
 
-These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload programming languages*](./faq#add-some-preload-programming-languages) these two part of the [FAQ article](./faq).
+<!-- These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload programming languages*](./faq#add-some-preload-programming-languages) these two part of the [FAQ article](./faq). -->
 ::
 
 Markdown support two types of code:
