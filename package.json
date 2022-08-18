@@ -31,7 +31,7 @@
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
     "@nuxtjs/tailwindcss": "^5.1.2",
     "eslint": "^8.17.0",
-    "nuxt": "^3.0.0-rc.6",
+    "nuxt": "^3.0.0-rc.8",
     "sass": "^1.52.3",
     "typescript": "^4.7.3"
   },
@@ -41,12 +41,5 @@
     "remark-sub": "file:./markdownPlugins/remark-sub",
     "remark-super": "file:./markdownPlugins/remark-super",
     "remark-critic-markup": "file:./markdownPlugins/remark-critic-markup"
-  },
-  "resolutions": {
-    "nuxt": "3.0.0-rc.6",
-    "nuxi": "3.0.0-rc.6",
-    "@nuxt/vite-builder": "3.0.0-rc.6",
-    "@nuxt/kit": "3.0.0-rc.6",
-    "@nuxt/schema": "3.0.0-rc.6"
   }
 }
