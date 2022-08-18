@@ -59,6 +59,10 @@ Most of the time, you will write a blog post in Markdown file, this part will sh
 BlogiNote support basic Markdown syntax and MarkDown Components extended syntax (also called [MDC](https://content.nuxtjs.org/guide/writing/mdc/) for short)
 
 #### Basic Syntax
+
+##### link
+
+**Relative Link** start with `.` and `..`
 ##### Code
 ::TipBox{type="announce"}
 Firstly, you should know the concept of **highlight theme** and the **preload programming languages**.

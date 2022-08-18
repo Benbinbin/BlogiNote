@@ -82,9 +82,9 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
       <div class="flex items-center gap-2">
         <button v-show="codeLines > 3" @click="expand = !expand">
           <IconCustom
-            name="material-symbols:arrow-forward-ios-rounded"
+            name="material-symbols:keyboard-arrow-down-rounded"
             class="w-4 h-4 text-gray-400 transition-transform duration-300"
-            :class="expand ? 'rotate-90' : ''"
+            :class="expand ? '' : '-rotate-90'"
           />
         </button>
         <div v-if="props.filename" class="flex items-center gap-2">
