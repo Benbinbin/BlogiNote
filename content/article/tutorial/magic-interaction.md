@@ -23,3 +23,18 @@ And in the 'note' mode, you can click the sub-folder to drive down in place.
 
 :IconCustom{name="noto:magic-wand"} Magic~Hum :v: feel free to play around the directory layout :yum:
 
+## Code block
+
+**Toggle** the :IconCustom{name="material-symbols:keyboard-arrow-down-rounded"} button on the left corner of the code block to change the :page_with_curl: long~long code block state between collapsing and expanding.
+
+**Copy** the entire code block by one click the :IconCustom{name="uil:copy"} button
+
+```javascript
+const languageColorMap = {
+  theme: '#a855f7',
+  bash: '#89e051',
+  shell: '#89e051',
+  html: '#e34c26',
+  javascript: '#f1e05a',
+}
+```

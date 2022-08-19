@@ -52,7 +52,7 @@ const categorySeries: ArrayObject = {}
 // get article's tags and series in different catalog
 if (articleFolder && articleFolder.children.length > 0) {
   for (const category of articleFolder.children) {
-    const { data } = await useAsyncData(`${category.title}-tags`, () => queryContent<MyCustomParsedContent>('article', category.title.toLowerCase()).only(['tags', 'series']).find())
+    const { data } = await useAsyncData(`${category.title}-tags`, () => queryContent<MyCustomParsedContent>('article', category.title.toLowerCase()).where({ _type: 'markdown' }).only(['tags', 'series']).find())
 
     const categoryTagsArr = []
     const categorySeriesArr = []
@@ -131,9 +131,10 @@ watch([currentCategory, currentTags, currentSeries], () => {
  * filter article
  *
  */
+// get all files
 const { pending, data: articleList } = await useAsyncData('articles', () => {
   return queryContent<MyCustomParsedContent>('article')
-    .only(['title', 'description', '_path', 'contentType', '_type', 'series', 'seriesOrder', 'tags'])
+    .only(['title', 'description', '_type', '_path', 'contentType', '_type', 'series', 'seriesOrder', 'tags'])
     .find()
 })
 
@@ -419,11 +420,11 @@ const getFileTypeIcon = (type) => {
                 {{ item.description }}
               </p>
             </NuxtLink>
-            <div v-if="item.tags || item.series" v-show="showListDetail" class="px-10 flex flex-wrap gap-2 text-xs">
+            <div v-if="item._type==='markdown' && (item.tags || item.series)" v-show="showListDetail" class="px-10 flex flex-wrap gap-2 text-xs">
               <button
                 v-for="tag in item.tags"
                 :key="tag"
-                class="px-2 py-1  transition-colors duration-300 rounded"
+                class="px-2 py-1 transition-colors duration-300 rounded"
                 :class="(currentTags.length === 0 && tag === 'all') || currentTags.includes(tag) ? 'text-white bg-blue-500 hover:bg-blue-400' : 'text-blue-400 hover:text-blue-500 bg-blue-100'"
                 @click="toggleTag(tag)"
               >
