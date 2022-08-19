@@ -78,8 +78,8 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
 
 <template>
   <div class="my-4 bg-gray-900 rounded-lg overflow-hidden">
-    <div class="px-4 py-2 flex justify-between items-center gap-2 border-b border-gray-600">
-      <div class="flex items-center gap-2">
+    <div class="w-full px-2 sm:px-4 py-2 flex justify-between items-center gap-2 border-b border-gray-600">
+      <div class="shrink-0">
         <button v-show="codeLines > 3" @click="expand = !expand">
           <IconCustom
             name="material-symbols:keyboard-arrow-down-rounded"
@@ -87,21 +87,22 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
             :class="expand ? '' : '-rotate-90'"
           />
         </button>
-        <div v-if="props.filename" class="flex items-center gap-2">
-          <NuxtLink
-            v-if="urlRegex.test(props.filename)"
-            :to="props.filename"
-            target="_blank"
-            class="code-filename-container no-underline overflow-x-auto transition-colors duration-300"
-            style="text-decoration-line: none; color: #94a3b8;"
-          >
-            <IconCustom name="bi:link-45deg" class="shrink-0 w-4 h-4" />
-            <!-- <span class="shrink-0 text-xs">{{ props.filename }}</span> -->
-          </NuxtLink>
-          <div v-else class="code-filename-container flex items-center gap-2 text-gray-400  overflow-x-auto">
-            <IconCustom name="bi:file-earmark-code" class="shrink-0 w-4 h-4 " />
-            <span class="shrink-0 text-xs">{{ props.filename }}</span>
-          </div>
+      </div>
+
+      <div v-if="props.filename" class="code-filename-container grow flex items-center gap-2 overflow-x-auto">
+        <NuxtLink
+          v-if="urlRegex.test(props.filename)"
+          :to="props.filename"
+          target="_blank"
+          class=" no-underline transition-colors duration-300"
+          style="text-decoration-line: none; color: #94a3b8;"
+        >
+          <IconCustom name="bi:link-45deg" class="shrink-0 w-4 h-4" />
+          <!-- <span class="shrink-0 text-xs">{{ props.filename }}</span> -->
+        </NuxtLink>
+        <div v-else class=" flex items-center gap-2 text-gray-400 ">
+          <IconCustom name="bi:file-earmark-code" class="shrink-0 w-4 h-4 " />
+          <span class="shrink-0 text-xs">{{ props.filename }}</span>
         </div>
       </div>
       <div class="shrink-0 flex items-center gap-4">
@@ -144,7 +145,6 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
 </template>
 
 <style lang="scss" scoped>
-
 .code-filename-container {
   &::-webkit-scrollbar {
     display: none;
