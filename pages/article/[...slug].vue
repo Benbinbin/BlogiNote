@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
 
 const route = useRoute()
 
@@ -11,18 +12,58 @@ const flexiMode = useFlexiMode()
 
 /**
  *
- * get data
+ * get article data
  *
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-const articleContainer = ref(null)
+// console.log(data)
+
+/**
+ *
+ * series modal
+ *
+ */
+// get series data
+const seriesList: any = ref([])
+if (data.value.series) {
+  const { data: seriesResult } = await useAsyncData(`${data.value.series}-series`, () => {
+    return queryContent('article')
+      .where({ series: data.value.series })
+      .only(['title', 'description', '_path', '_type', 'seriesOrder'])
+      .sort({ seriesOrder: 1 })
+      .find()
+  })
+
+  seriesList.value = seriesResult.value
+}
+
+// show or hide series modal
+const showSeriesModal = ref(false)
+provide('showSeriesModal', showSeriesModal)
+
+const changeSeriesModalState = (state) => {
+  showSeriesModal.value = state
+}
+
+// stop body scroll when series modal show up
+watch(showSeriesModal, () => {
+  if (!document?.body) { return }
+
+  if (showSeriesModal.value) {
+    document.body.classList.add('overflow-hidden')
+  } else {
+    document.body.classList.remove('overflow-hidden')
+  }
+})
+
 /**
  *
  * math formula
  * support double click to copy the formula
  *
  */
+const articleContainer = ref(null)
 const clipboard = ref(null)
 
 const addListener = (list, prefix, suffix) => {
@@ -83,6 +124,24 @@ onMounted(() => {
     if (mathBlockList.length > 0) { addListener(mathBlockList, '$$\n', '\n$$') }
   }
 })
+
+/**
+ *
+ * show or hide image lightbox
+ *
+ */
+const showZoomImage = useShowZoomImage()
+
+// stop body scroll when image lightbox show up
+watch(showZoomImage, () => {
+  if (!document?.body) { return }
+  if (showZoomImage.value !== 'hidden') {
+    document.body.classList.add('overflow-hidden')
+  }
+  if (showZoomImage.value === 'hidden') {
+    document.body.classList.remove('overflow-hidden')
+  }
+})
 </script>
 
 <template>
@@ -96,6 +155,7 @@ onMounted(() => {
         v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog') "
         :data="data"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
+        @show-series-modal="changeSeriesModalState(true)"
       />
       <MarkdownNote
         v-if="!pending && data && data._type === 'markdown' && data.articleType === 'note'"
@@ -107,6 +167,16 @@ onMounted(() => {
         <pre>{{ data }}</pre>
       </div>
     </NuxtLayout>
+
+    <Teleport to="body">
+      <SeriesModal
+        v-if="data.series && seriesList.length > 0 && showSeriesModal"
+        :current-path="data._path"
+        :series-name="data.series"
+        :series-list="seriesList"
+        @close="changeSeriesModalState(false)"
+      />
+    </Teleport>
 
     <Teleport to="body">
       <ImageLightbox />

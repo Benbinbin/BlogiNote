@@ -5,10 +5,10 @@ const flexiMode = useFlexiMode()
 </script>
 
 <template>
-  <h6 :id="id">
+  <h4 :id="id">
     <a v-if="flexiMode==='blog'" :href="`#${id}`">
       <slot />
     </a>
     <slot v-else />
-  </h6>
+  </h4>
 </template>

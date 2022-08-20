@@ -1,100 +1,132 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-
 const props = defineProps<{
-  series: String;
+  currentPath: string;
+  seriesName: string;
+  seriesList: any;
 }>()
 
-defineEmits(['close'])
-
-const { data: seriesList, pending } = await useLazyAsyncData(`${props.series}-series`, () => {
-  return queryContent<ParsedContent>('article')
-    .where({ series: props.series })
-    .only(['title', 'description', '_path', 'contentType', 'seriesOrder'])
-    .find()
-})
+const emits = defineEmits(['close'])
 
 const showDetail = ref(false)
+
+/**
+ *
+ * shortcut key
+ *
+ */
+const router = useRouter()
+const itemRefs = ref([])
+const itemNum = ref(0)
+let currentIndex = -1
+const ModalKeyListener = function (event) {
+  if (event.key === 'Escape') {
+    // press Esc key to hide modal
+    emits('close')
+  } else if (event.key === 'ArrowDown') {
+    // navigate to next item
+    currentIndex = currentIndex + 1
+
+    if (currentIndex > itemNum.value - 1) {
+      currentIndex = 0
+    }
+
+    const target = itemRefs.value[currentIndex]
+
+    if (target) {
+      target.focus()
+    }
+  } else if (event.key === 'ArrowUp') {
+    // navigate to prev item
+    currentIndex = currentIndex - 1
+
+    if (currentIndex < 0) {
+      currentIndex = itemNum.value - 1
+    }
+
+    const target = itemRefs.value[currentIndex]
+
+    if (target) {
+      target.focus()
+    }
+  } else if (event.key === 'Enter') {
+    const targetPath = props.seriesList[currentIndex]._path
+    router.push({ path: targetPath })
+    emits('close')
+  }
+}
+
+onMounted(() => {
+  if (document) {
+    itemNum.value = itemRefs.value.length
+    document.addEventListener('keyup', ModalKeyListener)
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keyup', ModalKeyListener)
+})
 </script>
 
 <template>
-  <Teleport to="body">
-    <div class="w-screen h-screen fixed inset-0 z-50 flex justify-center items-center">
-      <div
-        class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/5 backdrop-blur-sm"
-        @click="$emit('close')"
-      />
-      <div v-if="pending" class="flex flex-col justify-center items-center space-x-2 text-gray-500">
-        <IconCustom name="eos-icons:loading" class="w-10 h-10" />
-        <p class="text-xl">
-          Loading
-        </p>
-      </div>
-      <Transition
-        enter-from-class="scale-0"
-        enter-active-class="transition-transform duration-300 ease-in-out"
-        enter-to-class="scale-1"
-      >
-        <div v-if="!pending" class="modal-container">
-          <div v-if="seriesList && seriesList.length > 0" class="bg-white rounded-t-lg">
-            <h2 class="p-4 text-xl font-bold text-center border-b ">
-              {{ props.series }}
-            </h2>
-            <ol class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto">
-              <li v-for="article in seriesList" :key="article._path">
-                <NuxtLink
-                  :to="article._path"
-                  class="block px-4 py-2 text-gray-600 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 space-y-2 rounded-md"
-                  @click="$emit('close')"
-                >
-                  <h3 class="font-bold">
-                    {{ article.title }}
-                  </h3>
-                  <p v-show="showDetail && article.description" class="text-sm opacity-60">
-                    {{ article.description }}
-                  </p>
-                </NuxtLink>
-              </li>
-            </ol>
-          </div>
-          <div v-else class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg">
-            <img src="~/assets/icons/empty.png" alt="empty" class="w-10 h-10">
-            <p>Oops! There is no article.</p>
-          </div>
-          <div
-            class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white rounded-b-lg"
+  <div class="w-screen h-screen p-4 fixed inset-0 z-50 flex justify-center items-center">
+    <div
+      class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/5 backdrop-blur-sm"
+      @click="$emit('close')"
+    />
+    <div class="lg:max-w-4xl">
+      <div v-if="seriesList && seriesList.length > 0" class="bg-white rounded-t-lg">
+        <h2 class="px-4 py-4 sm:py-6 text-lg sm:text-xl font-bold text-center border-b ">
+          {{ props.seriesName }}
+        </h2>
+        <ol class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto">
+          <li
+            v-for="article in seriesList"
+            ref="itemRefs"
+            :key="article._path"
+            tabindex="0"
+            class="py-2 hover:text-blue-500 hover:bg-blue-100 focus:outline-blue-500 transition-colors duration-300 rounded-md"
+            :class="props.currentPath === article._path ? 'text-blue-500' : 'text-gray-600'"
           >
-            <button
-              class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-400 bg-red-50 hover:text-red-500 hover:bg-red-100 rounded"
-              title="close window"
-              @click="$emit('close')"
-            >
-              <IconCustom name="ic:round-close" class="w-4 h-4" />
-              <span>Esc</span>
-            </button>
+            <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="$emit('close')">
+              <h3 class="font-bold">
+                {{ article.title }}
+              </h3>
+              <p v-show="showDetail && article.description" class="text-sm opacity-60">
+                {{ article.description }}
+              </p>
+            </NuxtLink>
+          </li>
+        </ol>
+      </div>
+      <div v-else class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg">
+        <img src="~/assets/icons/empty.png" alt="empty" class="w-10 h-10">
+        <p>Oops! There is no article.</p>
+      </div>
+      <div
+        class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white rounded-b-lg"
+      >
+        <button
+          class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-400 bg-red-50 hover:text-red-500 hover:bg-red-100 focus:outline-red-500 rounded transition-colors duration-300"
+          title="close window"
+          @click="$emit('close')"
+        >
+          <span>Esc</span>
+        </button>
 
-            <button
-              class="px-4 py-2.5 flex justify-center items-center space-x-1 rounded"
-              :class="showDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 bg-green-50 hover:text-green-500 hover:bg-green-100'"
-              :title="showDetail ? 'Less Details' : 'More Details'"
-              @click="showDetail = !showDetail"
-            >
-              <IconCustom v-show="showDetail" name="ic:round-unfold-less" class="w-4 h-4" />
-              <IconCustom v-show="!showDetail" name="ic:round-unfold-more" class="w-4 h-4" />
-              <p><span class="hidden sm:inline">{{ showDetail ? 'Less' : 'More' }}</span> Detail</p>
-            </button>
-          </div>
-        </div>
-      </Transition>
+        <button
+          class="px-4 py-2.5 flex justify-center items-center space-x-1 focus:outline-green-500 rounded transition-colors duration-300"
+          :class="showDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 bg-green-50 hover:text-green-500 hover:bg-green-100 '"
+          :title="showDetail ? 'Less Details' : 'More Details'"
+          @click="showDetail = !showDetail"
+        >
+          <p><span class="hidden sm:inline">{{ showDetail ? 'Less' : 'More' }}</span> Detail</p>
+        </button>
+      </div>
     </div>
-  </Teleport>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.modal-container {
-  max-width: 80vw;
-}
-
 .modal-content-container {
   max-height: 70vh;
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-
 const props = defineProps<{data: any}>()
 
 /**
@@ -48,14 +46,90 @@ onUnmounted(() => {
   }
 })
 
+/**
+ *
+ * show or hide tags
+ */
+const showTags = ref(true)
+
+/**
+ *
+ * show series modal
+ *
+ */
+defineEmits(['showSeriesModal'])
 </script>
 
 <template>
   <div ref="article">
-    <ContentRenderer :value="props.data" class="article-container markdown-blog-container selection:text-white selection:bg-purple-400">
+    <div class="py-8 md:py-12 selection:text-white selection:bg-purple-400">
+      <h1 class="py-4 text-3xl md:text-5xl font-bold text-center">
+        {{ props.data.title || "Article" }}
+      </h1>
+      <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+        <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+          <div
+            v-if="props.data.created"
+            class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
+          >
+            <IconCustom name="mdi:pencil-circle" class="w-4 h-4" />
+            <span>Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
+          </div>
+          <div
+            v-if="props.data.updated"
+            class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
+          >
+            <IconCustom name="mdi:clock" class="w-4 h-4" />
+            <span>Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+          <button
+            v-if="props.data.series"
+            class="p-2 flex items-center gap-2 text-gray-300 hover:text-white  hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
+            @click="$emit('showSeriesModal')"
+          >
+            <IconCustom name="bi:collection" class="w-4 h-4" />
+            <span class="text-xs">{{ props.data.series }}</span>
+          </button>
+          <button
+            v-if="props.data.tags"
+            class="p-2 hidden sm:flex items-center gap-2 focus:outline-blue-500 rounded transition-colors duration-300"
+            :class="showTags ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'text-gray-300 hover:text-white hover:bg-blue-500 '"
+            @click="showTags = !showTags"
+          >
+            <IconCustom name="bi:collection" class="w-4 h-4" />
+            <span class="text-xs">Tags</span>
+          </button>
+        </div>
+      </div>
+
+      <hr class="w-1/3 mx-auto my-4">
+
+      <div
+        v-if="props.data.tags && props.data.tags.length>0"
+        v-show="showTags"
+        class="p-2 tags-container flex sm:flex-wrap justify-start sm:justify-center items-center overflow-x-auto gap-2"
+      >
+        <NuxtLink
+          v-for="tag in props.data.tags"
+          :key="tag"
+          :to="{ path: '/list', query: { tags: [tag] } }"
+          target="_blank"
+          class="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-blue-500 rounded focus:outline-blue-500 transition-colors duration-300"
+        >
+          #{{ tag }}
+        </NuxtLink>
+      </div>
+    </div>
+
+    <ContentRenderer
+      :value="props.data"
+      class="article-container markdown-blog-container selection:text-white selection:bg-purple-400"
+    >
       <template #empty>
-        <div>
-          <h1>Article is empty</h1>
+        <div class="mx-auto font-bold">
+          <p>Article is empty</p>
         </div>
       </template>
     </ContentRenderer>
@@ -78,7 +152,17 @@ onUnmounted(() => {
 
 <style lang="scss">
 
+.tags-container {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .markdown-blog-container {
+  & > h1:first-child {
+    @apply hidden
+  }
+
   h1 {
     @apply py-8 md:py-12 text-3xl md:text-5xl text-center;
   }

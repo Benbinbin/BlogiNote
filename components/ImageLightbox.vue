@@ -49,24 +49,20 @@ const lightboxKeyListener = function (event) {
 }
 
 onMounted(() => {
-  if (document) {
-    document.addEventListener('keyup', lightboxKeyListener)
-  }
+  watch(showZoomImage, () => {
+    if (document) {
+      if (showZoomImage.value !== 'hidden') {
+        document.addEventListener('keyup', lightboxKeyListener)
+      } else {
+        document.removeEventListener('keyup', lightboxKeyListener)
+      }
+    }
+  })
 })
 
-onUnmounted(() => {
-  document.removeEventListener('keyup', lightboxKeyListener)
-})
-
-// stop body scroll
-watch(showZoomImage, () => {
-  if (showZoomImage.value !== 'hidden' && document.body) {
-    document.body.classList.add('overflow-hidden')
-  }
-  if (showZoomImage.value === 'hidden') {
-    document.body.classList.remove('overflow-hidden')
-  }
-})
+// onUnmounted(() => {
+//   document.removeEventListener('keyup', lightboxKeyListener)
+// })
 
 /**
  *

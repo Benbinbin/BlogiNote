@@ -130,6 +130,29 @@ Markdown support two types of code:
   }
   ```
 
+## Set title
+There are many ways to set the article title:
+
+* the markdown file name
+
+* the heading 1 in the article (and it should be the first element in the article)
+
+* setting the `title` property at front-matter
+
+the priority level is `title` property > heading 1 > file name
+
+Most of the time you only need to write a heading 1 at the begin of the article (if your article has some front-matter content, the heading 1 should be follow the front-matter).
+
+If you don't want to write the heading 1 at the top of the article, and you don't like the file name as the article title, you can provide the `title` property at front-matter to rewrite the title of the article.
+
+::TipBox{type="warning"}
+Please don't provide the `title` property and the heading 1 at the same time, because the heading 1 will always be hidden, and only show the `title` property as the article title in web page.
+::
+
+::TipBox{type="announce"}
+the url of the article is always based on the file system path and the file name.
+::
+
 ## Add a cover
 
 ::TipBox{type="tldr"}
