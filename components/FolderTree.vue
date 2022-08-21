@@ -154,7 +154,8 @@ const folderNavScrollingHandler = () => {
 </script>
 <template>
   <div
-    :class="expand ? (rootTree.length <= 2 ? 'col-span-1 sm:col-span-2 row-span-2' : (rootTree.length <= 4 ? 'col-span-1 sm:col-span-2 row-span-3' : 'col-span-1 sm:col-span-2 row-span-4')) : 'col-span-1 self-start'"
+    class="self-stretch max-h-full flex"
+    :class="expand ? (rootTree.length <= 2 ? 'col-span-1 sm:col-span-2 row-span-2' : (rootTree.length <= 4 ? 'col-span-1 sm:col-span-2 row-span-3' : (rootTree.length <= 6 ? 'col-span-1 sm:col-span-2 row-span-4' : 'col-span-1 sm:col-span-2 row-span-5'))) : 'col-span-1'"
   >
     <button
       v-show="!expand"
@@ -164,7 +165,7 @@ const folderNavScrollingHandler = () => {
       <IconCustom name="ph:folder-fill" class="w-6 h-6 text-yellow-400" />
       {{ props.rootName }}
     </button>
-    <div v-show="expand" class="w-full">
+    <div v-show="expand" class="w-full flex flex-col">
       <div class="w-full flex justify-between items-center">
         <button
           class="shrink-0 group w-fit p-2 flex items-center gap-1 relative z-10 text-xs hover:text-yellow-500 active:text-white bg-white hover:bg-yellow-50 active:bg-yellow-500 border-t border-x rounded-t transition-colors duration-300 translate-y-px"
@@ -218,7 +219,7 @@ const folderNavScrollingHandler = () => {
       </div>
 
       <div
-        class="tree-container p-2 flex flex-wrap gap-2 border rounded-b-lg rounded-tr-lg bg-white overflow-y-auto max-h-[142px]"
+        class="tree-container grow p-2 flex flex-wrap items-start gap-2 border rounded-b-lg rounded-tr-lg bg-white overflow-y-auto"
       >
         <template v-for="(item, index) in currentTree">
           <NuxtLink

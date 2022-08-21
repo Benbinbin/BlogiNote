@@ -70,7 +70,7 @@ onUnmounted(() => {
 <template>
   <div class="w-screen h-screen p-4 fixed inset-0 z-50 flex justify-center items-center">
     <div
-      class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/5 backdrop-blur-sm"
+      class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/10 backdrop-blur"
       @click="$emit('close')"
     />
     <div class="lg:max-w-4xl">

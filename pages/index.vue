@@ -263,7 +263,7 @@ const getFileTypeIcon = (type) => {
         </div>
         <hr class="p-4">
         <div
-          class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2"
+          class="folders-container w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 grid-flow-row-dense"
         >
           <template v-for="(item, index) in currentTree">
             <NuxtLink
@@ -301,6 +301,10 @@ const getFileTypeIcon = (type) => {
   p {
     @apply text-2xl opacity-50;
   }
+}
+
+.folders-container {
+  grid-auto-rows: 40px
 }
 
 .scroll-container::-webkit-scrollbar {
