@@ -38,9 +38,9 @@ const defaultTypeMap = {
   warning: {
     icon: 'bi:exclamation-triangle-fill',
     name: 'Warning',
-    bgColorClass: 'bg-yellow-100',
-    textColorClass: 'text-yellow-500',
-    borderColorClass: 'border-yellow-400'
+    bgColorClass: 'bg-red-100',
+    textColorClass: 'text-red-500',
+    borderColorClass: 'border-red-400'
   },
   fun: {
     icon: 'bi:balloon-fill',

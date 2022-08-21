@@ -438,13 +438,13 @@ const toggleAllHeadings = inject<(string) => void>('toggleAllHeadings')
           v-show="sidebarFloatForNote"
           draggable="false"
           class="shrink-0 order-1 group p-1 w-full flex justify-center items-center rounded transition-colors duration-300 cursor-move touch-none"
-          :class="dragSidebarState ? 'bg-green-200 text-green-800' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'"
+          :class="dragSidebarState ? 'bg-green-200 text-green-500' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'"
           @pointerdown="dragSidebarPointerDownHandler"
           @pointermove="dragSidebarPointerMoveHandler"
           @pointercancel="dragSidebarPointerCancelHandler"
           @pointerup="dragSidebarPointerCancelHandler"
         >
-          <IconCustom name="system-uicons:drag" class="w-4 h-4" />
+          <IconCustom name="akar-icons:drag-horizontal" class="w-4 h-4" />
         </button>
 
         <div

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-
 const route = useRoute()
 
 /**
@@ -16,8 +14,6 @@ const flexiMode = useFlexiMode()
  *
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
-
-// console.log(data)
 
 /**
  *
@@ -162,6 +158,7 @@ watch(showZoomImage, () => {
         v-show="flexiMode === 'note'"
         :data="data"
         class="px-4 py-12"
+        @show-series-modal="changeSeriesModalState(true)"
       />
       <div v-else-if="!pending && data && data._type === 'json'">
         <pre>{{ data }}</pre>

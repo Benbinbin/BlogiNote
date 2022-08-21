@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{data: any}>()
 
+defineEmits(['showSeriesModal'])
+
 /**
  *
  * catalog
@@ -51,13 +53,6 @@ onUnmounted(() => {
  * show or hide tags
  */
 const showTags = ref(true)
-
-/**
- *
- * show series modal
- *
- */
-defineEmits(['showSeriesModal'])
 </script>
 
 <template>
