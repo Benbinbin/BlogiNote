@@ -10,7 +10,7 @@ const route = useRoute()
 
 /**
  *
- * category filter
+ * build the category filter options
  *
  */
 // the fetchContentNavigation() composable seems not work with queryBuilder argument at latest @nuxt/content version
@@ -21,18 +21,24 @@ const { data: articleArr } = await useAsyncData('articleFolder', () => fetchCont
 
 const articleFolder = articleArr.value[0]
 
-const currentCategory = ref(route.query.category as string || 'all')
+const currentCategory = ref('all')
 const showMoreCategory = ref(false)
 
-const setCategory = (value) => {
+const toggleCategory = (category) => {
+  if (currentCategory.value === category) {
+    currentCategory.value = 'all'
+  } else {
+    currentCategory.value = category
+  }
   currentTags.value = []
   currentSeries.value = 'all'
-  currentCategory.value = value
+
+  changeURLHash()
 }
 
 /**
  *
- * tag and series filter
+ * build the tag and series filter options
  *
  */
 const showMoreFilter = ref(true)
@@ -75,18 +81,14 @@ if (articleFolder && articleFolder.children.length > 0) {
   seriesSet = new Set(seriesArr)
 }
 
+// set current tags
 const currentTags = ref([])
 const showMoreTag = ref(false)
-
-if (typeof route.query.tags === 'string') {
-  currentTags.value = [route.query.tags]
-} else if (Array.isArray(route.query.tags)) {
-  currentTags.value = route.query.tags
-}
 
 const toggleTag = (tag) => {
   if (tag === 'all') {
     currentTags.value = []
+    changeURLHash()
     return
   }
 
@@ -100,9 +102,11 @@ const toggleTag = (tag) => {
   } else {
     currentTags.value.push(tag)
   }
+  changeURLHash()
 }
 
-const currentSeries = ref(route.query.series as string || 'all')
+// set current series
+const currentSeries = ref('all')
 const showMoreSeries = ref(false)
 
 const toggleSeries = (series) => {
@@ -111,9 +115,10 @@ const toggleSeries = (series) => {
   } else {
     currentSeries.value = series
   }
+  changeURLHash()
 }
 
-watch([currentCategory, currentTags, currentSeries], () => {
+const changeURLHash = () => {
   navigateTo({
     path: '/list',
     query: {
@@ -122,22 +127,39 @@ watch([currentCategory, currentTags, currentSeries], () => {
       series: currentSeries.value
     }
   })
-}, {
-  deep: true
+}
+
+// get the init currentCategory, currentTags, currentSeries after Mounted
+onMounted(() => {
+  // init category
+  const category = route.query.category as string || 'all'
+  currentCategory.value = category
+
+  let tags = []
+  if (typeof route.query.tags === 'string') {
+    tags = [route.query.tags]
+  } else if (Array.isArray(route.query.tags)) {
+    tags = route.query.tags
+  }
+  currentTags.value = tags
+
+  const series = route.query.series as string || 'all'
+  currentSeries.value = series
 })
 
 /**
  *
- * filter article
+ * get articles
  *
  */
-// get all files
+// get all articles data
 const { pending, data: articleList } = await useAsyncData('articles', () => {
   return queryContent<MyCustomParsedContent>('article')
     .only(['title', 'description', '_type', '_path', 'contentType', '_type', 'series', 'seriesOrder', 'tags'])
     .find()
 })
 
+// filter articles data
 const filterArticleList = ref([])
 
 watch(() => route.fullPath, () => {
@@ -248,7 +270,7 @@ const getFileTypeIcon = (type) => {
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                     :class="currentCategory === 'all' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                    @click="setCategory('all')"
+                    @click="toggleCategory('all')"
                   >
                     <IconCustom name="material-symbols:category-rounded" class="w-5 h-5" />
                     <p>all</p>
@@ -259,7 +281,7 @@ const getFileTypeIcon = (type) => {
                     <button
                       class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                       :class="currentCategory === category.title.toLowerCase() ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                      @click="setCategory(category.title.toLowerCase())"
+                      @click="toggleCategory(category.title.toLowerCase())"
                     >
                       <IconCustom name="material-symbols:category-rounded" class="w-5 h-5" />
                       <p>
@@ -333,7 +355,7 @@ const getFileTypeIcon = (type) => {
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="currentSeries === series ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
                         :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory].includes(series)) ? false : true"
-                        @click="currentSeries = series"
+                        @click="toggleSeries(series)"
                       >
                         <IconCustom name="bi:collection" class="w-5 h-5" />
                         <p>{{ series }}</p>
@@ -347,7 +369,7 @@ const getFileTypeIcon = (type) => {
             <div class="flex items-center space-x-2">
               <button
                 class="px-4 py-1 sm:hidden text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
-                @click="setCategory('all')"
+                @click="toggleCategory('all')"
               >
                 <IconCustom name="ant-design:clear-outlined" class="w-4 h-4" />
               </button>
@@ -375,7 +397,7 @@ const getFileTypeIcon = (type) => {
       <div class="shrink-0 mx-4 sm:mx-8 hidden sm:flex justify-between items-center text-sm">
         <button
           class="p-2 flex items-center text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
-          @click="setCategory('all')"
+          @click="toggleCategory('all')"
         >
           <IconCustom name="ant-design:clear-outlined" class="w-5 h-5" />
           <p class="hidden sm:block">
