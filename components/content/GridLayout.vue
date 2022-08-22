@@ -7,7 +7,7 @@ const props = defineProps<{
 <template>
   <div class="w-full flex justify-center">
     <div class="px-6 py-8 max-w-full" :class="props.gridClass ? props.gridClass : 'grid-container'">
-      <Markdown unwrap="p" />
+      <ContentSlot :use="$slots.default" unwrap="p" />
     </div>
   </div>
 </template>
