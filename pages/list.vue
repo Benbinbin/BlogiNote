@@ -102,6 +102,7 @@ const toggleTag = (tag) => {
   } else {
     currentTags.value.push(tag)
   }
+
   changeURLHash()
 }
 
@@ -129,9 +130,8 @@ const changeURLHash = () => {
   })
 }
 
-// get the init currentCategory, currentTags, currentSeries after Mounted
-onMounted(() => {
-  // init category
+// get the init current value after Mounted
+onBeforeMount(() => {
   const category = route.query.category as string || 'all'
   currentCategory.value = category
 
