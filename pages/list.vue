@@ -168,9 +168,9 @@ watch(() => route.fullPath, () => {
 
   if (route.query.category && route.query.category !== 'all') {
     currentArticleList = currentArticleList.filter((item) => {
-      const categoryArr = item._path.split('/')
-      if (categoryArr.length >= 3) {
-        const category = categoryArr[2]
+      const pathArr = item._path.split('/')
+      if (pathArr.length >= 3) {
+        const category = pathArr[2]
         return category === route.query.category
       } else {
         return false

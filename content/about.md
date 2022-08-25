@@ -24,9 +24,9 @@ BlogiNote 是由内容驱动的，即它可以基于多种不同格式的文件�
 
 ::GridLayout
 
-:socialCard{name="@Benbinbin" iconName="logos:twitter" url="https://twitter.com/Benbinbin_fun"}
+:SocialCard{name="@Benbinbin" iconName="logos:twitter" url="https://twitter.com/Benbinbin_fun"}
 
-:socialCard{name="Benbinbin" iconName="mdi:github" url="https://github.com/Benbinbin"}
+:SocialCard{name="Benbinbin" iconName="mdi:github" url="https://github.com/Benbinbin"}
 
-:socialCard{name="Benbinbin" imagePath="juejin.svg" url="https://juejin.cn/user/3175045314389278/columns"}
+:SocialCard{name="Benbinbin" imagePath="juejin.svg" url="https://juejin.cn/user/3175045314389278/columns"}
 ::

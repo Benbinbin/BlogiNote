@@ -168,7 +168,8 @@ const transitionInitial = () => {
   height.value = currentZoomImg.value.height
 
   // get the translate and scale between current/expect state and zoomImage init position
-  translateX = 0
+  const windowWidth = document.documentElement.clientWidth
+  translateX = -(windowWidth / 2 - (currentZoomImg.value.x + currentZoomImg.value.width / 2))
   const windowHeight = document.documentElement.clientHeight
   translateY = -(windowHeight / 2 - (currentZoomImg.value.y + currentZoomImg.value.height / 2))
   scale.value = 1

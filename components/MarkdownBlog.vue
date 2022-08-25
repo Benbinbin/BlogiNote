@@ -5,6 +5,19 @@ defineEmits(['showSeriesModal'])
 
 /**
  *
+ * get article category
+ *
+ */
+const category = ref('')
+if (props.data._path) {
+  const pathArr = props.data._path.split('/')
+  if (pathArr.length >= 3) {
+    category.value = pathArr[2]
+  }
+}
+
+/**
+ *
  * catalog
  * toc for markdown article
  *
@@ -62,26 +75,35 @@ const showTags = ref(true)
         {{ props.data.title || "Article" }}
       </h1>
       <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+        <NuxtLink
+          v-if="category"
+          :to="{ path: '/list', query: { category: category } }"
+          target="_blank"
+          class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
+        >
+          <IconCustom name="material-symbols:category-rounded" class="w-4 h-4" />
+          <span class="text-xs">{{ category }}</span>
+        </NuxtLink>
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
           <div
             v-if="props.data.created"
-            class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
+            class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
             <IconCustom name="mdi:pencil-circle" class="w-4 h-4" />
-            <span>Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
+            <span class="text-xs">Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
           </div>
           <div
             v-if="props.data.updated"
-            class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
+            class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
             <IconCustom name="mdi:clock" class="w-4 h-4" />
-            <span>Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
+            <span class="text-xs">Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
           </div>
         </div>
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
           <button
             v-if="props.data.series"
-            class="p-2 flex items-center gap-2 text-gray-300 hover:text-white  hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
+            class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="$emit('showSeriesModal')"
           >
             <IconCustom name="bi:collection" class="w-4 h-4" />
@@ -89,7 +111,7 @@ const showTags = ref(true)
           </button>
           <button
             v-if="props.data.tags"
-            class="p-2 hidden sm:flex items-center gap-2 focus:outline-blue-500 rounded transition-colors duration-300"
+            class="p-2 hidden sm:flex items-center gap-1 focus:outline-blue-500 rounded transition-colors duration-300"
             :class="showTags ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'text-gray-300 hover:text-white hover:bg-blue-500 '"
             @click="showTags = !showTags"
           >
