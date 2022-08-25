@@ -131,7 +131,7 @@ const changeURLHash = () => {
 }
 
 // get the init current value after Mounted
-onBeforeMount(() => {
+onMounted(() => {
   const category = route.query.category as string || 'all'
   currentCategory.value = category
 
