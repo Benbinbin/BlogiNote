@@ -9,6 +9,36 @@ const { data } = await useAsyncData('articleFolder', () => fetchContentNavigatio
 
 /**
  *
+ * blog mode
+ * fetch 5 articles to show in home page
+ *
+ */
+const queryCategoryArticlesParams: QueryBuilderParams = {
+  limit: 5,
+  only: ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
+}
+
+const getFileTypeIcon = (type) => {
+  const fileType = fileTypeMap[type]
+
+  if (!fileType) {
+    return fileTypeMap.default.iconName
+  } else {
+    return fileType.iconName
+  }
+}
+
+// hide category section
+const hideCategorySections = ref(new Set())
+const toggleCategorySectionsHandler = (category) => {
+  if (hideCategorySections.value.has(category)) {
+    hideCategorySections.value.delete(category)
+  } else {
+    hideCategorySections.value.add(category)
+  }
+}
+/**
+ *
  * note mode
  * data in a tree structure
  *
@@ -57,27 +87,6 @@ const setTreeHandler = (path, type = 'drill-down') => {
   currentTree.value = treeTemp
   folderNavArr.value = folderNavArrTemp
 }
-
-/**
- *
- * blog mode
- * fetch 5 articles to show in home page
- *
- */
-const queryCategoryArticlesParams: QueryBuilderParams = {
-  limit: 5,
-  only: ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
-}
-
-const getFileTypeIcon = (type) => {
-  const fileType = fileTypeMap[type]
-
-  if (!fileType) {
-    return fileTypeMap.default.iconName
-  } else {
-    return fileType.iconName
-  }
-}
 </script>
 
 <template>
@@ -110,8 +119,17 @@ const getFileTypeIcon = (type) => {
           <template v-for="category in articleFolder.children">
             <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
               <div class="flex justify-between items-start">
-                <h2 class="pl-1 font-bold text-lg border-l-8 text-purple-500 border-purple-500">
-                  {{ category.title }}
+                <h2
+                  class="border-l-8 border-purple-500 rounded-l-sm"
+                  :class="hideCategorySections.has(category) ? 'opacity-60' : ''"
+                >
+                  <button
+                    class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
+                    :class="hideCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
+                    @click="toggleCategorySectionsHandler(category)"
+                  >
+                    {{ category.title }}
+                  </button>
                 </h2>
                 <NuxtLink
                   :to="{ path: '/list', query: { category: category.title.toLowerCase() } }"
@@ -121,6 +139,7 @@ const getFileTypeIcon = (type) => {
                 </NuxtLink>
               </div>
               <div
+                v-show="!hideCategorySections.has(category)"
                 class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y
                 sm:divide-gray-200"
               >
