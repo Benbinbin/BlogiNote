@@ -37,9 +37,9 @@
   },
   "dependencies": {
     "rehype-katex": "^6.0.2",
+    "remark-critic-markup": "^1.0.0",
     "remark-math": "^5.1.1",
-    "remark-sub": "file:./markdownPlugins/remark-sub",
-    "remark-super": "file:./markdownPlugins/remark-super",
-    "remark-critic-markup": "file:./markdownPlugins/remark-critic-markup"
+    "remark-sub": "^1.0.0",
+    "remark-super": "^1.0.1"
   }
 }
