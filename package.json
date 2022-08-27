@@ -1,6 +1,6 @@
 {
   "name": "bloginote",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A static website for blogs and notes with flexible layouts and multiple optimizations.",
   "scripts": {
     "dev": "nuxi dev",
