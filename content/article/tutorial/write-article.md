@@ -1,5 +1,7 @@
 ---
 cover: write.jpg
+created: 2022-08-01
+updated: 2022-08-25
 ---
 
 # Write an article

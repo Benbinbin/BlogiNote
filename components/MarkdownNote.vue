@@ -325,6 +325,14 @@ provide('setActiveHeadingId', setActiveHeadingId)
         </div>
       </div>
 
+      <ClientOnly>
+        <OutdatedWarning
+          v-if="props.data.updated || props.data.created"
+          :date="props.data.updated || props.data.created"
+          :type="props.data.updated ? 'last updated' : 'created'"
+        />
+      </ClientOnly>
+
       <hr class="w-1/3 mx-auto my-2 sm:my-4">
 
       <div

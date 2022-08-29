@@ -121,6 +121,14 @@ const showTags = ref(true)
         </div>
       </div>
 
+      <ClientOnly>
+        <OutdatedWarning
+          v-if="props.data.updated || props.data.created"
+          :date="props.data.updated || props.data.created"
+          :type="props.data.updated ? 'last updated' : 'created'"
+        />
+      </ClientOnly>
+
       <hr class="w-1/3 mx-auto my-4">
 
       <div
