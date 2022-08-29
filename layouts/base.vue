@@ -2,6 +2,24 @@
 const route = useRoute()
 
 /**
+ *
+ * set head meta for almost all page
+ *
+ */
+useHead({
+  style: [
+    {
+      type: 'text/css',
+      children: 'html, body { scroll-behavior: smooth }'
+    },
+    {
+      type: 'text/css',
+      children: 'body { overflow: overlay }'
+    }
+  ]
+})
+
+/**
  * listen page scroll
  */
 const isShowBackBtn = ref(false)

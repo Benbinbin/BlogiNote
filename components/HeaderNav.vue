@@ -56,7 +56,7 @@ const changeFlexiMode = () => {
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
       <NuxtLink to="/">
-        <img src="@/assets/avatar.png" alt="avatar" class="w-8 h-8 rounded-full">
+        <img src="/avatar.png" alt="avatar" class="w-8 h-8 rounded-full">
       </NuxtLink>
       <div class="flex items-center gap-6">
         <button

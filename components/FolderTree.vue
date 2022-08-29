@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
-import fileTypeMap from '@/utils/fileType.json'
+// import fileTypeMap from '@/utils/fileType.json'
 
 const props = defineProps<{
   rootName: string;
@@ -17,11 +17,13 @@ const expand = ref(true)
  * get file type icon
  *
  */
+const fileTypeMap = useFileTypeMap()
+
 const getFileTypeIcon = (type) => {
-  const fileType = fileTypeMap[type]
+  const fileType = fileTypeMap.value[type]
 
   if (!fileType) {
-    return fileTypeMap.default.iconName
+    return fileTypeMap.value.default.iconName
   } else {
     return fileType.iconName
   }

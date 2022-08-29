@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-import fileTypeMap from '@/utils/fileType.json'
+// import fileTypeMap from '@/utils/fileType.json'
 
 interface MyCustomParsedContent extends ParsedContent {
   tags: string[]
@@ -221,11 +221,12 @@ const showListDetail = ref(true)
  * set the article list icon
  *
  */
+const fileTypeMap = useFileTypeMap()
 const getFileTypeIcon = (type) => {
-  const fileType = fileTypeMap[type]
+  const fileType = fileTypeMap.value[type]
 
   if (!fileType) {
-    return fileTypeMap.default.iconName
+    return fileTypeMap.value.default.iconName
   } else {
     return fileType.iconName
   }

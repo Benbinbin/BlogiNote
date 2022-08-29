@@ -74,7 +74,7 @@ const toggleCatalogHandler = () => {
         @click="showMoreOptions = !showMoreOptions"
       >
         <img
-          src="@/assets/avatar.png"
+          src="/avatar.png"
           alt="avatar"
           class="w-6 h-6 rounded-full ring-2"
           :class="showMoreOptions ? (flexiMode === 'blog' ? 'ring-purple-300' : 'ring-green-300') : 'ring-gray-50'"

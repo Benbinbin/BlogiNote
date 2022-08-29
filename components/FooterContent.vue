@@ -1,15 +1,16 @@
 <script setup lang="ts">
-const runtimeConfig = useRuntimeConfig()
+// const runtimeConfig = useRuntimeConfig()
 </script>
 
 <template>
   <div class="py-4 flex justify-center items-center">
     <div class="flex flex-col md:flex-row gap-4 text-xs text-gray-400 text-center">
-      <p v-if="runtimeConfig.public.author">
+      <p v-if="$theme.value?.author">
         Copyright &copy {{ (new Date()).getFullYear() }}
 
-        <a v-if="runtimeConfig.public.email" :href="`mailto:${runtimeConfig.public.email}`" class="text-blue-400">{{ runtimeConfig.public.author }}</a>
-        <span v-else>{{ runtimeConfig.public.author }}</span>
+        <a v-if="$theme.value?.email" :href="`mailto:${$theme.value.email}`" class="text-blue-400">{{
+          $theme.value.author }}</a>
+        <span v-else>{{ $theme.value.author }}</span>
       </p>
       <p>
         blog theme <a href="https://github.com/Benbinbin/BlogiNote" target="_blank" class="text-blue-400">BlogiNote</a>

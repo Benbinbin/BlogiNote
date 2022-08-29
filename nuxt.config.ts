@@ -46,45 +46,53 @@ copyContentFiles('content', 'public', ['.md'])
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
-  runtimeConfig: {
-    // Keys within public, will be also exposed to the client-side
-    public: {
-      author: 'Benbinbin',
-      email: 'benthomsonbin@gmail.com'
-    }
-  },
+  // runtimeConfig: {
+  //   // Keys within public, will be also exposed to the client-side
+  //   public: {
+  //     author: 'Benbinbin',
+  //     email: 'benthomsonbin@gmail.com',
+  //     homePage: {
+  //       listItemsLimit: 3
+  //     }
+  //   }
+  // },
   app: {
-    head: {
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css'
-        }
-      ],
-      style: [
-        {
-          type: 'text/css',
-          children: 'html, body { scroll-behavior: smooth }'
-        },
-        {
-          type: 'text/css',
-          children: 'body { overflow: overlay }'
-        }
-      ]
-    }
+    // head: {
+    //   link: [
+    //     {
+    //       rel: 'stylesheet',
+    //       href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css'
+    //     }
+    //   ],
+    //   style: [
+    //     {
+    //       type: 'text/css',
+    //       children: 'html, body { scroll-behavior: smooth }'
+    //     },
+    //     {
+    //       type: 'text/css',
+    //       children: 'body { overflow: overlay }'
+    //     }
+    //   ]
+    // }
   },
   typescript: {
     shim: false
   },
   modules: [
+    '@nuxt-themes/config/module',
     '@nuxt/content',
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/tailwindcss'
   ],
-  // https://color-mode.nuxtjs.org
-  // colorMode: {
-  //   classSuffix: ''
-  // },
+  // https://nuxt-themes.netlify.app/
+  theme: {
+    meta: {
+      name: 'BlogiNote',
+      description: 'A Nuxt theme for showing blog posts and snippet notes with flexible layouts and multiple optimizations.',
+      author: 'Benbinbin',
+      url: 'https://bloginote.benbinbin.com/'
+    }
+  },
   // https://content.nuxtjs.org
   content: {
     navigation: {

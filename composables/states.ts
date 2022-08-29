@@ -25,3 +25,21 @@ export const useShowZoomImage = () => useState<'show' | 'hiding' | 'hidden'>('sh
 export const useZoomImage = () => useState<null | ZoomImageType>('zoomImage', () => null)
 export const useCurrentZoomImage = () => useState<null | ZoomImageType>('currentZoomImage', () => null)
 export const useZoomImageList = () => useState<ZoomImageType[]>('zoomImageList', () => [])
+
+// file type mapping
+export const useFileTypeMap = () => useState('fileTypeMap', () => {
+  return {
+    default: {
+      iconName: 'bi:file-earmark-text'
+    },
+    markdown: {
+      iconName: 'bi:markdown-fill'
+    },
+    json: {
+      iconName: 'bi:filetype-json'
+    },
+    csv: {
+      iconName: 'bi:filetype-csv'
+    }
+  }
+})

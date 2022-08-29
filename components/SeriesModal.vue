@@ -99,8 +99,9 @@ onUnmounted(() => {
         </ol>
       </div>
       <div v-else class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg">
-        <img src="~/assets/icons/empty.png" alt="empty" class="w-10 h-10">
-        <p>Oops! There is no article.</p>
+        <!-- <img src="@/assets/icons/empty.png" alt="empty" class="w-10 h-10"> -->
+        <IconCustom name="fluent:mail-inbox-dismiss-28-filled" class="w-10 h-10" />
+        <p>Oops! There is no series.</p>
       </div>
       <div
         class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white rounded-b-lg"

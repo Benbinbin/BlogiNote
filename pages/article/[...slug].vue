@@ -1,4 +1,19 @@
 <script setup lang="ts">
+/**
+*
+* set head meta for article page
+*
+*/
+// add CSS stylesheet for katex
+useHead({
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css'
+    }
+  ]
+})
+
 const route = useRoute()
 
 /**
