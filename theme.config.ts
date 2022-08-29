@@ -6,6 +6,10 @@ export default defineTheme({
     listItemsLimit: 5
   },
   articlePage: {
-    outDatedThreshold: 30
+    showTime: true,
+    outDated: {
+      show: false,
+      threshold: 30
+    }
   }
 })

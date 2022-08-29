@@ -3,6 +3,35 @@ const props = defineProps<{data: any}>()
 
 defineEmits(['showSeriesModal'])
 
+const themeOptions = useTheme()
+/**
+ *
+ * show article created or last update time
+ *
+ */
+const showTime = ref(true)
+if ('articlePage' in themeOptions.value && 'showTime' in themeOptions.value.articlePage) {
+  showTime.value = themeOptions.value.articlePage.showTime
+}
+
+if ('showTime' in props.data) {
+  showTime.value = props.data.showTime
+}
+
+/**
+ *
+ * show outDated warning
+ *
+ */
+const showOutdatedWarningComponent = ref(false)
+if (themeOptions.value?.articlePage?.outDated?.show) {
+  showOutdatedWarningComponent.value = themeOptions.value.articlePage.outDated.show
+}
+
+if (props.data.showOutdatedWarning) {
+  showOutdatedWarningComponent.value = props.data.showOutdatedWarning
+}
+
 /**
  *
  * get article category
@@ -84,7 +113,7 @@ const showTags = ref(true)
           <IconCustom name="material-symbols:category-rounded" class="w-4 h-4" />
           <span class="text-xs">{{ category }}</span>
         </NuxtLink>
-        <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+        <div v-if="showTime" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
           <div
             v-if="props.data.created"
             class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
@@ -123,7 +152,7 @@ const showTags = ref(true)
 
       <ClientOnly>
         <OutdatedWarning
-          v-if="props.data.updated || props.data.created"
+          v-if="showOutdatedWarningComponent && (props.data.updated || props.data.created)"
           :date="props.data.updated || props.data.created"
           :type="props.data.updated ? 'last updated' : 'created'"
         />

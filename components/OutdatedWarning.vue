@@ -4,9 +4,9 @@ const props = defineProps<{
   type: 'created' | 'last updated'
 }>()
 
-const themeOptiions = useTheme()
+const themeOptions = useTheme()
 // the default outdated time threshold of an article is 1 month (30 days)
-const outDatedThreshold = themeOptiions.value?.articlePage?.outDatedThreshold || 30
+const outDatedThreshold = themeOptions.value?.articlePage?.outDated?.threshold || 30
 
 const nowDate = new Date()
 const preDate = new Date(props.date)
