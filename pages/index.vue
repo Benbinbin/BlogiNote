@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
-import fileTypeMap from '@/utils/fileType.json'
+// import fileTypeMap from '@/utils/fileType.json'
 
 const flexiMode = useFlexiMode()
 
@@ -13,16 +13,20 @@ const { data } = await useAsyncData('articleFolder', () => fetchContentNavigatio
  * fetch 5 articles to show in home page
  *
  */
+// const runTimeConfig = useRuntimeConfig()
+const themeOptions = useTheme()
+
 const queryCategoryArticlesParams: QueryBuilderParams = {
-  limit: 5,
+  limit: themeOptions.value?.homePage?.listItemsLimit || 5,
   only: ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 }
 
+const fileTypeMap = useFileTypeMap()
 const getFileTypeIcon = (type) => {
-  const fileType = fileTypeMap[type]
+  const fileType = fileTypeMap.value[type]
 
   if (!fileType) {
-    return fileTypeMap.default.iconName
+    return fileTypeMap.value.default.iconName
   } else {
     return fileType.iconName
   }
@@ -37,6 +41,7 @@ const toggleCategorySectionsHandler = (category) => {
     hideCategorySections.value.add(category)
   }
 }
+
 /**
  *
  * note mode
@@ -97,7 +102,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
     <NuxtLayout name="base">
       <div v-show="flexiMode === 'blog'" class="container px-8 mx-auto">
         <div class="py-16">
-          <div
+          <!-- <div
             class="p-8 sm:p-16 w-full flex flex-col sm:flex-row justify-between items-center sm:item-start gap-16 rounded-xl bg-purple-100 text-purple-600"
           >
             <ContentDoc class="index-page-content-container space-y-8">
@@ -113,16 +118,18 @@ const setTreeHandler = (path, type = 'drill-down') => {
               </template>
             </ContentDoc>
             <img src="/avatar.png" alt="avatar" class="hidden sm:block w-28 h-28 rounded-full">
-          </div>
+          </div> -->
+          <ContentDoc>
+            <template #empty>
+              <IntroCard :avatar="'/avatar.png'" />
+            </template>
+          </ContentDoc>
         </div>
         <div v-if="articleFolder" class="py-8 space-y-8">
           <template v-for="category in articleFolder.children">
             <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
               <div class="flex justify-between items-start">
-                <h2
-                  class="border-l-8 border-purple-500 rounded-l-sm"
-                  :class="hideCategorySections.has(category) ? 'opacity-60' : ''"
-                >
+                <h2 class="border-l-8 border-purple-500 rounded-l-sm">
                   <button
                     class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
                     :class="hideCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
@@ -311,17 +318,6 @@ const setTreeHandler = (path, type = 'drill-down') => {
 </template>
 
 <style lang="scss">
-
-.index-page-content-container {
-  h1 {
-    @apply font-bold text-5xl;
-  }
-
-  p {
-    @apply text-2xl opacity-50;
-  }
-}
-
 .folders-container {
   grid-auto-rows: 40px
 }
