@@ -20,12 +20,12 @@ const showCategoryOptions = ref(false)
 /**
  * set sub nav panel
  */
-const { data: navData } = await useAsyncData('navigation', () => fetchContentNavigation())
+const { data: navData } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 const categoryArr = ref([])
 
-if (Array.isArray(navData.value) && navData.value.findIndex(item => item.title === 'Article') !== -1) {
-  const articleFolder = navData.value.find(elem => elem.title.toLowerCase() === 'article')
+if (Array.isArray(navData.value)) {
+  const articleFolder = navData.value.find(elem => elem._path === '/article')
   if (articleFolder && articleFolder.children) {
     categoryArr.value = articleFolder.children
   }
