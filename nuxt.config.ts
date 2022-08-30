@@ -46,36 +46,7 @@ copyContentFiles('content', 'public', ['.md'])
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
-  // runtimeConfig: {
-  //   // Keys within public, will be also exposed to the client-side
-  //   public: {
-  //     author: 'Benbinbin',
-  //     email: 'benthomsonbin@gmail.com',
-  //     homePage: {
-  //       listItemsLimit: 3
-  //     }
-  //   }
-  // },
-  app: {
-    // head: {
-    //   link: [
-    //     {
-    //       rel: 'stylesheet',
-    //       href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css'
-    //     }
-    //   ],
-    //   style: [
-    //     {
-    //       type: 'text/css',
-    //       children: 'html, body { scroll-behavior: smooth }'
-    //     },
-    //     {
-    //       type: 'text/css',
-    //       children: 'body { overflow: overlay }'
-    //     }
-    //   ]
-    // }
-  },
+  app: {},
   typescript: {
     shim: false
   },
@@ -101,6 +72,7 @@ export default defineNuxtConfig({
     highlight: {
       // See the available themes on https://github.com/shikijs/shiki/blob/main/docs/themes.md#all-theme
       theme: 'one-dark-pro',
+      // see the default preload languages on https://content.nuxtjs.org/api/configuration#highlightpreload
       preload: ['vue', 'python']
     },
     markdown: {

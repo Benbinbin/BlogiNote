@@ -163,7 +163,7 @@ watch(showZoomImage, () => {
     <NuxtLayout name="base">
       <MarkdownBlog
         v-if="!pending && data && data._type === 'markdown'"
-        v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog') "
+        v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog')"
         :data="data"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
         @show-series-modal="changeSeriesModalState(true)"
@@ -175,8 +175,12 @@ watch(showZoomImage, () => {
         class="px-4 py-12"
         @show-series-modal="changeSeriesModalState(true)"
       />
-      <div v-else-if="!pending && data && data._type === 'json'">
-        <pre>{{ data }}</pre>
+      <div v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')" class="container mx-auto ">
+        <div
+          class="json-content-container max-h-[calc(100vh*0.8)] m-6 p-4 border rounded-lg overflow-auto"
+        >
+          <pre>{{ data }}</pre>
+        </div>
       </div>
     </NuxtLayout>
 
@@ -195,6 +199,23 @@ watch(showZoomImage, () => {
     </Teleport>
   </div>
 </template>
+
+<style scope lang="scss">
+.json-content-container {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
+}
+</style>
 
 <style lang="scss">
 .article-container {
@@ -287,14 +308,16 @@ watch(showZoomImage, () => {
   }
 
   .critic-addition {
-    @apply bg-green-200 decoration-green-400 ;
+    @apply bg-green-200 decoration-green-400;
   }
 
-  del, .critic-deletion {
+  del,
+  .critic-deletion {
     @apply bg-red-200 decoration-red-400;
   }
 
-  mark, .critic-highlight {
+  mark,
+  .critic-highlight {
     @apply bg-yellow-200;
   }
 

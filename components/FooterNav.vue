@@ -69,8 +69,8 @@ const toggleCatalogHandler = () => {
     >
       <button
         v-show="!showCategoryOptions"
-        class="py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="showMoreOptions ? 'px-4 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : 'px-6'"
+        class="px-4 py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
+        :class="showMoreOptions ? 'shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : ''"
         @click="showMoreOptions = !showMoreOptions"
       >
         <img
@@ -125,8 +125,8 @@ const toggleCatalogHandler = () => {
 
       <button
         v-show="!showMoreOptions"
-        class="py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="showCategoryOptions ? (flexiMode === 'blog' ? 'px-4 text-purple-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : 'px-4 text-green-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300') : 'px-6 text-gray-500'"
+        class="px-4 py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
+        :class="showCategoryOptions ? (flexiMode === 'blog' ? 'text-purple-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : 'text-green-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300') : 'text-gray-500'"
         @click="showCategoryOptions = !showCategoryOptions"
       >
         <IconCustom name="ic:round-category" class="w-6 h-6" />
@@ -170,7 +170,7 @@ const toggleCatalogHandler = () => {
       <button
         v-if="route.path && route.path.startsWith('/article')"
         v-show="!showMoreOptions && !showCategoryOptions"
-        class="py-3 px-6 flex flex-col justify-center items-center space-y-1 bg-gray-50"
+        class="px-4 py-3 flex flex-col justify-center items-center space-y-1 bg-gray-50"
         :class="flexiMode === 'blog' ? (showBlogCatalog ? 'text-purple-500' : ' text-gray-500') : (showNoteCatalog ? 'text-green-500' : ' text-gray-500')"
         @click="toggleCatalogHandler"
       >

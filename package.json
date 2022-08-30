@@ -28,7 +28,7 @@
     "static",
     "remark"
   ],
-  "author": "Benbinbin",
+  "author": "Benbinbin <benthomsonbin@gmail.com> (https://benbinbin.com)",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^8.17.0",
