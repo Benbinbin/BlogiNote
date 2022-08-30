@@ -77,7 +77,7 @@ onMounted(() => {
   if (zoomImageListContainer.value.scrollWidth > zoomImageListContainer.value.offsetWidth) { showScrollBtns.value = true }
 
   window.addEventListener('resize', () => {
-    if (zoomImageListContainer.value.scrollWidth > zoomImageListContainer.value.offsetWidth) {
+    if (zoomImageListContainer.value && zoomImageListContainer.value.scrollWidth > zoomImageListContainer.value.offsetWidth) {
       showScrollBtns.value = true
     } else {
       showScrollBtns.value = false

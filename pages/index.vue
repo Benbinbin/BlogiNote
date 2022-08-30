@@ -4,16 +4,22 @@ import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
 
 const flexiMode = useFlexiMode()
 
-const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
+const { data } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 /**
  *
  * blog mode
- * fetch 5 articles to show in home page
+ * fetch 5 articles by default to show in home page
  *
  */
-// const runTimeConfig = useRuntimeConfig()
+let articleFolder
+
+if (Array.isArray(data.value)) {
+  articleFolder = data.value.find((item) => {
+    return item._path === '/article'
+  })
+}
+
 const themeOptions = useTheme()
 
 const queryCategoryArticlesParams: QueryBuilderParams = {
@@ -32,7 +38,7 @@ const getFileTypeIcon = (type) => {
   }
 }
 
-// hide category section
+// hide section
 const hideCategorySections = ref(new Set())
 const toggleCategorySectionsHandler = (category) => {
   if (hideCategorySections.value.has(category)) {
@@ -48,9 +54,9 @@ const toggleCategorySectionsHandler = (category) => {
  * data in a tree structure
  *
  */
-const articleFolder = data.value[0]
 const currentTree = ref([])
-currentTree.value = articleFolder.children
+
+currentTree.value = data.value
 
 let folderNavPath = []
 
@@ -68,7 +74,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
     folderNavPath = path
   }
 
-  let treeTemp = articleFolder.children
+  let treeTemp = data.value
 
   const folderNavArrTemp = [
     {
@@ -102,23 +108,6 @@ const setTreeHandler = (path, type = 'drill-down') => {
     <NuxtLayout name="base">
       <div v-show="flexiMode === 'blog'" class="container px-8 mx-auto">
         <div class="py-16">
-          <!-- <div
-            class="p-8 sm:p-16 w-full flex flex-col sm:flex-row justify-between items-center sm:item-start gap-16 rounded-xl bg-purple-100 text-purple-600"
-          >
-            <ContentDoc class="index-page-content-container space-y-8">
-              <template #not-found>
-                <div class="index-page-content-container space-y-8">
-                  <h1>
-                    Hi
-                  </h1>
-                  <p>
-                    This website shows blogs and notes.
-                  </p>
-                </div>
-              </template>
-            </ContentDoc>
-            <img src="/avatar.png" alt="avatar" class="hidden sm:block w-28 h-28 rounded-full">
-          </div> -->
           <ContentDoc>
             <template #empty>
               <IntroCard :avatar="'/avatar.png'" />
@@ -265,7 +254,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
         </div>
       </div>
       <div
-        v-if="articleFolder && articleFolder.children.length > 0"
+        v-if="data && data.length > 0"
         v-show="flexiMode === 'note'"
         class="container px-8 mx-auto"
       >

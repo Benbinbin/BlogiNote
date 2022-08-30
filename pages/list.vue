@@ -439,11 +439,15 @@ const getFileTypeIcon = (type) => {
                   {{ item.title }}
                 </h2>
               </div>
-              <p v-show="showListDetail && item.description" class="px-6 text-sm opacity-60">
+              <p v-if="item.description" v-show="showListDetail" class="px-6 text-sm opacity-60">
                 {{ item.description }}
               </p>
             </NuxtLink>
-            <div v-if="item._type==='markdown' && (item.tags || item.series)" v-show="showListDetail" class="px-10 flex flex-wrap gap-2 text-xs">
+            <div
+              v-if="item._type==='markdown' && (item.tags || item.series)"
+              v-show="showListDetail"
+              class="px-10 flex flex-wrap gap-2 text-xs"
+            >
               <button
                 v-for="tag in item.tags"
                 :key="tag"
