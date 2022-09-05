@@ -5,11 +5,13 @@ const fs = require('fs')
 const path = require('path')
 
 // clean the "article" folder (copy from the "content" folder) first
-const cleanContentFiles = (folderPath = 'public/article') => {
-  const exists = fs.existsSync(folderPath)
-  if (exists) {
-    fs.rmSync(folderPath, { recursive: true })
-  }
+const cleanContentFiles = (...folderPathArr) => {
+  folderPathArr.forEach((folderPath) => {
+    const exists = fs.existsSync(folderPath)
+    if (exists) {
+      fs.rmSync(folderPath, { recursive: true })
+    }
+  })
 }
 
 // then copy all other type of files except .md from "content" folder to public folder
@@ -41,8 +43,8 @@ const copyContentFiles = (src, destFolderName, ignore = []) => {
   }
 }
 
-cleanContentFiles()
-copyContentFiles('content', 'public', ['.md'])
+cleanContentFiles('public/article', 'public/book')
+copyContentFiles('content', 'public', ['.md', '.json', '.csv'])
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
