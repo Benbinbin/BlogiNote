@@ -187,13 +187,13 @@ const toggleChapter = (chapter) => {
         </div>
 
         <!-- review -->
-        <div class="my-12 p-2">
+        <div v-if="data?.metadata?.review" class="my-12 p-2">
           <div class="w-full sm:w-1/2 mx-auto p-4 flex justify-center items-center">
             <div class="grow h-0.5 bg-gray-200 rounded" />
             <IconCustom name="bi:pencil-square" class="shrink-0 m-4 w-4 h-4 text-gray-400" />
             <div class="grow h-0.5 bg-gray-200 rounded" />
           </div>
-          <p v-if="data?.metadata?.review" class="max-w-prose mx-auto">
+          <p class="max-w-prose mx-auto">
             {{ data.metadata.review }}
           </p>
         </div>
