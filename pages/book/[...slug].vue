@@ -200,7 +200,7 @@ const toggleChapter = (chapter) => {
 
         <!-- highlights -->
         <div class="my-12 p-2">
-          <div class="w-full sm:w-1/2 mx-auto  p-4 flex justify-center items-center">
+          <div class="w-full sm:w-1/2 mx-auto p-4 flex justify-center items-center">
             <div class="grow h-0.5 bg-gray-200 rounded" />
             <IconCustom name="bi:blockquote-left" class="shrink-0 m-4 w-4 h-4 text-gray-400" />
             <div class="grow h-0.5 bg-gray-200 rounded" />
@@ -212,7 +212,7 @@ const toggleChapter = (chapter) => {
                 <button
                   v-if="chapterItem.chapter !== '_unknown_'"
                   class="my-12 p-2 text-xl font-bold hover:opacity-80 underline decoration-[12px] decoration-yellow-200 underline-offset-[-2px] rounded transition-opacity duration-300"
-                  :class="collapseChapters.has(chapterItem.chapter)? 'text-yellow-600 bg-yellow-200 ' : 'text-gray-600 bg-transparent '"
+                  :class="collapseChapters.has(chapterItem.chapter)? 'text-yellow-600 bg-yellow-100 ' : 'text-gray-600 bg-transparent '"
                   @click="toggleChapter(chapterItem.chapter)"
                 >
                   {{ chapterItem.chapter }}
@@ -225,17 +225,30 @@ const toggleChapter = (chapter) => {
                   <div
                     v-for="(highlight, index) in chapterItem.highlights"
                     :key="index"
-                    class="mb-6 px-4 py-6 bg-gray-100 border border-gray-200 rounded-lg break-inside-avoid shadow-md shadow-transparent hover:shadow-gray-200 transition-shadow duration-300"
+                    class="mb-6  bg-gray-100 border border-gray-200 rounded-lg break-inside-avoid shadow-md shadow-transparent hover:shadow-gray-200 transition-shadow duration-300"
+                    :class="highlight.comment ? 'pt-6' : 'py-6'"
                   >
-                    <div class="pb-6 text-gray-400 hover:text-gray-600 flex gap-2 transition-colors duration-300">
-                      <IconCustom name="bi:bookmark" class="w-4 h-4 text-gray-400" />
+                    <div class="px-4 pb-2 flex items-center gap-0.5 text-gray-400">
+                      <IconCustom name="bi:blockquote-left" class="w-4 h-4 text-gray-400" />
                       <p v-if="highlight.location" class="text-xs">
-                        page: {{ highlight.location }}
+                        page {{ highlight.location }}
                       </p>
                     </div>
-                    <p class="p-4">
-                      {{ highlight.content }}
-                    </p>
+                    <template v-for="(paragraph, index) in highlight.content.split('\n')">
+                      <p v-if="paragraph" :key="index" class="px-8 py-2">
+                        {{ paragraph }}
+                      </p>
+                    </template>
+                    <div v-if="highlight.comment" class="p-4 rounded-b-lg bg-gray-300">
+                      <!-- <div class="p-2 flex justify-start items-center">
+                        <IconCustom name="bi:chat-left-text" class="w-4 h-4 text-gray-400" />
+                      </div> -->
+                      <template v-for="(paragraph, index) in highlight.comment.split('\n')">
+                        <p v-if="paragraph" :key="index" class="px-4 py-2 text-gray-800">
+                          {{ paragraph }}
+                        </p>
+                      </template>
+                    </div>
                   </div>
                 </div>
               </div>

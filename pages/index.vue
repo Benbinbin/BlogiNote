@@ -1,52 +1,97 @@
 <script setup lang="ts">
-import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
+// import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
 // import fileTypeMap from '@/utils/fileType.json'
 
 const flexiMode = useFlexiMode()
 
-const { data } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+const { data: navigation } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+
+const themeOptions = useTheme()
 
 /**
  *
  * blog mode
- * fetch 5 articles by default to show in home page
  *
  */
+// blog Posts
 let articleFolder
+const articleFolderPosts = []
 
-if (Array.isArray(data.value)) {
-  articleFolder = data.value.find((item) => {
+// render posts list or not
+let showPostList = true
+if ('homePage' in themeOptions.value && 'showPostList' in themeOptions.value.homePage) {
+  showPostList = themeOptions.value.homePage.showPostList
+}
+
+const queryPostsWhere = { _type: 'markdown' }
+const queryPostsLimit = themeOptions.value?.homePage?.postItemLimit || 5
+const queryPostsOnly = ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
+
+if (showPostList && Array.isArray(navigation.value)) {
+  articleFolder = navigation.value.find((item) => {
     return item._path === '/article'
   })
-}
 
-const themeOptions = useTheme()
-
-const queryCategoryArticlesParams: QueryBuilderParams = {
-  limit: themeOptions.value?.homePage?.listItemsLimit || 5,
-  only: ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
-}
-
-const fileTypeMap = useFileTypeMap()
-const getFileTypeIcon = (type) => {
-  const fileType = fileTypeMap.value[type]
-
-  if (!fileType) {
-    return fileTypeMap.value.default.iconName
-  } else {
-    return fileType.iconName
+  if (articleFolder.children && articleFolder.children.length > 0) {
+    articleFolder.children.forEach((item) => {
+      if (item._type === 'markdown' && articleFolderPosts.length < queryPostsLimit) {
+        articleFolderPosts.push(item)
+      }
+    })
   }
 }
 
-// hide section
-const hideCategorySections = ref(new Set())
-const toggleCategorySectionsHandler = (category) => {
-  if (hideCategorySections.value.has(category)) {
-    hideCategorySections.value.delete(category)
+// show recent posts
+const showRecentPosts = ref(true)
+
+// hide post section
+const hidePostCategorySections = ref(new Set())
+const togglePostCategorySectionsHandler = (category) => {
+  if (hidePostCategorySections.value.has(category)) {
+    hidePostCategorySections.value.delete(category)
   } else {
-    hideCategorySections.value.add(category)
+    hidePostCategorySections.value.add(category)
   }
 }
+
+// bookshelf
+let bookFolder
+const bookFolderBooks = []
+let showBookshelf = true
+
+if ('homePage' in themeOptions.value && 'showBookshelf' in themeOptions.value.homePage) {
+  showBookshelf = themeOptions.value.homePage.showBookshelf
+}
+
+const queryBooksWhere = { _type: 'json' }
+const queryBooksOnly = ['metadata', '_type', '_path']
+
+if (showBookshelf && Array.isArray(navigation.value)) {
+  bookFolder = navigation.value.find((item) => {
+    return item._path === '/book'
+  })
+
+  if (bookFolder.children && bookFolder.children.length > 0) {
+    bookFolder.children.forEach((item) => {
+      if (item._type === 'json') {
+        bookFolderBooks.push(item)
+      }
+    })
+  }
+}
+
+// hide book section
+const hideBookCategorySections = ref(new Set())
+const toggleBookCategorySectionsHandler = (category) => {
+  if (hideBookCategorySections.value.has(category)) {
+    hideBookCategorySections.value.delete(category)
+  } else {
+    hideBookCategorySections.value.add(category)
+  }
+}
+
+// show books
+const showBooks = ref(true)
 
 /**
  *
@@ -56,7 +101,7 @@ const toggleCategorySectionsHandler = (category) => {
  */
 const currentTree = ref([])
 
-currentTree.value = data.value
+currentTree.value = navigation.value
 
 let folderNavPath = []
 
@@ -74,7 +119,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
     folderNavPath = path
   }
 
-  let treeTemp = data.value
+  let treeTemp = navigation.value
 
   const folderNavArrTemp = [
     {
@@ -98,6 +143,17 @@ const setTreeHandler = (path, type = 'drill-down') => {
   currentTree.value = treeTemp
   folderNavArr.value = folderNavArrTemp
 }
+
+const fileTypeMap = useFileTypeMap()
+const getFileTypeIcon = (type) => {
+  const fileType = fileTypeMap.value[type]
+
+  if (!fileType) {
+    return fileTypeMap.value.default.iconName
+  } else {
+    return fileType.iconName
+  }
+}
 </script>
 
 <template>
@@ -114,150 +170,217 @@ const setTreeHandler = (path, type = 'drill-down') => {
             </template>
           </ContentDoc>
         </div>
-        <div v-if="articleFolder" class="py-8 space-y-8">
-          <template v-for="category in articleFolder.children">
-            <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
-              <div class="flex justify-between items-start">
+        <div v-if="articleFolder" class="py-8">
+          <h2 class="flex justify-center items-center font-bold text-xl sm:text-3xl text-gray-600">
+            <button
+              class="px-4 py-2 rounded-md transition-colors duration-300"
+              :class="showRecentPosts ? 'text-purple-500 hover:bg-purple-100' : 'text-white bg-purple-500 hover:bg-purple-400'"
+              @click="showRecentPosts = !showRecentPosts"
+            >
+              Blog Post
+            </button>
+          </h2>
+          <hr class="w-1/5 my-6 mx-auto bg-purple-200">
+
+          <div v-show="showRecentPosts" class="space-y-8">
+            <section class="w-full sm:w-4/5 mx-auto space-y-4">
+              <NuxtLink
+                to="/list"
+                class="w-fit mx-auto px-2 py-1 block text-xs text-white bg-purple-500 hover:bg-purple-400 rounded"
+              >
+                show all
+              </NuxtLink>
+              <div
+                class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y sm:divide-gray-200"
+              >
+                <ContentQuery
+                  v-for="item in articleFolderPosts"
+                  :key="item._path"
+                  :path="item._path"
+                  :only="queryPostsOnly"
+                >
+                  <template #default="{ data }">
+                    <PostListItem
+                      v-for="article in data"
+                      :key="article._path"
+                      :article="article"
+                      class="hidden sm:block"
+                    />
+                    <PostCardItem
+                      v-for="article in data"
+                      :key="article._path"
+                      :article="article"
+                      :list-len="data.length"
+                      class="flex flex-col sm:hidden"
+                    />
+                  </template>
+                </ContentQuery>
+              </div>
+            </section>
+
+            <template v-for="category in articleFolder.children">
+              <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
+                <div class="flex justify-between items-start">
+                  <h2 class="border-l-8 border-purple-500 rounded-l-sm">
+                    <button
+                      class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
+                      :class="hidePostCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
+                      @click="togglePostCategorySectionsHandler(category)"
+                    >
+                      {{ category.title }}
+                    </button>
+                  </h2>
+                  <NuxtLink
+                    :to="{ path: '/list', query: { category: category.title.toLowerCase() } }"
+                    class="p-2 text-xs font-bold transition-colors duration-300 rounded-lg text-purple-500 bg-purple-100 hover:bg-purple-50"
+                  >
+                    More
+                  </NuxtLink>
+                </div>
+                <div
+                  v-show="!hidePostCategorySections.has(category)"
+                  class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y
+                sm:divide-gray-200"
+                >
+                  <ContentQuery
+                    :path="category._path"
+                    :where="queryPostsWhere"
+                    :limit="queryPostsLimit"
+                    :only="queryPostsOnly"
+                  >
+                    <template #default="{ data }">
+                      <PostListItem
+                        v-for="article in data"
+                        :key="article._path"
+                        :article="article"
+                        class="hidden sm:block"
+                      />
+                      <PostCardItem
+                        v-for="article in data"
+                        :key="article._path"
+                        :article="article"
+                        :list-len="data.length"
+                        class="flex flex-col sm:hidden"
+                      />
+                    </template>
+
+                    <template #not-found>
+                      <p>No articles found.</p>
+                    </template>
+                  </ContentQuery>
+                </div>
+              </section>
+            </template>
+          </div>
+        </div>
+        <div v-if="bookFolder" class="py-8">
+          <h2 class="flex justify-center items-center font-bold text-xl sm:text-3xl text-gray-600">
+            <button
+              class="px-4 py-2 rounded-md transition-colors duration-300"
+              :class="showBooks ? 'text-purple-500 hover:bg-purple-100' : 'text-white bg-purple-500 hover:bg-purple-400'"
+              @click="showBooks = !showBooks"
+            >
+              Bookshelf
+            </button>
+          </h2>
+          <hr class="w-1/5 my-6 mx-auto bg-purple-200">
+
+          <div v-show="showBooks" class="space-y-8">
+            <section class="w-full sm:w-4/5 mx-auto space-y-4">
+              <div
+                class="scroll-container my-6 flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2"
+              >
+                <ContentQuery
+                  v-for="item in bookFolderBooks"
+                  :key="item._path"
+                  :path="item._path"
+                  :only="queryBooksOnly"
+                >
+                  <template #default="{ data }">
+                    <NuxtLink
+                      v-for="book in data"
+                      :key="book._path"
+                      :to="book._path"
+                      class="group shrink-0 w-1/3 sm:w-full"
+                    >
+                      <div class="book-cover-container w-fit mx-auto p-4 flex justify-center relative z-20">
+                        <img
+                          v-if="book?.metadata?.covers && book.metadata.covers.length>0"
+                          :src="book.metadata.covers[0]"
+                          alt="book cover"
+                          class="h-20 object-contain group-hover:-translate-y-2 will-change-transform transition-transform duration-300"
+                        >
+                        <IconCustom
+                          v-else
+                          name="fluent-emoji:blue-book"
+                          class="w-20 h-20 group-hover:-translate-y-4 will-change-transform transition-transform duration-300"
+                        />
+                      </div>
+
+                      <p class="font-bold text-center text-sm text-gray-600">
+                        {{ book?.metadata?.title || 'Book' }}
+                      </p>
+                    </NuxtLink>
+                  </template>
+                </ContentQuery>
+              </div>
+            </section>
+
+            <template v-for="category in bookFolder.children">
+              <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
                 <h2 class="border-l-8 border-purple-500 rounded-l-sm">
                   <button
                     class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
-                    :class="hideCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
-                    @click="toggleCategorySectionsHandler(category)"
+                    :class="hideBookCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
+                    @click="toggleBookCategorySectionsHandler(category)"
                   >
                     {{ category.title }}
                   </button>
                 </h2>
-                <NuxtLink
-                  :to="{ path: '/list', query: { category: category.title.toLowerCase() } }"
-                  class="p-2 text-xs font-bold transition-colors duration-300 rounded-lg text-purple-500 bg-purple-100 hover:bg-purple-50"
+
+                <div
+                  v-show="!hideBookCategorySections.has(category)"
+                  class="scroll-container my-6 flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2"
                 >
-                  More
-                </NuxtLink>
-              </div>
-              <div
-                v-show="!hideCategorySections.has(category)"
-                class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y
-                sm:divide-gray-200"
-              >
-                <ContentList :path="category._path" :query="queryCategoryArticlesParams">
-                  <template #default="{ list }">
-                    <template v-for="article in list">
-                      <div
-                        v-if="article._type==='markdown'"
-                        :key="article._path"
-                        class="pb-4 hidden sm:block relative z-10 space-y-2 rounded-xl"
+                  <ContentQuery :path="category._path" :where="queryBooksWhere" :only="queryBooksOnly">
+                    <template #default="{ data }">
+                      <NuxtLink
+                        v-for="book in data"
+                        :key="book._path"
+                        :to="book._path"
+                        class="group shrink-0 w-1/3 sm:w-full"
                       >
-                        <div
-                          v-if="article.cover"
-                          :style="`background-image: url('/covers/${article.cover}'); `"
-                          class="w-1/5 h-[90%] absolute bottom-0 right-0 -z-10 bg-contain bg-right-top bg-no-repeat"
-                        >
-                          <div
-                            class="absolute inset-0"
-                            style="background: linear-gradient(135deg, rgba(249,250,251,1) 40%, rgba(249,250,251,0.6) 80%, rgba(249,250,251,0.9) 100%)"
+                        <div class="book-cover-container w-fit mx-auto p-4 flex justify-center relative z-20">
+                          <img
+                            v-if="book?.metadata?.covers && book.metadata.covers.length>0"
+                            :src="book.metadata.covers[0]"
+                            alt="book cover"
+                            class="h-20 object-contain group-hover:-translate-y-2 will-change-transform transition-transform duration-300"
+                          >
+                          <IconCustom
+                            v-else
+                            name="fluent-emoji:blue-book"
+                            class="w-20 h-20 group-hover:-translate-y-4 will-change-transform transition-transform duration-300"
                           />
                         </div>
 
-                        <NuxtLink :to="article._path" class="group block py-4 transition-colors duration-300 space-y-2">
-                          <h3
-                            class="font-bold text-2xl text-gray-600 group-hover:text-blue-400 transition-colors duration-500"
-                          >
-                            {{ article.title || "This Post Hasn't Title Yet" }}
-                          </h3>
-                          <p v-if="article.description" class="text-gray-600">
-                            {{ article.description }}
-                          </p>
-                        </NuxtLink>
-
-                        <div v-if="article.tags" class="grow flex flex-wrap gap-2">
-                          <NuxtLink
-                            v-for="tag in article.tags"
-                            :key="tag"
-                            :to="{ path: '/list', query: { tags: [tag] } }"
-                            class="px-2 py-1 text-xs text-blue-400 hover:text-blue-500 bg-blue-50 transition-colors duration-300 rounded"
-                          >
-                            #{{ tag }}
-                          </NuxtLink>
-                        </div>
-                        <NuxtLink
-                          v-if="article.series"
-                          :to="{ path: '/list', query: { series: article.series } }"
-                          class="w-fit px-2 py-1 flex justify-center items-center space-x-1 text-green-400 hover:text-green-500 bg-green-50 transition-colors duration-300 rounded"
-                        >
-                          <IconCustom name="bi:collection" class="w-4 h-4" />
-                          <p class="text-xs">
-                            {{ article.series }}
-                          </p>
-                        </NuxtLink>
-                      </div>
-                      <div
-                        v-if="article._type==='markdown'"
-                        :key="article._path"
-                        class="shrink-0 flex flex-col sm:hidden relative z-10 border border-blue-100 rounded-lg overflow-hidden"
-                        :class="list.length >= 2 ? 'w-5/6' : 'w-full'"
-                      >
-                        <div
-                          v-if="article.cover"
-                          :style="`background-image: url('/covers/${article.cover}'); `"
-                          class="w-2/3 h-2/3 absolute bottom-0 right-0 -z-10 bg-contain bg-right-bottom bg-no-repeat"
-                        >
-                          <div
-                            class="absolute inset-0"
-                            style="background: linear-gradient(135deg, rgba(249,250,251,1) 60%, rgba(249,250,251,0.8) 80%, rgba(249,250,251,0.6) 100%);"
-                          />
-                        </div>
-
-                        <NuxtLink
-                          :to="article._path"
-                          class="grow text-xl p-6 text-gray-600 hover:text-blue-400 transition-colors duration-300 space-y-4"
-                        >
-                          <h3 class="font-bold">
-                            {{ article.title || "This Post Hasn't Title Yet" }}
-                          </h3>
-                          <p v-if="article.description" class="text-gray-600 text-sm">
-                            {{ article.description }}
-                          </p>
-                        </NuxtLink>
-                        <div class="shrink-0 px-6 pb-6 flex justify-between items-start gap-2">
-                          <div
-                            v-if="article.tags"
-                            class="scroll-container grow flex sm:flex-wrap gap-1 overflow-x-auto"
-                          >
-                            <NuxtLink
-                              v-for="tag in article.tags"
-                              :key="tag"
-                              :to="{ path: '/list', query: { tags: [tag, 'HTML'] } }"
-                              class="shrink-0 px-2 py-1 text-xs text-blue-400 hover:text-blue-500 bg-blue-50 transition-colors duration-300 rounded"
-                            >
-                              #{{ tag }}
-                            </NuxtLink>
-                          </div>
-                          <NuxtLink
-                            v-if="article.series"
-                            :to="{ path: '/list', query: { series: article.series } }"
-                            class="shrink-0 px-2 py-1 flex justify-center items-center text-green-400 hover:text-green-500 bg-green-50 transition-colors duration-300 rounded"
-                          >
-                            <IconCustom name="bi:collection" class="w-4 h-4" />
-                          </NuxtLink>
-                        </div>
-                      </div>
+                        <p class="font-bold text-center text-sm text-gray-600">
+                          {{ book?.metadata?.title || 'Book' }}
+                        </p>
+                      </NuxtLink>
                     </template>
-                  </template>
 
-                  <template #not-found>
-                    <p>No articles found.</p>
-                  </template>
-                </ContentList>
-              </div>
-            </section>
-          </template>
+                    <template #not-found>
+                      <p>No books found.</p>
+                    </template>
+                  </ContentQuery>
+                </div>
+              </section>
+            </template>
+          </div>
         </div>
       </div>
-      <div
-        v-if="data && data.length > 0"
-        v-show="flexiMode === 'note'"
-        class="container px-8 mx-auto"
-      >
+      <div v-if="navigation && navigation.length > 0" v-show="flexiMode === 'note'" class="container px-8 mx-auto">
         <div class="flex py-8 justify-between">
           <div class="folder-nav-container flex sm:flex-wrap items-center gap-1 overflow-x-auto">
             <IconCustom name="ph:folder-open-fill" class="shrink-0 w-6 h-6 text-yellow-400" />
@@ -307,6 +430,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
 </template>
 
 <style lang="scss">
+
 .folders-container {
   grid-auto-rows: 40px
 }
@@ -317,5 +441,12 @@ const setTreeHandler = (path, type = 'drill-down') => {
 
 .folder-nav-container::-webkit-scrollbar {
   display: none;
+}
+
+.book-cover-container {
+  // &::after {
+  //   content: "";
+  //   @apply block h-16 absolute top-12 inset-x-0 bg-gray-200 rounded -z-10;
+  // }
 }
 </style>
