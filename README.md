@@ -59,6 +59,15 @@ npm run dev
 
 you can also build your own template based on BlogiNote, adding some Remark plugins to extend the markdown syntax, or building some Vue components to add more custom features
 
-## Reference
+## License
 
-* [content-wind](https://github.com/Atinux/content-wind) - A lightweight Nuxt template to build a Markdown driven website. Powered by Nuxt Content, TailwindCSS and Iconify.
+[MIT](./LICENSE)
+
+## Feedback
+
+If you have any problem or suggestion about this project, feel free to open an [issue](https://github.com/Benbinbin/Bookshelf/issues/new) in Github or contact with me by email <a href="mailto:benthomsonbin@gmail.com">benthomsonbin@gmail.com</a>
+
+## Donate
+[![ko-fi](./public/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
+
+[![ko-fi](./public/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)

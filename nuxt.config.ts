@@ -1,5 +1,10 @@
 import { defineNuxtConfig } from 'nuxt'
 
+/**
+ *
+ * copy asset files to public folder
+ *
+ */
 // Refer to: https://github.com/nuxt/content/issues/106#issuecomment-1002820342
 const fs = require('fs')
 const path = require('path')
@@ -43,7 +48,7 @@ const copyContentFiles = (src, destFolderName, ignore = []) => {
   }
 }
 
-cleanContentFiles('public/article', 'public/book')
+cleanContentFiles('public/article')
 copyContentFiles('content', 'public', ['.md', '.json', '.csv'])
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config

@@ -4,13 +4,12 @@ export default defineTheme({
   email: 'benthomsonbin@gmail.com',
   homePage: {
     showBlogPosts: true,
-    postItemLimit: 5,
-    showBookshelf: true
+    postItemLimit: 5
   },
   articlePage: {
     showTime: true,
     outDated: {
-      show: false,
+      show: true,
       threshold: 30
     }
   }
