@@ -145,12 +145,12 @@ const getFileTypeIcon = (type) => {
 
           <div class="space-y-8">
             <section class="w-full sm:w-4/5 mx-auto space-y-4">
-              <NuxtLink
+              <!-- <NuxtLink
                 to="/list"
                 class="w-fit mx-auto px-2 py-1 block text-xs text-white bg-purple-500 hover:bg-purple-400 rounded"
               >
                 show all
-              </NuxtLink>
+              </NuxtLink> -->
               <div
                 class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y sm:divide-gray-200"
               >
