@@ -13,35 +13,35 @@ const themeOptions = useTheme()
  * blog mode
  *
  */
-// blog Posts
+// Blog Posts
 let articleFolder
-const articleFolderPosts = []
+const articleFolderFiles = []
 
-// render posts list or not
-let showPostList = true
-if ('homePage' in themeOptions.value && 'showPostList' in themeOptions.value.homePage) {
-  showPostList = themeOptions.value.homePage.showPostList
+// render blog posts or not
+let showBlogPosts = true
+if ('homePage' in themeOptions.value && 'showBlogPosts' in themeOptions.value.homePage) {
+  showBlogPosts = themeOptions.value.homePage.showBlogPosts
 }
 
 const queryPostsWhere = { _type: 'markdown' }
 const queryPostsLimit = themeOptions.value?.homePage?.postItemLimit || 5
 const queryPostsOnly = ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 
-if (showPostList && Array.isArray(navigation.value)) {
+if (showBlogPosts && Array.isArray(navigation.value)) {
   articleFolder = navigation.value.find((item) => {
     return item._path === '/article'
   })
 
-  if (articleFolder.children && articleFolder.children.length > 0) {
+  if (articleFolder?.children && articleFolder.children.length > 0) {
     articleFolder.children.forEach((item) => {
-      if (item._type === 'markdown' && articleFolderPosts.length < queryPostsLimit) {
-        articleFolderPosts.push(item)
+      if (item._type === 'markdown' && articleFolderFiles.length < queryPostsLimit) {
+        articleFolderFiles.push(item)
       }
     })
   }
 }
 
-// show recent posts
+// show posts
 const showRecentPosts = ref(true)
 
 // hide post section
@@ -56,9 +56,10 @@ const togglePostCategorySectionsHandler = (category) => {
 
 // bookshelf
 let bookFolder
-const bookFolderBooks = []
-let showBookshelf = true
+const bookFolderFiles = []
 
+// render bookshelf or not
+let showBookshelf = true
 if ('homePage' in themeOptions.value && 'showBookshelf' in themeOptions.value.homePage) {
   showBookshelf = themeOptions.value.homePage.showBookshelf
 }
@@ -71,14 +72,17 @@ if (showBookshelf && Array.isArray(navigation.value)) {
     return item._path === '/book'
   })
 
-  if (bookFolder.children && bookFolder.children.length > 0) {
+  if (bookFolder?.children && bookFolder.children.length > 0) {
     bookFolder.children.forEach((item) => {
       if (item._type === 'json') {
-        bookFolderBooks.push(item)
+        bookFolderFiles.push(item)
       }
     })
   }
 }
+
+// show books
+const showBooks = ref(true)
 
 // hide book section
 const hideBookCategorySections = ref(new Set())
@@ -89,9 +93,6 @@ const toggleBookCategorySectionsHandler = (category) => {
     hideBookCategorySections.value.add(category)
   }
 }
-
-// show books
-const showBooks = ref(true)
 
 /**
  *
@@ -194,7 +195,7 @@ const getFileTypeIcon = (type) => {
                 class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y sm:divide-gray-200"
               >
                 <ContentQuery
-                  v-for="item in articleFolderPosts"
+                  v-for="item in articleFolderFiles"
                   :key="item._path"
                   :path="item._path"
                   :only="queryPostsOnly"
@@ -291,7 +292,7 @@ const getFileTypeIcon = (type) => {
                 class="scroll-container my-6 flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2"
               >
                 <ContentQuery
-                  v-for="item in bookFolderBooks"
+                  v-for="item in bookFolderFiles"
                   :key="item._path"
                   :path="item._path"
                   :only="queryBooksOnly"
@@ -426,6 +427,7 @@ const getFileTypeIcon = (type) => {
         </div>
       </div>
     </NuxtLayout>
+    div>
   </div>
 </template>
 

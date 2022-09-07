@@ -179,22 +179,26 @@ const toggleChapter = (chapter) => {
             </div>
           </div>
 
-          <div v-if="data?.metadata?.description || data?.metadata?.review" class="flex flex-wrap">
-            <p v-if="data?.metadata?.description" class="max-w-prose p-4 text-purple-500 bg-purple-100 rounded-md">
-              {{ data.metadata.description }}
+          <!-- introduction -->
+          <div v-if="data?.introduction" class="max-w-prose px-6 py-4 text-gray-500 bg-gray-100 space-y-2 rounded-md">
+            <!-- <p class="text-center text-lg font-bold">
+              Introduction
+            </p> -->
+            <p>
+              {{ data.introduction }}
             </p>
           </div>
         </div>
 
         <!-- review -->
-        <div v-if="data?.metadata?.review" class="my-12 p-2">
+        <div v-if="data?.review" class="my-12 p-2">
           <div class="w-full sm:w-1/2 mx-auto p-4 flex justify-center items-center">
             <div class="grow h-0.5 bg-gray-200 rounded" />
             <IconCustom name="bi:pencil-square" class="shrink-0 m-4 w-4 h-4 text-gray-400" />
             <div class="grow h-0.5 bg-gray-200 rounded" />
           </div>
           <p class="max-w-prose mx-auto">
-            {{ data.metadata.review }}
+            {{ data.review }}
           </p>
         </div>
 
@@ -259,7 +263,3 @@ const toggleChapter = (chapter) => {
     </NuxtLayout>
   </div>
 </template>
-
-<style scoped>
-
-</style>

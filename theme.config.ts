@@ -3,7 +3,7 @@ export default defineTheme({
   author: 'Benbinbin',
   email: 'benthomsonbin@gmail.com',
   homePage: {
-    showPostList: true,
+    showBlogPosts: true,
     postItemLimit: 5,
     showBookshelf: true
   },
