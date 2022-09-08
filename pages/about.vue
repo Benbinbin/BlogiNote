@@ -14,7 +14,7 @@
             <h1>
               About
             </h1>
-            <p>
+            <p class="max-w-prose mx-auto p-4">
               This website is my blog built by <a
                 href="https://github.com/Benbinbin/BlogiNote"
                 target="_blank"
@@ -31,7 +31,7 @@
 <style lang="scss">
 .about-me-content-container {
   h1 {
-    @apply py-8 text-3xl md:text-5xl font-bold text-center
+    @apply py-8 text-3xl sm:text-5xl text-purple-500 font-bold text-center
   }
 
   h2 {

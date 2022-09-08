@@ -129,6 +129,11 @@ const getFileTypeIcon = (type) => {
             <template #empty>
               <IntroCard :avatar="'/avatar.png'" />
             </template>
+            <template #not-found>
+              <h1 class="py-4 text-3xl sm:text-5xl font-bold text-center text-purple-500">
+                BlogiNote
+              </h1>
+            </template>
           </ContentDoc>
         </div>
         <div v-if="articleFolder" class="py-8">
