@@ -1,4 +1,4 @@
-[![BlogiNote](./public/cover.jpg)](https://github.com/Benbinbin/BlogiNote)
+[![BlogiNote](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/cover.jpg)](https://github.com/Benbinbin/BlogiNote)
 
 # BlogiNote
 
@@ -68,6 +68,6 @@ you can also build your own template based on BlogiNote, adding some Remark plug
 If you have any problem or suggestion about this project, feel free to open an [issue](https://github.com/Benbinbin/Bookshelf/issues/new) in Github or contact with me by email <a href="mailto:benthomsonbin@gmail.com">benthomsonbin@gmail.com</a>
 
 ## Donate
-[![ko-fi](./public/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
+[![ko-fi](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
 
-[![ko-fi](./public/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)
+[![afdian](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)
