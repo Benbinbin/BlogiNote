@@ -157,7 +157,7 @@ const folderNavScrollingHandler = () => {
 <template>
   <div
     class="self-stretch max-h-full flex"
-    :class="expand ? (rootTree.length <= 2 ? 'col-span-1 sm:col-span-2 row-span-2' : (rootTree.length <= 4 ? 'col-span-1 sm:col-span-2 row-span-3' : (rootTree.length <= 6 ? 'col-span-1 sm:col-span-2 row-span-4' : 'col-span-1 sm:col-span-2 row-span-5'))) : 'col-span-1'"
+    :class="expand ? (props.rootTree.length <= 2 ? 'col-span-1 sm:col-span-2 row-span-2' : (props.rootTree.length <= 4 ? 'col-span-1 sm:col-span-2 row-span-3' : (props.rootTree.length <= 6 ? 'col-span-1 sm:col-span-2 row-span-4' : 'col-span-1 sm:col-span-2 row-span-5'))) : 'col-span-1'"
   >
     <button
       v-show="!expand"

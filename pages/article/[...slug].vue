@@ -37,7 +37,7 @@ const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent
  */
 // get series data
 const seriesList: any = ref([])
-if (data.value.series) {
+if (data.value?.series) {
   const { data: seriesResult } = await useAsyncData(`${data.value.series}-series`, () => {
     return queryContent('article')
       .where({ series: data.value.series })
@@ -186,7 +186,7 @@ watch(showZoomImage, () => {
 
     <Teleport to="body">
       <SeriesModal
-        v-if="data.series && seriesList.length > 0 && showSeriesModal"
+        v-if="data?.series && seriesList.length > 0 && showSeriesModal"
         :current-path="data._path"
         :series-name="data.series"
         :series-list="seriesList"

@@ -6,7 +6,7 @@ const props = defineProps({
   },
   language: {
     type: String,
-    default: null
+    default: ''
   },
   filename: {
     type: String,

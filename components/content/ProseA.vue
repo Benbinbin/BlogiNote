@@ -12,7 +12,11 @@ defineProps({
 </script>
 
 <template>
-  <a :href="href">
+  <!-- <a :href="href">
     <slot />
-  </a>
+  </a> -->
+
+  <NuxtLink :href="href">
+    <slot />
+  </NuxtLink>
 </template>

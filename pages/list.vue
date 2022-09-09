@@ -132,18 +132,18 @@ const changeURLHash = () => {
 
 // get the init current value after Mounted
 onMounted(() => {
-  const category = route.query.category as string || 'all'
+  const category = route.query?.category as string || 'all'
   currentCategory.value = category
 
   let tags = []
-  if (typeof route.query.tags === 'string') {
+  if (typeof route.query?.tags === 'string') {
     tags = [route.query.tags]
-  } else if (Array.isArray(route.query.tags)) {
+  } else if (Array.isArray(route.query?.tags)) {
     tags = route.query.tags
   }
   currentTags.value = tags
 
-  const series = route.query.series as string || 'all'
+  const series = route.query?.series as string || 'all'
   currentSeries.value = series
 })
 
@@ -166,7 +166,7 @@ watch(() => route.fullPath, () => {
   if (route.path !== '/list' || articleList.value.length === 0) { return }
   let currentArticleList = articleList.value
 
-  if (route.query.category && route.query.category !== 'all') {
+  if (route.query?.category && route.query.category !== 'all') {
     currentArticleList = currentArticleList.filter((item) => {
       const pathArr = item._path.split('/')
       if (pathArr.length >= 3) {
@@ -178,7 +178,7 @@ watch(() => route.fullPath, () => {
     })
   }
 
-  if (route.query.tags) {
+  if (route.query?.tags) {
     let tags = []
     if (typeof route.query.tags === 'string') {
       tags = [route.query.tags]
@@ -199,7 +199,7 @@ watch(() => route.fullPath, () => {
     }
   }
 
-  if (route.query.series && route.query.series !== 'all') {
+  if (route.query?.series && route.query.series !== 'all') {
     currentArticleList = currentArticleList.filter((item) => {
       return item.series === route.query.series
     })

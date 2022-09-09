@@ -4,7 +4,7 @@
 
 const flexiMode = useFlexiMode()
 
-const { data: navigation } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 const themeOptions = useTheme()
 
@@ -27,8 +27,8 @@ const queryPostsWhere = { _type: 'markdown' }
 const queryPostsLimit = themeOptions.value?.homePage?.postItemLimit || 5
 const queryPostsOnly = ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 
-if (showBlogPosts && Array.isArray(navigation.value)) {
-  articleFolder = navigation.value.find((item) => {
+if (showBlogPosts && Array.isArray(navTree.value)) {
+  articleFolder = navTree.value.find((item) => {
     return item._path === '/article'
   })
 
@@ -62,7 +62,7 @@ const togglePostCategorySectionsHandler = (category) => {
  */
 const currentTree = ref([])
 
-currentTree.value = navigation.value
+currentTree.value = navTree.value
 
 let folderNavPath = []
 
@@ -80,7 +80,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
     folderNavPath = path
   }
 
-  let treeTemp = navigation.value
+  let treeTemp = navTree.value
 
   const folderNavArrTemp = [
     {
@@ -240,7 +240,7 @@ const getFileTypeIcon = (type) => {
           </div>
         </div>
       </div>
-      <div v-if="navigation && navigation.length > 0" v-show="flexiMode === 'note'" class="container px-8 mx-auto">
+      <div v-if="navTree && navTree.length > 0" v-show="flexiMode === 'note'" class="container px-8 mx-auto">
         <div class="flex py-8 justify-between">
           <div class="folder-nav-container flex sm:flex-wrap items-center gap-1 overflow-x-auto">
             <IconCustom name="ph:folder-open-fill" class="shrink-0 w-6 h-6 text-yellow-400" />
