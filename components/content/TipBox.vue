@@ -167,7 +167,7 @@ if (borderColorStyleValue.value) {
 </script>
 
 <template>
-  <div class="my-2 px-4 lg:px-6 py-2 border rounded-md" :class="containerClass" :style="containerStyle">
+  <div class="my-4 px-4 lg:px-6 py-2 border rounded-md" :class="containerClass" :style="containerStyle">
     <p v-if="nameValue" class="font-bold flex items-center gap-2">
       <IconCustom v-if="iconValue" :name="iconValue" class="w-4 h-4" />
       <span v-if="nameValue">{{ nameValue }}</span>
