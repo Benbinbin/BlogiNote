@@ -67,13 +67,13 @@ BlogiNote support basic Markdown syntax and MarkDown Components extended syntax 
 **Relative Link** start with `.` and `..`
 ##### Code
 ::TipBox{type="announce"}
-Firstly, you should know the concept of **highlight theme** and the **preload programming languages**.
+Firstly, you should know the concept of **highlight theme** and the **preload program languages**.
 
-**Highlight theme** is a color rules to decorate the code text based on the programming language.
+**Highlight theme** is a color rules to decorate the code text based on the program language.
 
-**Preload programming languages** is a subset of programming languages which are selected out from a large amount languages, and the serve will do some work under the hook to make the code block writing in these programming languages will be highlighted correctly.
+**Preload program languages** is a subset of program languages which are selected out from a large amount languages, and the serve will do some work under the hook to make the code block writing in these program languages will be highlighted correctly.
 
-These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload programming languages*](./faq#add-some-preload-programming-languages) these two part of the [FAQ article](./faq).
+These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload program languages*](./faq#add-some-preload-program-languages) these two part of the [FAQ article](./faq).
 ::
 
 Markdown support two types of code:
@@ -103,7 +103,9 @@ Markdown support two types of code:
   ```
 
   ::TipBox{type="warning"}
-  In order to highlight the code correctly, you need to specify which programming language the code belongs to right after the three backquote
+  In order to highlight the code correctly, you need to specify which program language the code belongs to right after the three backquote
+
+  If you don't know which program language the code belong to, you can assign to the `md` or `markdown` first
   ::
 
   you can also provide more information about your code block:
