@@ -12,8 +12,11 @@ const flexiMode = useFlexiMode()
 
 const imgContainer = ref(null)
 const scrollPos = ref<'start' | 'middle' | 'end'>('start')
-const showImg = ref(1)
+
 const imgLength = ref(0)
+
+const showImgIndex = ref(1)
+const showImgAlt = ref('')
 
 const showSidebar = ref(false)
 const sidebarImgList = ref([])
@@ -21,6 +24,7 @@ const sidebarImgList = ref([])
 onMounted(() => {
   if (imgContainer.value) {
     const imgList = imgContainer.value.querySelectorAll('img')
+
     imgLength.value = imgList.length
     if (imgLength.value > 0) {
       imgList.forEach((item) => {
@@ -29,6 +33,14 @@ onMounted(() => {
           alt: item.alt
         })
       })
+
+      if (imgLength.value > 1) { showSidebar.value = true }
+
+      watch(showImgIndex, () => {
+        if (sidebarImgList.value.length > 0) {
+          showImgAlt.value = sidebarImgList.value[showImgIndex.value - 1]?.alt
+        }
+      }, { immediate: true })
     }
   }
 })
@@ -81,7 +93,7 @@ const scrollingHandler = () => {
       scrollPos.value = 'middle'
     }
 
-    showImg.value = Math.ceil(scrollTopDistance / imgContainer.value.clientHeight) + 1
+    showImgIndex.value = Math.ceil(scrollTopDistance / imgContainer.value.clientHeight) + 1
   } else if (imgContainer.value.scrollLeft !== scrollLeft) {
     const scrollLeftDistance = imgContainer.value.scrollLeft
     scrollLeft = imgContainer.value.scrollLeft
@@ -94,7 +106,7 @@ const scrollingHandler = () => {
       scrollPos.value = 'middle'
     }
 
-    showImg.value = Math.round(scrollLeftDistance / imgContainer.value.clientWidth) + 1
+    showImgIndex.value = Math.round(scrollLeftDistance / imgContainer.value.clientWidth) + 1
   }
 }
 
@@ -141,7 +153,7 @@ const doubleClickHandler = (event) => {
 <template>
   <div class="sm:mx-8 lg:mx-0 mt-4 mb-20 sm:mb-4 relative z-10 border border-gray-200 rounded-lg">
     <div
-      class="image-list-header p-2 relative z-10 flex justify-between items-center bg-gray-100 rounded-t-lg shadow shadow-gray-200 overflow-hidden"
+      class="image-list-header p-2 relative z-10 flex justify-between items-center gap-2 bg-gray-100 rounded-t-lg shadow shadow-gray-200 "
     >
       <div class="shrink-0 flex space-x-2 items-center">
         <button
@@ -152,10 +164,12 @@ const doubleClickHandler = (event) => {
           <IconCustom name="bi:layout-sidebar" class="w-4 h-4 -rotate-90 sm:rotate-0" />
         </button>
         <span class="text-center text-xs text-gray-400">
-          {{ showImg }}/{{ imgLength }}
+          {{ showImgIndex }}/{{ imgLength }}
         </span>
       </div>
-
+      <span class="image-text-container grow text-center text-xs text-gray-400 overflow-x-auto">
+        {{ showImgAlt }}
+      </span>
       <div v-show="sidebarImgList.length > 1" class="shrink-0 flex space-x-2 items-center">
         <button
           :disabled="scrollPos === 'start'"
@@ -223,7 +237,7 @@ const doubleClickHandler = (event) => {
           v-for="(item, index) in sidebarImgList"
           :key="index"
           class="shrink-0 w-12 h-12 ring rounded overflow-hidden"
-          :class="showImg - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
+          :class="showImgIndex - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
           @click="scrollTopHandler(index)"
         >
           <img :src="item.src" :alt="item.alt" class="mx-auto max-h-full">
@@ -247,7 +261,7 @@ const doubleClickHandler = (event) => {
           v-for="(item, index) in sidebarImgList"
           :key="index"
           class="shrink-0 w-12 h-12 ring rounded overflow-hidden"
-          :class="showImg - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
+          :class="showImgIndex - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
           @click="scrollLeftHandler(index)"
         >
           <img :src="item.src" :alt="item.alt" class="mx-auto max-h-full">
@@ -258,12 +272,13 @@ const doubleClickHandler = (event) => {
 </template>
 
 <style lang="scss" scoped>
-
-.image-list-container {
+.image-list-container, .image-text-container {
   &::-webkit-scrollbar {
     display: none;
   }
+}
 
+.image-list-container {
   @apply scroll-smooth;
 
   img {

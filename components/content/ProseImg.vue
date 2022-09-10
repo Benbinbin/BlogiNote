@@ -46,15 +46,20 @@ const doubleClickHandler = () => {
 </script>
 
 <template>
-  <img
-    ref="image"
-    class="mx-auto my-2"
-    :src="props.src"
-    :alt="props.alt"
-    :width="props.width"
-    :height="props.height"
-    @dblclick="doubleClickHandler"
-  >
+  <figure class="my-2">
+    <img
+      ref="image"
+      class="mx-auto my-2"
+      :src="props.src"
+      :alt="props.alt"
+      :width="props.width"
+      :height="props.height"
+      @dblclick="doubleClickHandler"
+    >
+    <figcaption v-if="props.alt" class="text-sm text-center font-light italic">
+      {{ props.alt }}
+    </figcaption>
+  </figure>
 </template>
 
 <style lang="scss" scoped>
