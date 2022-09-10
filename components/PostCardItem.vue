@@ -3,6 +3,17 @@ const props = defineProps<{
   article: any;
   listLen: number
 }>()
+
+const getCoverUrl = (relativeURL) => {
+  if (relativeURL.startsWith('./')) {
+    const articleFolderPathArr = props.article._path.split('/').slice(0, -1)
+    const imagePathArr = relativeURL.split('/').slice(1)
+
+    return [...articleFolderPathArr, ...imagePathArr].join('/')
+  } else {
+    return relativeURL
+  }
+}
 </script>
 
 <template>
@@ -12,7 +23,7 @@ const props = defineProps<{
   >
     <div
       v-if="props.article.cover"
-      :style="`background-image: url('/covers/${props.article.cover}'); `"
+      :style="`background-image: url('${getCoverUrl(props.article.cover)}')`"
       class="w-2/3 h-2/3 absolute bottom-0 right-0 -z-10 bg-contain bg-right-bottom bg-no-repeat"
     >
       <div

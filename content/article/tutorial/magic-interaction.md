@@ -1,5 +1,5 @@
 ---
-cover: interaction.jpg
+cover: ./images/interaction.jpg
 ---
 
 # Magic Interaction

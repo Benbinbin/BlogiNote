@@ -99,7 +99,12 @@ const showTags = ref(true)
 
 <template>
   <div ref="article">
-    <div class="py-8 md:py-12 selection:text-white selection:bg-purple-400">
+    <div
+      v-if="props.data.cover"
+      class="my-4 w-full h-60 lg:h-72 xl:h-80 bg-cover bg-center bg-no-repeat"
+      :style="`background-image: url('${props.data.cover}')`"
+    />
+    <div class="py-8 selection:text-white selection:bg-purple-400">
       <h1 class="py-4 text-3xl md:text-5xl font-bold text-center">
         {{ props.data.title || "Article" }}
       </h1>
@@ -213,6 +218,7 @@ const showTags = ref(true)
 }
 
 .markdown-blog-container {
+  // hide the h1 element if it's the first dom in the .markdown-blog-container
   & > h1:first-child {
     @apply hidden
   }
