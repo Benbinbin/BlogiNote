@@ -156,6 +156,7 @@ onMounted(() => {
 const { pending, data: articleList } = await useAsyncData('articles', () => {
   return queryContent<MyCustomParsedContent>('article')
     .only(['title', 'description', '_type', '_path', 'contentType', '_type', 'series', 'seriesOrder', 'tags'])
+    .sort({ seriesOrder: 1, $numeric: true })
     .find()
 })
 

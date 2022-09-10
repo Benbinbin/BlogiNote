@@ -42,7 +42,7 @@ if (data.value?.series) {
     return queryContent('article')
       .where({ series: data.value.series })
       .only(['title', 'description', '_path', '_type', 'seriesOrder'])
-      .sort({ seriesOrder: 1 })
+      .sort({ seriesOrder: 1, $numeric: true })
       .find()
   })
 
