@@ -110,15 +110,13 @@ const highlightColorMap = {
 
 watch(activeHeadingId, () => {
   if (activeHeadingId.value === props.elem.node.props.id && headingElem.value) {
-    nextTick(() => {
-      headingElem.value.focus()
-      highlightTitle.value = true
-      const timer = setTimeout(() => {
-        highlightTitle.value = false
-        clearTimeout(timer)
-        setActiveHeadingId('')
-      }, 2000)
-    })
+    headingElem.value.scrollIntoView(true)
+    highlightTitle.value = true
+    const timer = setTimeout(() => {
+      highlightTitle.value = false
+      clearTimeout(timer)
+      setActiveHeadingId('')
+    }, 2000)
   }
 })
 
@@ -141,7 +139,7 @@ const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
 
   if (headingElem.value) {
     nextTick(() => {
-      headingElem.value.focus()
+      headingElem.value.scrollIntoView(true)
       highlightTitle.value = true
       const timer = setTimeout(() => {
         highlightTitle.value = false
@@ -224,7 +222,7 @@ const changeChildrenDivideColumns = (event) => {
 
 <template>
   <div
-    class="elem-card focus:outline-none"
+    class="elem-card"
     :class="(childrenSpanAllNum > 0 || layout === 'compact') ? 'my-2' : ''"
     :style="(childrenSpanAllNum > 0 || layout === 'compact') ? 'column-span: all' : ''"
   >
