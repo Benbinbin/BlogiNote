@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import mermaid from 'mermaid'
+
 const props = defineProps({
   code: {
     type: String,
@@ -74,13 +76,33 @@ const copyHandler = () => {
 // the regular expression to match the link
 // refer to https://stackoverflow.com/a/17773849/10699431
 const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+
+/**
+ *
+ * convert mermaid code to svg
+ *
+ */
+const mermaidGraph = ref('')
+onMounted(() => {
+  if (props.language === 'mermaid' && props.code && document) {
+    mermaid.mermaidAPI.initialize({ startOnLoad: false })
+    mermaidGraph.value = mermaid.mermaidAPI.render('graphDiv', props.code)
+  }
+})
+
 </script>
 
 <template>
-  <div class="my-4 bg-gray-900 rounded-lg overflow-hidden">
-    <div class="w-full px-2 sm:px-4 py-2 flex justify-between items-center gap-2 border-b border-gray-600">
+  <div
+    class="my-4 rounded-lg overflow-hidden"
+    :class="props.language === 'mermaid' ? 'border border-gray-300' : 'bg-gray-900'"
+  >
+    <div
+      class="w-full px-2 sm:px-4 py-2 flex justify-between items-center gap-2 border-b"
+      :class="props.language === 'mermaid' ? 'border-gray-300' : 'border-gray-600'"
+    >
       <div class="shrink-0">
-        <button v-show="codeLines > 3" @click="expand = !expand">
+        <button v-show="codeLines > 3 && props.language !== 'mermaid'" @click="expand = !expand">
           <IconCustom
             name="material-symbols:keyboard-arrow-down-rounded"
             class="w-4 h-4 text-gray-400 transition-transform duration-300"
@@ -134,7 +156,9 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
         </div>
       </div>
     </div>
-    <div ref="codeContainer" class="relative px-2" :class="expand ? '' : 'max-h-[72px]'">
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div v-if="props.language === 'mermaid'" class="mermaid p-4" v-html="mermaidGraph" />
+    <div v-else ref="codeContainer" class="relative px-2" :class="expand ? '' : 'max-h-[72px]'">
       <div
         v-show="!expand"
         class="absolute inset-0 z-10 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px]"
@@ -172,6 +196,13 @@ const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-
     .highlight {
       @apply bg-gray-700/80 border-purple-500
     }
+  }
+}
+</style>
+<style lang="scss">
+.mermaid {
+  svg {
+    @apply mx-auto;
   }
 }
 </style>

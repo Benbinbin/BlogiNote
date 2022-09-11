@@ -1,20 +1,25 @@
 {
   "name": "remark-sub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
-  "description": "subscript transformer plugin for Remark",
+  "description": "Subscript transformer plugin for Remark to transform _text_ into a <sub>text</sub> element.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "markdown",
-    "subscript",
     "remark",
-    "plugin"
+    "remark-plugin",
+    "subscript",
+    "sub",
+    "markdown"
   ],
-  "author": "Benbinbin",
+  "author": "Benbinbin <benthomsonbin@gmail.com> (https://www.benbinbin.com)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Benbinbin/remark-sub.git"
+  },
   "dependencies": {
     "unist-util-visit": "^4.1.0"
   }

@@ -1,0 +1,22 @@
+{
+  "name": "remark-mermaid-svg",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "mermaid transformer plugin for Remark",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "markdown",
+    "mermaid",
+    "remark",
+    "plugin"
+  ],
+  "author": "Benbinbin",
+  "license": "MIT",
+  "dependencies": {
+    "unist-util-visit": "^4.1.0",
+    "mermaid": "^9.1.6"
+  }
+}
