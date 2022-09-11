@@ -161,7 +161,7 @@ const toggleImageClassName = (action = 'add') => {
 
 // image init size and position before zoom
 const transitionInitial = () => {
-  if (!currentZoomImg.value || !document?.documentElement) { return }
+  if (!currentZoomImg.value || !document?.documentElement || !window) { return }
 
   // the zoomImage init size
   width.value = currentZoomImg.value.width
@@ -170,7 +170,9 @@ const transitionInitial = () => {
   // get the translate and scale between current/expect state and zoomImage init position
   const windowWidth = document.documentElement.clientWidth
   translateX = -(windowWidth / 2 - (currentZoomImg.value.x + currentZoomImg.value.width / 2))
-  const windowHeight = document.documentElement.clientHeight
+  // const windowHeight = document.documentElement.clientHeight
+  const windowHeight = window.innerHeight // the zoom animation may be weird when mobile browser with url bar because the window height
+
   translateY = -(windowHeight / 2 - (currentZoomImg.value.y + currentZoomImg.value.height / 2))
   scale.value = 1
 
@@ -179,9 +181,10 @@ const transitionInitial = () => {
 
 // zoomImage init size before transform
 const transformInitial = () => {
-  if (currentZoomImg.value && document.documentElement) {
+  if (currentZoomImg.value && document.documentElement && window) {
     const windowWidth = document.documentElement.clientWidth
-    const windowHeight = document.documentElement.clientHeight
+    // const windowHeight = document.documentElement.clientHeight
+    const windowHeight = window.innerHeight // the zoom animation may be weird when mobile browser with url bar because the window height
 
     const widthScale = windowWidth / currentZoomImg.value.width
     const widthScaleSafe = widthScale * currentZoomImg.value.height <= windowHeight
