@@ -77,14 +77,16 @@ export default defineNuxtConfig({
 })
 ```
 
-::TipBox{type="tip"}
+
 If you want to write block code using the program language which don't support by Shiki, you can **set the block code program language to `md` or `markdown` as a fallback solution**.
 
 But this solution has a little flaw, the `md` or `markdown` tag will show at the top-right corner of the code block, it maybe confuse your readers.
 
 But you can fix it in a trick way, by **providing the source message** of the code at the same time, and the value contains the file extension information.
 
+::TipBox{type="tip"}
 Because the engine will auto analyze the source value, and extract the file extension to overwrite the program language value, then you can get the right program language tag at the top-right corner of the code block.
+::
 
 For example I want to write some plain text in the code block, but I have to set the program language as `md` because the Shiki don't support to highlight the `.txt` content.
 
@@ -95,7 +97,6 @@ the code block show below with highlight and correct program language informatio
 ```md [introduction.txt]
 Thanks a lot to use BlogiNote
 ```
-::
 
 ## Change avatar
 ## Which is my data

@@ -57,24 +57,35 @@ const categorySeries: ArrayObject = {}
 
 // get article's tags and series in different catalog
 if (articleFolder && articleFolder.children.length > 0) {
-  for (const category of articleFolder.children) {
-    const { data } = await useAsyncData(`${category.title}-tags`, () => queryContent<MyCustomParsedContent>('article', category.title.toLowerCase()).where({ _type: 'markdown' }).only(['tags', 'series']).find())
+  for (const item of articleFolder.children) {
+    if ('children' in item) {
+      const categoryTagsArr = []
+      const categorySeriesArr = []
 
-    const categoryTagsArr = []
-    const categorySeriesArr = []
-    data.value.forEach((item) => {
+      const { data } = await useAsyncData(`${item._path}-filter`, () => queryContent<MyCustomParsedContent>('article', item.title.toLowerCase()).where({ _type: 'markdown' }).only(['tags', 'series']).find())
+
+      data.value.forEach((article) => {
+        if (article.tags) {
+          categoryTagsArr.push(...article.tags)
+          tagArr.push(...article.tags)
+        }
+        if (article.series) {
+          categorySeriesArr.push(article.series)
+          seriesArr.push(article.series)
+        }
+      })
+
+      categoryTags[item.title.toLowerCase()] = [...new Set(categoryTagsArr)]
+      categorySeries[item.title.toLowerCase()] = [...new Set(categorySeriesArr)]
+    } else if (item._type && item._type === 'markdown') {
       if (item.tags) {
-        categoryTagsArr.push(...item.tags)
         tagArr.push(...item.tags)
       }
+
       if (item.series) {
-        categorySeriesArr.push(item.series)
         seriesArr.push(item.series)
       }
-    })
-
-    categoryTags[category.title.toLowerCase()] = [...new Set(categoryTagsArr)]
-    categorySeries[category.title.toLowerCase()] = [...new Set(categorySeriesArr)]
+    }
   }
 
   tagSet = new Set(tagArr)
@@ -268,7 +279,7 @@ const getFileTypeIcon = (type) => {
                 Category
               </p>
               <ul v-if="articleFolder" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
-                <li>
+                <li class="shrink-0">
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                     :class="currentCategory === 'all' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
@@ -279,7 +290,7 @@ const getFileTypeIcon = (type) => {
                   </button>
                 </li>
                 <template v-for="category in articleFolder.children">
-                  <li v-if="category.children" :key="category._path">
+                  <li v-if="category.children" :key="category._path" class="shrink-0">
                     <button
                       class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                       :class="currentCategory === category.title.toLowerCase() ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
@@ -322,11 +333,11 @@ const getFileTypeIcon = (type) => {
                     Tags
                   </p>
                   <ul v-if="tagSet" class="filter-list-container" :class="showMoreTag ? 'max-h-96' : 'max-h-8'">
-                    <li v-for="tag in ['all', ...tagSet as string[]]" :key="tag">
+                    <li v-for="tag in ['all', ...tagSet as string[]]" :key="tag" class="shrink-0">
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="(currentTags.length === 0 && tag === 'all') || currentTags.includes(tag) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                        :disabled="(tag === 'all' || currentCategory === 'all' || categoryTags[currentCategory].includes(tag)) ? false : true"
+                        :disabled="(tag === 'all' || currentCategory === 'all' || categoryTags[currentCategory]?.includes(tag)) ? false : true"
                         @click="toggleTag(tag)"
                       >
                         <p>#{{ tag }}</p>
@@ -352,11 +363,11 @@ const getFileTypeIcon = (type) => {
                     Series
                   </p>
                   <ul v-if="seriesSet" class="filter-list-container" :class="showMoreSeries ? 'max-h-96' : 'max-h-8'">
-                    <li v-for="series in ['all', ...seriesSet as string[]]" :key="series">
+                    <li v-for="series in ['all', ...seriesSet as string[]]" :key="series" class="shrink-0">
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="currentSeries === series ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                        :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory].includes(series)) ? false : true"
+                        :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory]?.includes(series)) ? false : true"
                         @click="toggleSeries(series)"
                       >
                         <IconCustom name="bi:collection" class="w-5 h-5" />

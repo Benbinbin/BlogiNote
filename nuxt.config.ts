@@ -65,7 +65,7 @@ export default defineNuxtConfig({
   // https://content.nuxtjs.org
   content: {
     navigation: {
-      fields: ['_id', '_type']
+      fields: ['_id', '_type', 'series', 'tags']
     },
     highlight: {
       // See the available themes on https://github.com/shikijs/shiki/blob/main/docs/themes.md#all-theme
