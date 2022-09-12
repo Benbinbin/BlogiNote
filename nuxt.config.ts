@@ -62,15 +62,6 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/tailwindcss'
   ],
-  // https://nuxt-themes.netlify.app/
-  theme: {
-    meta: {
-      name: 'BlogiNote',
-      description: 'A Nuxt theme for showing blog posts and snippet notes with flexible layouts and multiple optimizations.',
-      author: 'Benbinbin',
-      url: 'https://bloginote.benbinbin.com/'
-    }
-  },
   // https://content.nuxtjs.org
   content: {
     navigation: {
