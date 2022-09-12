@@ -20,6 +20,11 @@ const props = defineProps({
   }
 })
 
+/**
+ *
+ * collapse or expand the code block
+ *
+ */
 const expand = ref(true)
 const codeContainer = ref(null)
 const codeLines = ref(3)
@@ -29,6 +34,11 @@ onMounted(() => {
   }
 })
 
+/**
+ *
+ * program language the block code belong to
+ *
+ */
 // based on github for different code language color
 // refer to https://github.com/ozh/github-colors/blob/master/colors.json
 const languageColorMap = {
@@ -40,9 +50,28 @@ const languageColorMap = {
   js: '#f1e05a',
   css: '#563d7c',
   scss: '#c6538c',
-  vue: '#41b883'
+  vue: '#41b883',
+  markdown: '#083fa1',
+  md: '#083fa1'
 }
 
+const programLanguage = ref('')
+
+programLanguage.value = props.language.toLowerCase()
+
+const extensionRegex = /\.([0-9a-z]+)$/
+if (props.filename) {
+  const extensionMatchResult = props.filename.match(extensionRegex)
+  if (extensionMatchResult && extensionMatchResult.length > 1) {
+    programLanguage.value = extensionMatchResult[1].toLowerCase()
+  }
+}
+
+/**
+ *
+ * copy block code content
+ *
+ */
 type CopyState = 'wait' | 'process' | 'success' | 'fail'
 const copyState = ref<CopyState>('wait')
 const clipboard = ref(null)
@@ -73,15 +102,21 @@ const copyHandler = () => {
   }
 }
 
+/**
+ *
+ * the source (file) of block code
+ *
+ */
 // the regular expression to match the link
 // refer to https://stackoverflow.com/a/17773849/10699431
 const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
 
 /**
  *
- * convert mermaid code to svg
+ * mermaid
  *
  */
+// convert mermaid code to svg
 const mermaidGraph = ref('')
 onMounted(() => {
   if (props.language === 'mermaid' && props.code && document) {
@@ -89,7 +124,6 @@ onMounted(() => {
     mermaidGraph.value = mermaid.mermaidAPI.render('graphDiv', props.code)
   }
 })
-
 </script>
 
 <template>
@@ -148,10 +182,10 @@ onMounted(() => {
         <div class="flex items-center gap-1">
           <div
             class="w-2 h-2 rounded-full"
-            :style="languageColorMap[props.language.toLowerCase()] ? `background-color: ${languageColorMap[props.language.toLowerCase()]}` : `background-color: ${languageColorMap.theme}`"
+            :style="languageColorMap[programLanguage] ? `background-color: ${languageColorMap[programLanguage]}` : `background-color: ${languageColorMap.theme}`"
           />
           <span class="text-xs text-gray-500">{{
-            $props.language || 'code'
+            programLanguage || 'code'
           }}</span>
         </div>
       </div>

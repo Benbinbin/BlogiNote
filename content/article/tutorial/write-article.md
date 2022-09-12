@@ -6,27 +6,30 @@ updated: 2022-08-25
 
 # Write an article
 
+::TipBox{type="announce"}
 This tutorial will show all you need to know about how to write an article.
+::
 
 ## Where to write
 
 ::TipBox{type="tldr"}
 * Writing articles inside the :file_folder: `/content/article` folder
+* An article is a Markdown file
 * The :page_facing_up: `/content/index.md` file set the introduction content for Home Page
 * The :page_facing_up: `/content/about.md` file set the content for About Page
 ::
 
 You will may get confused because the project contains :dizzy_face: a mess of sub-folders or files. But don't be panic, **most of the time you can just focus the :file_folder: `/content` folder**, which is the container for all article files.
 
-Browser the :file_folder: `/content` folder, you can see a bunch of `*.md` file. Yep, they're the article files, which written in a special syntax call Markdown. You can read the next chapter *[How to write](#how-to-write)* learning more about it.
+Have a look at the :file_folder: `/content` folder, you can see a bunch of `*.md` file. Yep, they're the article files, which written in a special syntax call Markdown. You can read the next chapter *[How to write](#how-to-write)* learning more about it.
 
-There're two special articles:
+Firstly you may notice that inside :file_folder: `/content` folder there're two special articles:
 
 * :page_facing_up: `/content/index.md` this file setting the introduction content of the [Home Page](/) (the content of purple box at the top of Home Page)
 
 * :page_facing_up: `/content/about.md` this file setting the content of [About Page](/about)
 
-You can rewrite :page_facing_up: `/content/index.md` and :page_facing_up: `/content/about.md` these two files to change the content in Home Page or About Page
+You can rewrite the content of these two files :page_facing_up: `/content/index.md` and :page_facing_up: `/content/about.md` to change the relative part of Home Page or About Page.
 
 The :file_folder: `/content/article` sub folder contains all other article, like this article is under the path `/content/article/tutorial`. You can delete all the existed articles inside the :file_folder: `/content/article` folder (but please keep the `/content/article` folder), then create a new markdown file inside the :file_folder: `/content/article` folder and start to :pencil: write you own article.
 
@@ -71,9 +74,11 @@ Firstly, you should know the concept of **highlight theme** and the **preload pr
 
 **Highlight theme** is a color rules to decorate the code text based on the program language.
 
-**Preload program languages** is a subset of program languages which are selected out from a large amount languages, and the serve will do some work under the hook to make the code block writing in these program languages will be highlighted correctly.
+**Preload program languages** is a list of program languages, which are selected for the highlight engine, and the serve will do some work under the hook, to make sure the block code content highlighted correctly.
 
-These two concept are set inside the :page_facing_up: `nuxt.config.ts` file, you can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload program languages*](./faq#add-some-preload-program-languages) these two part of the [FAQ article](./faq).
+These two concept should be set inside the :page_facing_up: `nuxt.config.ts` file.
+
+You can read the [*Choose your code highlight Theme*](./faq#choose-your-code-highlight-Theme) and [*Add some preload program languages*](./faq#add-some-preload-program-languages) these two part of the [FAQ](./faq) article.
 ::
 
 Markdown support two types of code:
@@ -103,9 +108,13 @@ Markdown support two types of code:
   ```
 
   ::TipBox{type="warning"}
-  In order to highlight the code correctly, you need to specify which program language the code belongs to right after the three backquote
+  In order to highlight the code correctly, you **must** specify which program language the block code belongs to right after the three backquote
 
-  If you don't know which program language the code belong to, you can assign to the `md` or `markdown` first
+  The block code highlight engine is Shiki, which supports a hundreds of program languages.
+
+  But to be more accurate, you should check out [this page](https://github.com/shikijs/shiki/blob/main/docs/languages.md) first, and make sure that Shiki support the program language your block code belongs to.
+
+  If the program language isn't supported, or you don't know which program language the block code belong to, **you can assign to the `md` or `markdown`** as a fallback solution.
   ::
 
   you can also provide more information about your code block:
@@ -160,31 +169,48 @@ the url of the article is always based on the file system path and the file name
 ## Add a cover
 
 ::TipBox{type="tldr"}
-* Put image files inside the :file_folder: `/public/covers` folder
-* Add the `cover: image_file_path` property at the top of your markdown file
+Add the `cover: image_file_path` property in front matter at the top of your markdown file
 ::
 
-Before we jump into the :sleeping: boring but useful syntax about Markdown, let's add some colorful cover for this article first.
-
-You maybe notice the header content of this article within `---` three dashes, which is written in a special format called [YAML or YML](https://yaml.org/). In one word, this format is make up of a list of `key: value` pairs,
+Open the :page_facing_up: `/content/article/tutorial/write-article.md` file in this project, you maybe notice at the top of this article there're `---` three dashes
 
 ::TipBox{type="announce"}
 We add some metadata for page by add some YAML within `---` three dashes at the top of the article.
 
-We won't see this metadata after the markdown file convert to the website page. So you shouldn't worry about the dirty header of the markdown will stain :umbrella: the article
+We won't see this metadata after the markdown file convert to the website page. So you shouldn't worry about the "dirty" header will make the article in a mess.
+
+It is written in a special format called [YAML or YML](https://yaml.org/), this format is make up of a list of `key: value` pairs, for example in this project, you can add `cover: ./images/write.jpg` to set a cover for this article.
 ::
 
-we can add a cover for this article by adding the `cover: path/of/the/image` pairs.
+::TipBox{type="tip"}
+The image will be shown at the top of the article and the right corner of home page article list item.
+::
 
-1. I download an [image](https://unsplash.com/photos/xG8IQMqMITM) (Photo by [Aaron Burden](https://unsplash.com/@aaronburden) on [Unsplash](https://unsplash.com/)）first, and rename the file name as `write.jpg`
+You can use the local image or remote image as the cover:
 
-![image](/covers/write.jpg)
+* If you want to link the local image file as the cover, you should use the **relative path** which starts with a dot `.`
 
-2. then put it into the folder :file_folder: `/public/covers`
+  1. Download the image first
 
-3. then add the `cover: write.jpg` pair at the top of this article within `---` three dashes
+      For example I download an [image](https://unsplash.com/photos/xG8IQMqMITM) (Photo by [Aaron Burden](https://unsplash.com/@aaronburden) on [Unsplash](https://unsplash.com/)), and rename the file name as `write.jpg`
 
-4. Yeah, that's it. Now you can check the [home page](/), :tada: you will see the cover shown at the article list item right corner. But it looks transparent for accessible reason to read the description text more easily.
+  2. Then put it into the project.
+
+      For example I put the image into the folder :file_folder: `/content/article/tutorial/images` which is close to the markdown article file `/content/article/tutorial/write-article.md`
+
+  3. now the image **relative path** for markdown article is `./images/write.jpg` so add `cover: ./images/write.jpg` at the top of this article within `---` three dashes
+
+      ::TipBox{type="tip"}
+      starts dot `.` of the **relative path** means the folder current file belong to.
+
+      In this example, the current file is the :page_facing_up: `write-article.md` file, so the `.` is the the alias of :file_folder: `tutorial` folder
+      ::
+
+* If you want to link the remote image file as the cover, just need to use the url as the the image path
+
+    For example I want to use this [image](https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ) as the cover, which url is `https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ`
+
+    So I just need to add `cover: https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ` at the top of this article within `---` three dashes
 
 
 
