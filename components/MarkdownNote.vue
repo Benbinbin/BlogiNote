@@ -52,7 +52,8 @@ if (props.data.showOutdatedWarning) {
 const category = ref('')
 if (props.data._path) {
   const pathArr = props.data._path.split('/')
-  if (pathArr.length > 3) {
+
+  if (pathArr.length > 3 && pathArr[1] === 'article') {
     category.value = pathArr[2]
   }
 }
