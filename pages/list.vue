@@ -21,6 +21,17 @@ const { data: articleArr } = await useAsyncData('articleFolder', () => fetchCont
 
 const articleFolder = articleArr.value[0]
 
+const getCategory = (path = '') => {
+  let category = ''
+  const pathArr = path.split('/')
+
+  if (pathArr.length === 3 && pathArr[1] === 'article') {
+    category = pathArr[2]
+  }
+
+  return category
+}
+
 const currentCategory = ref('all')
 const showMoreCategory = ref(false)
 
@@ -62,7 +73,7 @@ if (articleFolder && articleFolder.children.length > 0) {
       const categoryTagsArr = []
       const categorySeriesArr = []
 
-      const { data } = await useAsyncData(`${item._path}-filter`, () => queryContent<MyCustomParsedContent>('article', item.title.toLowerCase()).where({ _type: 'markdown' }).only(['tags', 'series']).find())
+      const { data } = await useAsyncData(`${item._path}-filter`, () => queryContent<MyCustomParsedContent>(`${item._path}`).where({ _type: 'markdown' }).only(['tags', 'series']).find())
 
       data.value.forEach((article) => {
         if (article.tags) {
@@ -75,8 +86,13 @@ if (articleFolder && articleFolder.children.length > 0) {
         }
       })
 
-      categoryTags[item.title.toLowerCase()] = [...new Set(categoryTagsArr)]
-      categorySeries[item.title.toLowerCase()] = [...new Set(categorySeriesArr)]
+      // get category
+      const category = getCategory(item._path)
+
+      if (category) {
+        categoryTags[category] = [...new Set(categoryTagsArr)]
+        categorySeries[category] = [...new Set(categorySeriesArr)]
+      }
     } else if (item._type && item._type === 'markdown') {
       if (item.tags) {
         tagArr.push(...item.tags)
@@ -289,16 +305,16 @@ const getFileTypeIcon = (type) => {
                     <p>all</p>
                   </button>
                 </li>
-                <template v-for="category in articleFolder.children">
-                  <li v-if="category.children" :key="category._path" class="shrink-0">
+                <template v-for="item in articleFolder.children">
+                  <li v-if="'children' in item" :key="item._path" class="shrink-0">
                     <button
                       class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
-                      :class="currentCategory === category.title.toLowerCase() ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                      @click="toggleCategory(category.title.toLowerCase())"
+                      :class="currentCategory === getCategory(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
+                      @click="toggleCategory(getCategory(item._path))"
                     >
                       <IconCustom name="material-symbols:category-rounded" class="w-5 h-5" />
                       <p>
-                        {{ category.title.toLowerCase() }}
+                        {{ getCategory(item._path) }}
                       </p>
                     </button>
                   </li>
