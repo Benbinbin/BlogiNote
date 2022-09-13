@@ -41,6 +41,17 @@ if (showBlogPosts && Array.isArray(navTree.value)) {
   }
 }
 
+const getCategory = (path = '') => {
+  let category = ''
+  const pathArr = path.split('/')
+
+  if (pathArr.length === 3 && pathArr[1] === 'article') {
+    category = pathArr[2]
+  }
+
+  return category
+}
+
 // show posts
 // const showRecentPosts = ref(true)
 
@@ -185,26 +196,26 @@ const getFileTypeIcon = (type) => {
             </section>
 
             <template v-for="category in articleFolder.children">
-              <section v-if="category.children" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
+              <section v-if="'children' in category" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
                 <div class="flex justify-between items-start">
                   <h2 class="border-l-8 border-purple-500 rounded-l-sm">
                     <button
                       class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
-                      :class="hidePostCategorySections.has(category) ? 'border-purple-500' : 'border-transparent'"
-                      @click="togglePostCategorySectionsHandler(category)"
+                      :class="hidePostCategorySections.has(category._path) ? 'border-purple-500' : 'border-transparent'"
+                      @click="togglePostCategorySectionsHandler(category._path)"
                     >
                       {{ category.title }}
                     </button>
                   </h2>
                   <NuxtLink
-                    :to="{ path: '/list', query: { category: category.title.toLowerCase() } }"
+                    :to="{ path: '/list', query: { category: getCategory(category._path) } }"
                     class="p-2 text-xs font-bold transition-colors duration-300 rounded-lg text-purple-500 bg-purple-100 hover:bg-purple-50"
                   >
                     More
                   </NuxtLink>
                 </div>
                 <div
-                  v-show="!hidePostCategorySections.has(category)"
+                  v-show="!hidePostCategorySections.has(category._path)"
                   class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y
                 sm:divide-gray-200"
                 >
