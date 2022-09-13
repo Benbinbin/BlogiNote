@@ -14,14 +14,19 @@ This tutorial will show all you need to know about how to write an article.
 
 ::TipBox{type="tldr"}
 * Writing articles inside the :file_folder: `/content/article` folder
-* An article is a Markdown file
+* Each Markdown file is an article, they will auto generate to website pages.
 * The :page_facing_up: `/content/index.md` file set the introduction content for Home Page
 * The :page_facing_up: `/content/about.md` file set the content for About Page
+* Please follow the rules about the name of file and folder name
 ::
 
-You will may get confused because the project contains :dizzy_face: a mess of sub-folders or files. But don't be panic, **most of the time you can just focus the :file_folder: `/content` folder**, which is the container for all article files.
+You may get confused because the project contains :dizzy_face: a mess of sub-folders or files. But don't be panic, **most of the time you can just focus the :file_folder: `/content` folder**, which is the container for all article files.
 
-Have a look at the :file_folder: `/content` folder, you can see a bunch of `*.md` file. Yep, they're the article files, which written in a special syntax call Markdown. You can read the next chapter *[How to write](#how-to-write)* learning more about it.
+Have a look at the :file_folder: `/content` folder, you can see a bunch of `*.md` file. Yep, they're the article files, which written in a special syntax call Markdown.
+
+::TipBox{type="tip"}
+You can read the next chapter of this article *[How to write](#how-to-write)* to learn more about it.
+::
 
 Firstly you may notice that inside :file_folder: `/content` folder there're two special articles:
 
@@ -31,7 +36,21 @@ Firstly you may notice that inside :file_folder: `/content` folder there're two 
 
 You can rewrite the content of these two files :page_facing_up: `/content/index.md` and :page_facing_up: `/content/about.md` to change the relative part of Home Page or About Page.
 
-The :file_folder: `/content/article` sub folder contains all other article, like this article is under the path `/content/article/tutorial`. You can delete all the existed articles inside the :file_folder: `/content/article` folder (but please keep the `/content/article` folder), then create a new markdown file inside the :file_folder: `/content/article` folder and start to :pencil: write you own article.
+Then you may notice the :file_folder: `/content/article` folder, which contains all articles.
+
+For example this website is also built by BlogiNote, you can check out the project structure in [Github](https://github.com/Benbinbin/BlogiNote), and  find out this article inside the [sub-folder](https://github.com/Benbinbin/BlogiNote/tree/main/content/article/tutorial) :file_folder: `/content/article/tutorial`.
+
+<!-- You can delete all the existed articles inside the :file_folder: `/content/article` folder (but please keep the `/content/article` folder), then create a new markdown file inside the :file_folder: `/content/article` folder and start to :pencil: write you own article. -->
+
+::TipBox{type="warning"}
+The engine will auto generate websites (and relative URLs) based on the folders structure and the markdown files content.
+
+You must follow some rules about folder and file name to avoid weird situation:
+
+* it's a good idea that the name of folder or file just consists of number and alphabet
+* folder or file name should be the lower-case, because the URL is not case-sensitive
+* use hyphen `-` to separate word but **not** the space bar, because the URL will convert the space bar to `%20`
+::
 
 ## How to write
 BlogiNote can consume three types of file to generate web page, they are **Markdown** file, **JSON** file and **CSV** file:
