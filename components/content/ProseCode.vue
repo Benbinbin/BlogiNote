@@ -128,12 +128,12 @@ onMounted(() => {
 
 <template>
   <div
-    class="my-4 rounded-lg overflow-hidden"
-    :class="props.language === 'mermaid' ? 'border border-gray-300' : 'bg-gray-900'"
+    class="my-4 rounded-lg"
+    :class="props.language === 'mermaid' ? 'border border-gray-300' : ''"
   >
     <div
-      class="w-full px-2 sm:px-4 py-2 flex justify-between items-center gap-2 border-b"
-      :class="props.language === 'mermaid' ? 'border-gray-300' : 'border-gray-600'"
+      class="w-full px-2 sm:px-4 py-2 flex justify-between items-center gap-2 sticky top-0 z-20 border-b rounded-t-lg"
+      :class="props.language === 'mermaid' ? 'bg-gray-50 border-gray-300' : 'border-gray-600 bg-gray-900'"
     >
       <div class="shrink-0">
         <button v-show="codeLines > 3 && props.language !== 'mermaid'" @click="expand = !expand">
@@ -191,11 +191,11 @@ onMounted(() => {
       </div>
     </div>
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-if="props.language === 'mermaid'" class="mermaid p-4" v-html="mermaidGraph" />
-    <div v-else ref="codeContainer" class="relative px-2" :class="expand ? '' : 'max-h-[72px]'">
+    <div v-if="props.language === 'mermaid'" class="mermaid p-4 rounded-b-lg" v-html="mermaidGraph" />
+    <div v-else ref="codeContainer" class="relative px-2 bg-gray-900 rounded-b-lg" :class="expand ? '' : 'max-h-[72px] overflow-y-hidden'">
       <div
         v-show="!expand"
-        class="absolute inset-0 z-10 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px]"
+        class="absolute inset-0 z-10 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px] rounded-b-lg"
       />
       <slot />
     </div>
