@@ -12,7 +12,8 @@ const props = defineProps<{
 
 // const flexiMode = useFlexiMode()
 
-const showCatalogForBlog = useShowBlogCatalog()
+// const showCatalogForBlog = useShowBlogCatalog()
+const showCatalogForBlog = useState('showBlogCatalog')
 
 const sidebar = ref(null)
 // sidebar size and position

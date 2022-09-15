@@ -6,7 +6,8 @@ const flexiMode = useFlexiMode()
 
 const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
-const themeOptions = useTheme()
+// const themeOptions = useTheme()
+const appConfig = useAppConfig()
 
 /**
  *
@@ -19,12 +20,12 @@ const articleFolderFiles = []
 
 // render blog posts or not
 let showBlogPosts = true
-if ('homePage' in themeOptions.value && 'showBlogPosts' in themeOptions.value.homePage) {
-  showBlogPosts = themeOptions.value.homePage.showBlogPosts
-}
+// if ('homePage' in themeOptions.value && 'showBlogPosts' in themeOptions.value.homePage) {
+showBlogPosts = appConfig.theme.homePage.showBlogPosts
+// }
 
 const queryPostsWhere = { _type: 'markdown' }
-const queryPostsLimit = themeOptions.value?.homePage?.postItemLimit || 5
+const queryPostsLimit = appConfig.theme.homePage.postItemLimit || 5
 const queryPostsOnly = ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 
 if (showBlogPosts && Array.isArray(navTree.value)) {
@@ -138,7 +139,7 @@ const getFileTypeIcon = (type) => {
         <div class="py-16">
           <ContentDoc>
             <template #empty>
-              <IntroCard :avatar="'/avatar.png'" />
+              <IntroCard :avatar="'/default-avatar.png'" />
             </template>
             <template #not-found>
               <h1 class="py-4 text-3xl sm:text-5xl font-bold text-center text-purple-500">

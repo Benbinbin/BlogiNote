@@ -2,7 +2,7 @@
 title: Home
 ---
 
-::IntroCard{avatar="/avatar.png"}
+::IntroCard{avatar="/default-avatar.png"}
 # BlogiNote
 
 BlogiNote is a website for showing your blogs and notes with flexible layouts and multiple optimizations. You can click link below :point_down: to see the "Example Article" page.

@@ -14,34 +14,34 @@ if (props.data.body.children.length > 0 && props.data.body.children[0].tag === '
   showTitle.value = false
 }
 
-const themeOptions = useTheme()
-
+// const themeOptions = useTheme()
+const appConfig = useAppConfig()
 /**
  *
  * show article created or last update time
  *
  */
-const showTime = ref(true)
-if ('articlePage' in themeOptions.value && 'showTime' in themeOptions.value.articlePage) {
-  showTime.value = themeOptions.value.articlePage.showTime
-}
+let showTime = true
+// if ('articlePage' in themeOptions.value && 'showTime' in themeOptions.value.articlePage) {
+showTime = appConfig.theme.articlePage.showTime
+// }
 
 if ('showTime' in props.data) {
-  showTime.value = props.data.showTime
+  showTime = props.data.showTime
 }
 
 /**
  *
- * show outDated warning
+ * show outdated warning
  *
  */
-const showOutdatedWarningComponent = ref(false)
-if (themeOptions.value?.articlePage?.outDated?.show) {
-  showOutdatedWarningComponent.value = themeOptions.value.articlePage.outDated.show
-}
+let showOutdatedWarningComponent = false
+// if (themeOptions.value?.articlePage?.outdated?.show) {
+showOutdatedWarningComponent = appConfig.theme.articlePage.outdated.show
+// }
 
-if (props.data.showOutdatedWarning) {
-  showOutdatedWarningComponent.value = props.data.showOutdatedWarning
+if ('showOutdatedWarning' in props.data) {
+  showOutdatedWarningComponent = props.data.showOutdatedWarning
 }
 
 /**
@@ -263,7 +263,10 @@ const changeDivideColumnsHandler = (event) => {
  * toc for markdown article
  *
  */
-const showCatalog = useShowNoteCatalog()
+// const showCatalog = useShowNoteCatalog()
+const showCatalog = useState<Boolean>('showNoteCatalog', () => {
+  return appConfig.theme.articlePage.showNoteCatalog
+})
 
 // collapse heading section
 const collapseHeadings = ref(new Set<string>())
@@ -358,7 +361,7 @@ provide('setActiveHeadingId', setActiveHeadingId)
 
       <ClientOnly>
         <OutdatedWarning
-          v-if="showOutdatedWarningComponent && (props.data.updated || props.data.created)"
+          v-if="showTime && showOutdatedWarningComponent && (props.data.updated || props.data.created)"
           :date="props.data.updated || props.data.created"
           :type="props.data.updated ? 'last updated' : 'created'"
         />

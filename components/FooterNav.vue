@@ -3,6 +3,8 @@ import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
 const route = useRoute()
 
+const appConfig = useAppConfig()
+
 /**
  *
  * toggle more options
@@ -51,8 +53,10 @@ const changeFlexiMode = () => {
  * toggle catalog
  *
  */
-const showBlogCatalog = useShowBlogCatalog()
-const showNoteCatalog = useShowNoteCatalog()
+// const showBlogCatalog = useShowBlogCatalog()
+const showBlogCatalog = useState('showBlogCatalog')
+// const showNoteCatalog = useShowNoteCatalog()
+const showNoteCatalog = useState('showNoteCatalog')
 const toggleCatalogHandler = () => {
   if (flexiMode.value === 'blog') {
     showBlogCatalog.value = !showBlogCatalog.value
@@ -74,7 +78,7 @@ const toggleCatalogHandler = () => {
         @click="showMoreOptions = !showMoreOptions"
       >
         <img
-          src="/avatar.png"
+          :src="appConfig.theme.avatar"
           alt="avatar"
           class="w-6 h-6 rounded-full ring-2"
           :class="showMoreOptions ? (flexiMode === 'blog' ? 'ring-purple-300' : 'ring-green-300') : 'ring-gray-50'"
@@ -204,7 +208,7 @@ const toggleCatalogHandler = () => {
 }
 
 .option-item {
-  @apply px-4 py-2 border rounded;
+  @apply shrink-0 px-4 py-2 border rounded;
 }
 
 .sub-nav-scroll-container::-webkit-scrollbar {

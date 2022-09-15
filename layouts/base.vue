@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
 
+const appConfig = useAppConfig()
+
 /**
  *
  * set head meta for almost all page
@@ -15,6 +17,12 @@ useHead({
     {
       type: 'text/css',
       children: 'body { overflow: overlay }'
+    }
+  ],
+  link: [
+    {
+      rel: 'icon',
+      href: appConfig.theme.favicon
     }
   ]
 })

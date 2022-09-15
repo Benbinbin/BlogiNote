@@ -10,7 +10,8 @@ const props = defineProps<{
   catalogs: CatalogItem[]
 }>()
 
-const showCatalogForNote = useShowNoteCatalog()
+// const showCatalogForNote = useShowNoteCatalog()
+const showCatalogForNote = useState('showNoteCatalog')
 
 const sidebar = ref(null)
 // sidebar size and position

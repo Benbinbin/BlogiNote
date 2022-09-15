@@ -1,9 +1,20 @@
+// const appConfig = useAppConfig()
+
 // flexible mode
 export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
 
 // article page catalog
-export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => true)
-export const useShowNoteCatalog = () => useState<Boolean>('showNoteCatalog', () => true)
+
+// move this share state to MarkdownBlog component
+// export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => {
+//   return false
+// })
+
+// move this share state to MarkdownNote component
+// export const useShowNoteCatalog = () => useState<Boolean>('showNoteCatalog', () => {
+//   return false
+// })
+
 export const useBlogSidebarFloat = () => useState<Boolean>('blogSidebarFloat', () => false)
 export const useNoteSidebarFloat = () => useState<Boolean>('noteSidebarFloat', () => true)
 export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSidebarFloat', () => false)

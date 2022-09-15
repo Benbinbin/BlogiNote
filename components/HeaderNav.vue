@@ -2,6 +2,8 @@
 const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
 const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
 
+const appConfig = useAppConfig()
+
 const articleFolder = data.value[0]
 
 const showSubNav = ref(false)
@@ -56,7 +58,7 @@ const changeFlexiMode = () => {
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
       <NuxtLink to="/">
-        <img src="/avatar.png" alt="avatar" class="w-8 h-8 rounded-full">
+        <img :src="appConfig.theme.avatar" alt="avatar" class="w-8 h-8 rounded-full">
       </NuxtLink>
       <div class="flex items-center gap-6">
         <button

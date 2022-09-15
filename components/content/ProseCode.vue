@@ -215,7 +215,7 @@ onMounted(() => {
 
   code {
 
-    @apply block p-0 py-4 m-0 whitespace-pre bg-transparent border-0 rounded-none;
+    @apply block p-0 py-4 m-0 whitespace-pre bg-transparent border-0 rounded-none break-normal;
 
     .line {
       @apply block min-h-[1rem] border-l-2 border-gray-900;

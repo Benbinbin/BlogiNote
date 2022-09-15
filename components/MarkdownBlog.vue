@@ -3,33 +3,35 @@ const props = defineProps<{data: any}>()
 
 defineEmits(['showSeriesModal'])
 
-const themeOptions = useTheme()
+// const themeOptions = useTheme()
+const appConfig = useAppConfig()
+
 /**
  *
  * show article created or last update time
  *
  */
-const showTime = ref(true)
-if ('articlePage' in themeOptions.value && 'showTime' in themeOptions.value.articlePage) {
-  showTime.value = themeOptions.value.articlePage.showTime
-}
+let showTime = true
+// if ('articlePage' in appConfig.theme && 'showTime' in appConfig.theme.articlePage) {
+showTime = appConfig.theme.articlePage.showTime
+// }
 
 if ('showTime' in props.data) {
-  showTime.value = props.data.showTime
+  showTime = props.data.showTime
 }
 
 /**
  *
- * show outDated warning
+ * show outdated warning
  *
  */
-const showOutdatedWarningComponent = ref(false)
-if (themeOptions.value?.articlePage?.outDated?.show) {
-  showOutdatedWarningComponent.value = themeOptions.value.articlePage.outDated.show
-}
+let showOutdatedWarningComponent = true
+// if (appConfig?.theme?.articlePage?.outdated?.show) {
+showOutdatedWarningComponent = appConfig.theme.articlePage.outdated.show
+// }
 
-if (props.data.showOutdatedWarning) {
-  showOutdatedWarningComponent.value = props.data.showOutdatedWarning
+if ('showOutdatedWarning' in props.data) {
+  showOutdatedWarningComponent = props.data.showOutdatedWarning
 }
 
 /**
@@ -52,7 +54,10 @@ if (props.data._path) {
  * toc for markdown article
  *
  */
-const showCatalog = useShowBlogCatalog()
+// const showCatalog = useShowBlogCatalog()
+const showCatalog = useState<Boolean>('showBlogCatalog', () => {
+  return appConfig.theme.articlePage.showBlogCatalog
+})
 
 const article = ref(null)
 
@@ -158,7 +163,7 @@ const showTags = ref(true)
 
       <ClientOnly>
         <OutdatedWarning
-          v-if="showOutdatedWarningComponent && (props.data.updated || props.data.created)"
+          v-if="showTime && showOutdatedWarningComponent && (props.data.updated || props.data.created)"
           :date="props.data.updated || props.data.created"
           :type="props.data.updated ? 'last updated' : 'created'"
         />

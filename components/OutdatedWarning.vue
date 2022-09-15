@@ -4,16 +4,18 @@ const props = defineProps<{
   type: 'created' | 'last updated'
 }>()
 
-const themeOptions = useTheme()
+// const themeOptions = useTheme()
+const appConfig = useAppConfig()
+
 // the default outdated time threshold of an article is 1 month (30 days)
-const outDatedThreshold = themeOptions.value?.articlePage?.outDated?.threshold || 30
+const outdatedThreshold = appConfig.theme.articlePage.outdated.threshold || 30
 
 const nowDate = new Date()
 const preDate = new Date(props.date)
 const intervalDays = Math.floor((nowDate.getTime() - preDate.getTime()) / (1000 * 60 * 60 * 24))
 
 const showOutdatedWarning = ref(false)
-if (intervalDays > outDatedThreshold) {
+if (intervalDays > outdatedThreshold) {
   showOutdatedWarning.value = true
 }
 </script>

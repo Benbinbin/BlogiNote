@@ -18,7 +18,7 @@ const getCoverUrl = (relativeURL) => {
 
 <template>
   <div
-    class="shrink-0 relative z-10 border border-blue-100 rounded-lg overflow-hidden"
+    class="shrink-0 relative z-10 border border-purple-100 rounded-lg overflow-hidden"
     :class="props.listLen >= 2 ? 'w-5/6' : 'w-full'"
   >
     <div
@@ -65,6 +65,8 @@ const getCoverUrl = (relativeURL) => {
   </div>
 </template>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
 </style>

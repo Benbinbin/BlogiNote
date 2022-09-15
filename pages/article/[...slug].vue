@@ -300,7 +300,7 @@ watch(showZoomImage, () => {
   }
 
   code {
-    @apply px-1 py-0.5 mx-0.5 text-sm bg-gray-100 border rounded;
+    @apply px-1 py-0.5 mx-0.5 text-sm bg-gray-100 border rounded break-words;
   }
 
   .math {
