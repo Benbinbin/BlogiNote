@@ -4,7 +4,6 @@
 export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
 
 // article page catalog
-
 // move this share state to MarkdownBlog component
 // export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => {
 //   return false
@@ -21,6 +20,10 @@ export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSide
 export const useToggleNoteSidebarFloat = () => useState<Boolean>('toggleNoteSidebarFloat', () => true)
 export const useFloatBlogCatalogType = () => useState<'list' | 'tree'>('floatBlogCatalogType', () => 'list')
 export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNoteCatalogType', () => 'tree')
+
+// series modal
+// move this share state to page/article/[...slug] component
+// export const useShowSeriesModal = () => useState<Boolean>('showSeriesModal', () => false)
 
 // article page zoom image
 interface ZoomImageType {

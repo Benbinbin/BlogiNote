@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{data: any}>()
 
-defineEmits(['showSeriesModal'])
+// defineEmits(['showSeriesModal'])
+const showSeriesModal = useState('showSeriesModal')
 
 // const themeOptions = useTheme()
 const appConfig = useAppConfig()
@@ -144,7 +145,7 @@ const showTags = ref(true)
           <button
             v-if="props.data.series"
             class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
-            @click="$emit('showSeriesModal')"
+            @click="showSeriesModal=true"
           >
             <IconCustom name="bi:collection" class="w-4 h-4" />
             <span class="text-xs">{{ props.data.series }}</span>

@@ -5,8 +5,8 @@ const props = defineProps<{
   seriesList: any;
 }>()
 
-const emits = defineEmits(['close'])
-
+// const emits = defineEmits(['close'])
+const showSeriesModal = useState('showSeriesModal')
 const showDetail = ref(false)
 
 /**
@@ -21,7 +21,8 @@ let currentIndex = -1
 const ModalKeyListener = function (event) {
   if (event.key === 'Escape') {
     // press Esc key to hide modal
-    emits('close')
+    // emits('close')
+    showSeriesModal.value = false
   } else if (event.key === 'ArrowDown') {
     // navigate to next item
     currentIndex = currentIndex + 1
@@ -51,7 +52,8 @@ const ModalKeyListener = function (event) {
   } else if (event.key === 'Enter') {
     const targetPath = props.seriesList[currentIndex]._path
     router.push({ path: targetPath })
-    emits('close')
+    // emits('close')
+    showSeriesModal.value = false
   }
 }
 
@@ -71,7 +73,7 @@ onUnmounted(() => {
   <div class="w-screen h-screen p-4 fixed inset-0 z-50 flex justify-center items-center">
     <div
       class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/10 backdrop-blur"
-      @click="$emit('close')"
+      @click="showSeriesModal=false"
     />
     <div class="lg:max-w-4xl">
       <div v-if="seriesList && seriesList.length > 0" class="bg-white rounded-t-lg">
@@ -87,7 +89,7 @@ onUnmounted(() => {
             class="py-2 hover:text-blue-500 hover:bg-blue-100 focus:outline-blue-500 transition-colors duration-300 rounded-md"
             :class="props.currentPath === article._path ? 'text-blue-500' : 'text-gray-600'"
           >
-            <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="$emit('close')">
+            <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="showSeriesModal=false">
               <h3 class="font-bold">
                 {{ article.title }}
               </h3>
@@ -109,7 +111,7 @@ onUnmounted(() => {
         <button
           class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-400 bg-red-50 hover:text-red-500 hover:bg-red-100 focus:outline-red-500 rounded transition-colors duration-300"
           title="close window"
-          @click="$emit('close')"
+          @click="showSeriesModal=false"
         >
           <span>Esc</span>
         </button>

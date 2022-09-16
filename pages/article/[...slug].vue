@@ -50,12 +50,13 @@ if (data.value?.series) {
 }
 
 // show or hide series modal
-const showSeriesModal = ref(false)
-provide('showSeriesModal', showSeriesModal)
+// const showSeriesModal = ref(false)
+const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
+// provide('showSeriesModal', showSeriesModal)
 
-const changeSeriesModalState = (state) => {
-  showSeriesModal.value = state
-}
+// const changeSeriesModalState = (state) => {
+//   showSeriesModal.value = state
+// }
 
 // stop body scroll when series modal show up
 watch(showSeriesModal, () => {
@@ -166,14 +167,12 @@ watch(showZoomImage, () => {
         v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog')"
         :data="data"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
-        @show-series-modal="changeSeriesModalState(true)"
       />
       <MarkdownNote
         v-if="!pending && data && data._type === 'markdown' && data.articleType === 'note'"
         v-show="flexiMode === 'note'"
         :data="data"
         class="px-4 py-12"
-        @show-series-modal="changeSeriesModalState(true)"
       />
       <div v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')" class="container mx-auto ">
         <div
@@ -190,7 +189,6 @@ watch(showZoomImage, () => {
         :current-path="data._path"
         :series-name="data.series"
         :series-list="seriesList"
-        @close="changeSeriesModalState(false)"
       />
     </Teleport>
 
