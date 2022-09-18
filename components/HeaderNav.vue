@@ -1,4 +1,11 @@
 <script setup lang="ts">
+const props = defineProps({
+  headerFlexiMode: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const appConfig = useAppConfig()
 
 // const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
@@ -112,6 +119,7 @@ const changeFlexiMode = () => {
           RSS
         </NuxtLink>
         <button
+          v-if="props.headerFlexiMode"
           :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
           class="hidden w-10 h-10 sm:flex justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
           :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-200 ' : 'flex-row bg-green-100 hover:bg-green-200 '"

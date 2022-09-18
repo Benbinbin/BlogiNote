@@ -152,7 +152,7 @@ const getFileTypeIcon = (type) => {
     <Head>
       <Title>Home</Title>
     </Head>
-    <NuxtLayout name="base" :footer-flexi-mode="true">
+    <NuxtLayout name="base" :footer-flexi-mode="true" :header-flexi-mode="true">
       <div v-show="flexiMode === 'blog'" class="container px-8 mx-auto">
         <div class="py-16">
           <ContentDoc>
