@@ -69,13 +69,13 @@ const onAfterEnter = (el) => {
  */
 const flexiMode = useFlexiMode()
 
-// const changeFlexiMode = () => {
-//   if (flexiMode.value === 'blog') {
-//     flexiMode.value = 'note'
-//   } else {
-//     flexiMode.value = 'blog'
-//   }
-// }
+const changeFlexiMode = () => {
+  if (flexiMode.value === 'blog') {
+    flexiMode.value = 'note'
+  } else {
+    flexiMode.value = 'blog'
+  }
+}
 </script>
 
 <template>
@@ -111,7 +111,7 @@ const flexiMode = useFlexiMode()
         >
           RSS
         </NuxtLink>
-        <!-- <button
+        <button
           :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
           class="hidden w-10 h-10 sm:flex justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
           :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-200 ' : 'flex-row bg-green-100 hover:bg-green-200 '"
@@ -125,7 +125,7 @@ const flexiMode = useFlexiMode()
             <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
             <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
           </div>
-        </button> -->
+        </button>
       </div>
     </div>
     <Transition

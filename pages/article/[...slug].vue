@@ -194,7 +194,7 @@ watch(showZoomImage, () => {
     <button
       v-if="!pending && data && data.articleType === 'note'"
       :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
-      class="w-9 h-9 hidden sm:flex justify-center items-center gap-1 fixed bottom-4 left-4 z-40 border transition-colors duration-300 rounded-lg"
+      class="w-9 h-9 hidden sm:flex justify-center items-center gap-1 fixed bottom-4 left-4 z-20 border transition-colors duration-300 rounded-lg"
       :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-50 border-purple-200' : 'flex-row bg-green-100 hover:bg-green-50 border-green-200'"
       @click="changeFlexiMode"
     >

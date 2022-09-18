@@ -407,7 +407,7 @@ provide('setActiveHeadingId', setActiveHeadingId)
       :catalogs="props.data.body.toc.links"
     />
 
-    <div class="hidden md:block fixed top-20 right-4 z-40">
+    <div class="hidden md:block fixed top-20 right-4 z-20">
       <button
         class="p-1 flex justify-center items-center absolute -top-4 -left-4 rounded-full"
         :class="autoChangeColumns ? 'text-yellow-500 bg-yellow-100 hover:bg-yellow-50 border border-yellow-200' : 'text-gray-500 bg-gray-100 hover:bg-gray-50 border border-gray-200'"

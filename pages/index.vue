@@ -4,6 +4,24 @@
 
 const flexiMode = useFlexiMode()
 
+/**
+ *
+ * switch the flexiMode
+ *
+ */
+// const changeFlexiMode = () => {
+//   if (flexiMode.value === 'blog') {
+//     flexiMode.value = 'note'
+//   } else {
+//     flexiMode.value = 'blog'
+//   }
+// }
+
+/**
+ *
+ * get nav data
+ *
+ */
 const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 // const themeOptions = useTheme()
@@ -298,6 +316,18 @@ const getFileTypeIcon = (type) => {
         </div>
       </div>
     </NuxtLayout>
+    <!-- <button
+      :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
+      class="w-9 h-9 hidden sm:flex justify-center items-center gap-1 fixed bottom-16 right-4 z-20 border transition-colors duration-300 rounded-lg"
+      :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-50 border-purple-200' : 'flex-row bg-green-100 hover:bg-green-50 border-green-200'"
+      @click="changeFlexiMode"
+    >
+      <div class="shrink-0 w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
+      <div class="shrink-0 space-y-1">
+        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+      </div>
+    </button> -->
   </div>
 </template>
 
