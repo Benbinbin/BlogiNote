@@ -1,10 +1,37 @@
 <script setup lang="ts">
-const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
-
 const appConfig = useAppConfig()
 
-const articleFolder = data.value[0]
+// const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
+// const { data } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
+const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+
+// const articleFolder = data.value[0]
+
+let articleFolder
+const categoryArr = []
+
+if (Array.isArray(navTree.value)) {
+  articleFolder = navTree.value.find(item => item._path === '/article')
+
+  if (articleFolder?.children && articleFolder.children.length > 0) {
+    articleFolder.children.forEach((item) => {
+      if ('children' in item) {
+        categoryArr.push(item)
+      }
+    })
+  }
+}
+
+const getCategory = (path = '') => {
+  let category = ''
+  const pathArr = path.split('/')
+
+  if (pathArr.length === 3 && pathArr[1] === 'article') {
+    category = pathArr[2]
+  }
+
+  return category
+}
 
 const showSubNav = ref(false)
 
@@ -42,13 +69,13 @@ const onAfterEnter = (el) => {
  */
 const flexiMode = useFlexiMode()
 
-const changeFlexiMode = () => {
-  if (flexiMode.value === 'blog') {
-    flexiMode.value = 'note'
-  } else {
-    flexiMode.value = 'blog'
-  }
-}
+// const changeFlexiMode = () => {
+//   if (flexiMode.value === 'blog') {
+//     flexiMode.value = 'note'
+//   } else {
+//     flexiMode.value = 'blog'
+//   }
+// }
 </script>
 
 <template>
@@ -84,7 +111,7 @@ const changeFlexiMode = () => {
         >
           RSS
         </NuxtLink>
-        <button
+        <!-- <button
           :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
           class="hidden w-10 h-10 sm:flex justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
           :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-200 ' : 'flex-row bg-green-100 hover:bg-green-200 '"
@@ -98,7 +125,7 @@ const changeFlexiMode = () => {
             <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
             <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
           </div>
-        </button>
+        </button> -->
       </div>
     </div>
     <Transition
@@ -116,7 +143,7 @@ const changeFlexiMode = () => {
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
       >
-        <div v-if="articleFolder" class="sub-nav-items-container max-w-full px-6 py-8">
+        <div class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink
             to="/list"
             class="sub-nav-item-card"
@@ -128,21 +155,19 @@ const changeFlexiMode = () => {
               All
             </p>
           </NuxtLink>
-          <template v-for="category in articleFolder.children">
-            <NuxtLink
-              v-if="category.children"
-              :key="category._path"
-              :to="{ path: '/list', query: { category: category.title.toLowerCase() } }"
-              class="sub-nav-item-card"
-              :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
-              @click="showSubNav=false"
-            >
-              <IconCustom name="material-symbols:category-rounded" class="w-8 h-8" />
-              <p class="py-2 font-bold text-center">
-                {{ category.title }}
-              </p>
-            </NuxtLink>
-          </template>
+          <NuxtLink
+            v-for="category in categoryArr"
+            :key="category._path"
+            :to="{ path: '/list', query: { category: getCategory(category._path) } }"
+            class="sub-nav-item-card"
+            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
+            @click="showSubNav=false"
+          >
+            <IconCustom name="material-symbols:category-rounded" class="w-8 h-8" />
+            <p class="py-2 font-bold text-center">
+              {{ category.title }}
+            </p>
+          </NuxtLink>
         </div>
       </div>
     </Transition>

@@ -122,7 +122,7 @@ const showTags = ref(true)
           target="_blank"
           class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
         >
-          <IconCustom name="material-symbols:category-rounded" class="w-4 h-4" />
+          <IconCustom name="material-symbols:category-rounded" class="shrink-0 w-4 h-4" />
           <span class="text-xs">{{ category }}</span>
         </NuxtLink>
         <div v-if="showTime" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
@@ -147,7 +147,7 @@ const showTags = ref(true)
             class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="showSeriesModal=true"
           >
-            <IconCustom name="bi:collection" class="w-4 h-4" />
+            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
             <span class="text-xs">{{ props.data.series }}</span>
           </button>
           <button
@@ -156,7 +156,7 @@ const showTags = ref(true)
             :class="showTags ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'text-gray-300 hover:text-white hover:bg-blue-500 '"
             @click="showTags = !showTags"
           >
-            <IconCustom name="bi:collection" class="w-4 h-4" />
+            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
             <span class="text-xs">Tags</span>
           </button>
         </div>
@@ -206,7 +206,7 @@ const showTags = ref(true)
     />
 
     <button
-      v-if="data?.body?.toc"
+      v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
       class="p-2 hidden sm:flex justify-center items-center fixed bottom-16 right-4 z-40 border transition-colors duration-300 rounded-lg"
       :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
       @click="showCatalog = !showCatalog"

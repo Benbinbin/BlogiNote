@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import type { NavItem } from '@nuxt/content/dist/runtime/types'
+// import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
-const route = useRoute()
+const props = defineProps({
+  footerCatalog: {
+    type: Boolean,
+    default: false
+  },
+  footerFlexiMode: {
+    type: Boolean,
+    default: false
+  }
+})
+
+// const route = useRoute()
 
 const appConfig = useAppConfig()
 
@@ -22,15 +33,32 @@ const showCategoryOptions = ref(false)
 /**
  * set sub nav panel
  */
-const { data: navData } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
-const categoryArr = ref([])
+let articleFolder
+const categoryArr = []
 
-if (Array.isArray(navData.value)) {
-  const articleFolder = navData.value.find(elem => elem._path === '/article')
-  if (articleFolder && articleFolder.children) {
-    categoryArr.value = articleFolder.children
+if (Array.isArray(navTree.value)) {
+  articleFolder = navTree.value.find(item => item._path === '/article')
+
+  if (articleFolder?.children && articleFolder.children.length > 0) {
+    articleFolder.children.forEach((item) => {
+      if ('children' in item) {
+        categoryArr.push(item)
+      }
+    })
   }
+}
+
+const getCategory = (path = '') => {
+  let category = ''
+  const pathArr = path.split('/')
+
+  if (pathArr.length === 3 && pathArr[1] === 'article') {
+    category = pathArr[2]
+  }
+
+  return category
 }
 
 /**
@@ -73,22 +101,24 @@ const toggleCatalogHandler = () => {
     >
       <button
         v-show="!showCategoryOptions"
-        class="px-4 py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="showMoreOptions ? 'shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : ''"
+        class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center bg-gray-50"
+        :class="showMoreOptions ? 'shrink-0' : 'grow'"
+        :style="showMoreOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1),2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
         @click="showMoreOptions = !showMoreOptions"
       >
-        <img
-          :src="appConfig.theme.avatar"
-          alt="avatar"
-          class="w-6 h-6 rounded-full ring-2"
-          :class="showMoreOptions ? (flexiMode === 'blog' ? 'ring-purple-300' : 'ring-green-300') : 'ring-gray-50'"
-        >
-        <p
-          class="text-xs"
-          :class="showMoreOptions ? (flexiMode === 'blog' ? 'text-purple-500' : 'text-green-500') : 'text-gray-500'"
-        >
-          More
-        </p>
+        <div class="flex flex-col justify-center items-center gap-1">
+          <img
+            :src="appConfig.theme.avatar"
+            alt="avatar"
+            class="w-6 h-6"
+          >
+          <p
+            class="text-xs"
+            :class="showMoreOptions ? (flexiMode === 'blog' ? 'text-purple-500' : 'text-green-500') : 'text-gray-500'"
+          >
+            More
+          </p>
+        </div>
       </button>
 
       <Transition
@@ -129,14 +159,17 @@ const toggleCatalogHandler = () => {
 
       <button
         v-show="!showMoreOptions"
-        class="px-4 py-3 relative z-10 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="showCategoryOptions ? (flexiMode === 'blog' ? 'text-purple-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300' : 'text-green-500 shadow-[4px_0_4px_-4px_rgb(0,0,0,0.1),2px_0_2px_-2px_rgb(0,0,0,0.1)] shadow-gray-300') : 'text-gray-500'"
+        class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
+        :class="showCategoryOptions ? 'shrink-0' : 'grow'"
+        :style="showCategoryOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1), 2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
         @click="showCategoryOptions = !showCategoryOptions"
       >
-        <IconCustom name="ic:round-category" class="w-6 h-6" />
-        <p class="text-xs">
-          Category
-        </p>
+        <div class="flex flex-col justify-center items-center gap-1">
+          <IconCustom name="ic:round-category" class="w-6 h-6" />
+          <p class="text-xs">
+            Category
+          </p>
+        </div>
       </button>
 
       <Transition
@@ -156,45 +189,47 @@ const toggleCatalogHandler = () => {
           >
             all
           </NuxtLink>
-          <template v-for="item in categoryArr as NavItem[]">
-            <NuxtLink
-              v-if="item.children"
-              :key="item._path"
-              :to="{ path: '/list', query: { category: item.title.toLowerCase() } }"
-              class="option-item"
-              :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
-              @click="showCategoryOptions = false"
-            >
-              {{ item.title }}
-            </NuxtLink>
-          </template>
+          <NuxtLink
+            v-for="category in categoryArr"
+            :key="category._path"
+            :to="{ path: '/list', query: { category: getCategory(category._path) } }"
+            class="option-item"
+            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            @click="showCategoryOptions = false"
+          >
+            {{ category.title }}
+          </NuxtLink>
         </div>
       </Transition>
 
       <button
-        v-if="route.path && route.path.startsWith('/article')"
+        v-if="props.footerCatalog"
         v-show="!showMoreOptions && !showCategoryOptions"
-        class="px-4 py-3 flex flex-col justify-center items-center space-y-1 bg-gray-50"
-        :class="flexiMode === 'blog' ? (showBlogCatalog ? 'text-purple-500' : ' text-gray-500') : (showNoteCatalog ? 'text-green-500' : ' text-gray-500')"
+        class="grow px-2 py-3 flex justify-center items-center space-y-1 bg-gray-50"
+        :class="showBlogCatalog ? (flexiMode === 'blog' ? 'text-purple-500': 'text-green-500'): 'text-gray-500'"
         @click="toggleCatalogHandler"
       >
-        <IconCustom name="entypo:list" class="w-6 h-6" />
-        <p class="text-xs">
-          catalog
-        </p>
+        <div class="flex flex-col justify-center items-center gap-1">
+          <IconCustom name="entypo:list" class="w-6 h-6" />
+          <p class="text-xs">
+            Catalog
+          </p>
+        </div>
       </button>
 
       <button
+        v-if="props.footerFlexiMode"
         v-show="!showMoreOptions && !showCategoryOptions"
         :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
-        class="mx-6 w-11 h-11 flex justify-center items-center gap-1  transition-colors duration-300 rounded-lg"
-        :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-200' : 'flex-row bg-green-100 hover:bg-green-200'"
+        class="grow flex justify-center items-center"
         @click="changeFlexiMode"
       >
-        <div class="shrink-0 w-2 h-2 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
-        <div class="shrink-0 space-y-1">
-          <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-          <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+        <div class="mx-2 w-11 h-11 flex flex-col justify-center items-center gap-1 transition-colors duration-300 rounded-lg" :class="flexiMode === 'blog' ? 'flex-col bg-purple-100' : 'bg-green-100'">
+          <div class="shrink-0 w-2 h-2 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
+          <div class="shrink-0 space-y-1">
+            <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+            <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+          </div>
         </div>
       </button>
     </div>

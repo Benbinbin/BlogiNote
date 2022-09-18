@@ -20,7 +20,7 @@ const sidebar = ref(null)
 const sidebarWidth = ref(300)
 const sidebarHeight = ref(300)
 const sidebarLeft = ref(16)
-const sidebarBottom = ref(16)
+const sidebarBottom = ref(80)
 
 const sidebarFloatForBlog = useBlogSidebarFloat()
 
@@ -28,11 +28,11 @@ const resetFloatSidebarHandler = () => {
   sidebarWidth.value = 300
   sidebarHeight.value = 300
   sidebarLeft.value = 16
-  if (document.documentElement.clientWidth <= 640) {
-    sidebarBottom.value = 80
-  } else {
-    sidebarBottom.value = 16
-  }
+  // if (document.documentElement.clientWidth <= 640) {
+  sidebarBottom.value = 80
+  // } else {
+  // sidebarBottom.value = 16
+  // }
 }
 
 /**

@@ -24,19 +24,17 @@ It can be used to show your blog posts and learning notes, because BlogiNote has
 2. run the following command in terminal to install dependents
 
   ```bash
-  # yarn
   yarn install
-
-  # npm
-  npm install
   ```
+
+:bulb: you should install [node.js](https://nodejs.org/) first, and add the [yarn](https://yarnpkg.com/) (a package manager) globally in your local PC.
 
 ## Writing
 
 run the following command in terminal to start a development server
 
 ```bash
-npm run dev
+yarn dev
 ```
 
  (add some markdown files) write some articles inside the `/content/article` folder, then you can preview the website at http://localhost:3000
@@ -48,7 +46,7 @@ npm run dev
 1. run the following command in terminal to pre-render the website
 
   ```bash
-  npm run generate
+  yarn generate
   ```
 
 2. you will get the `dist/` directory (symlink to `.output/public`), it is ready to be deployed on any static hosting.

@@ -1,4 +1,15 @@
 <script setup lang="ts">
+const props = defineProps({
+  footerCatalog: {
+    type: Boolean,
+    default: false
+  },
+  footerFlexiMode: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const route = useRoute()
 
 const appConfig = useAppConfig()
@@ -78,7 +89,7 @@ onMounted(() => {
     </Transition>
 
     <nav class="sm:hidden sticky bottom-0 left-0 right-0 z-50">
-      <FooterNav />
+      <FooterNav :footer-catalog="props.footerCatalog" :footer-flexi-mode="props.footerFlexiMode" />
     </nav>
   </div>
 </template>

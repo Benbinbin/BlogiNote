@@ -23,6 +23,14 @@ const route = useRoute()
  */
 const flexiMode = useFlexiMode()
 
+const changeFlexiMode = () => {
+  if (flexiMode.value === 'blog') {
+    flexiMode.value = 'note'
+  } else {
+    flexiMode.value = 'blog'
+  }
+}
+
 /**
  *
  * get article data
@@ -161,7 +169,7 @@ watch(showZoomImage, () => {
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>
-    <NuxtLayout name="base">
+    <NuxtLayout name="base" :footer-catalog="data?.body?.toc && data.body.toc.links.length > 0" :footer-flexi-mode="data && data.articleType==='note'">
       <MarkdownBlog
         v-if="!pending && data && data._type === 'markdown'"
         v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog')"
@@ -182,6 +190,20 @@ watch(showZoomImage, () => {
         </div>
       </div>
     </NuxtLayout>
+
+    <button
+      v-if="!pending && data && data.articleType === 'note'"
+      :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
+      class="w-9 h-9 hidden sm:flex justify-center items-center gap-1 fixed bottom-4 left-4 z-40 border transition-colors duration-300 rounded-lg"
+      :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-50 border-purple-200' : 'flex-row bg-green-100 hover:bg-green-50 border-green-200'"
+      @click="changeFlexiMode"
+    >
+      <div class="shrink-0 w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
+      <div class="shrink-0 space-y-1">
+        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+      </div>
+    </button>
 
     <Teleport to="body">
       <SeriesModal

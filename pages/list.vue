@@ -16,10 +16,27 @@ const route = useRoute()
 // the fetchContentNavigation() composable seems not work with queryBuilder argument at latest @nuxt/content version
 // https://github.com/nuxt/content/issues/1399
 // need to use where method to build a more complex queryBuilder
-const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
-const { data: articleArr } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
+// const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
+// const { data: articleArr } = await useAsyncData('articleFolder', () => fetchContentNavigation(queryBuilder))
 
-const articleFolder = articleArr.value[0]
+const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
+
+// const articleFolder = articleArr.value[0]
+
+let articleFolder
+const categoryArr = []
+
+if (Array.isArray(navTree.value)) {
+  articleFolder = navTree.value.find(item => item._path === '/article')
+
+  if (articleFolder?.children && articleFolder.children.length > 0) {
+    articleFolder.children.forEach((item) => {
+      if ('children' in item) {
+        categoryArr.push(item)
+      }
+    })
+  }
+}
 
 const getCategory = (path = '') => {
   let category = ''
@@ -294,7 +311,7 @@ const getFileTypeIcon = (type) => {
               <p class="px-2 py-1 sm:hidden">
                 Category
               </p>
-              <ul v-if="articleFolder" class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
+              <ul class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
                 <li class="shrink-0">
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
@@ -305,20 +322,18 @@ const getFileTypeIcon = (type) => {
                     <p>all</p>
                   </button>
                 </li>
-                <template v-for="item in articleFolder.children">
-                  <li v-if="'children' in item" :key="item._path" class="shrink-0">
-                    <button
-                      class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
-                      :class="currentCategory === getCategory(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                      @click="toggleCategory(getCategory(item._path))"
-                    >
-                      <IconCustom name="material-symbols:category-rounded" class="w-5 h-5" />
-                      <p>
-                        {{ getCategory(item._path) }}
-                      </p>
-                    </button>
-                  </li>
-                </template>
+                <li v-for="item in categoryArr" :key="item._path" class="shrink-0">
+                  <button
+                    class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
+                    :class="currentCategory === getCategory(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
+                    @click="toggleCategory(getCategory(item._path))"
+                  >
+                    <IconCustom name="material-symbols:category-rounded" class="shrink-0 w-5 h-5" />
+                    <p>
+                      {{ getCategory(item._path) }}
+                    </p>
+                  </button>
+                </li>
               </ul>
             </div>
 
@@ -386,7 +401,7 @@ const getFileTypeIcon = (type) => {
                         :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory]?.includes(series)) ? false : true"
                         @click="toggleSeries(series)"
                       >
-                        <IconCustom name="bi:collection" class="w-5 h-5" />
+                        <IconCustom name="bi:collection" class="shrink-0 w-5 h-5" />
                         <p>{{ series }}</p>
                       </button>
                     </li>
@@ -491,7 +506,7 @@ const getFileTypeIcon = (type) => {
                 :class="currentSeries === item.series ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 hover:text-green-500 bg-green-100'"
                 @click="toggleSeries(item.series)"
               >
-                <IconCustom name="bi:collection" class="w-4 h-4" />
+                <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
                 <p>{{ item.series }}</p>
               </button>
             </div>
