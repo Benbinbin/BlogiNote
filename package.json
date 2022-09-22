@@ -41,13 +41,13 @@
     "@nuxt/content": "^2.1.0",
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
     "@nuxtjs/tailwindcss": "^5.1.2",
+    "feed": "^4.2.2",
     "mermaid": "^9.1.6",
     "rehype-katex": "^6.0.2",
     "remark-critic-markup": "^1.0.0",
     "remark-math": "^5.1.1",
     "remark-sub": "^1.0.0",
     "remark-super": "^1.0.1",
-    "rss": "^1.2.2",
     "sass": "^1.52.3",
     "sitemap": "^7.1.1"
   }

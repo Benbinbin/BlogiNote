@@ -3,9 +3,7 @@ import { serverQueryContent } from '#content/server'
 
 // refer to https://content.nuxtjs.org/guide/recipes/sitemap
 export default defineEventHandler(async (event) => {
-  // const config = useRuntimeConfig()
-
-  // const hostname = config.hostname
+  const config = useRuntimeConfig()
 
   // Fetch all documents
   const docs = await serverQueryContent(event).find()
@@ -13,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const articles = docs.filter(doc => doc?._type === 'markdown')
 
   const sitemap = new SitemapStream({
-    hostname: 'https://bloginote.benbinbin.com'
+    hostname: config.hostname
   })
 
   for (const article of articles) {
@@ -22,6 +20,7 @@ export default defineEventHandler(async (event) => {
       changefreq: 'monthly'
     })
   }
+
   sitemap.end()
 
   return streamToPromise(sitemap)

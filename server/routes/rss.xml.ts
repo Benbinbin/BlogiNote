@@ -1,32 +1,46 @@
-import RSS from 'rss'
+import { Feed } from 'feed'
 import { serverQueryContent } from '#content/server'
 
 // refer to https://mokkapps.de/blog/create-an-rss-feed-with-nuxt-3-and-nuxt-content-v2/
 export default defineEventHandler(async (event) => {
-  // const config = useRuntimeConfig()
+  const config = useRuntimeConfig()
 
-  // const hostname = config.hostname
-
-  const docs = await serverQueryContent(event).find()
-
-  const articles = docs.filter(doc => doc?._type === 'markdown')
-
-  const feed = new RSS({
-    title: 'BlogiNote',
-    site_url: 'https://bloginote.benbinbin.com',
-    feed_url: 'https://bloginote.benbinbin.com/rss.xml',
-    image_url: 'https://bloginote.benbinbin.com/default-avatar.png'
+  // feed information
+  const feed = new Feed({
+    id: config.hostname,
+    title: config.rss.title,
+    description: config.rss.description,
+    link: config.hostname,
+    image: config.rss.image,
+    copyright: config.rss.copyright
   })
 
-  for (const article of articles) {
-    feed.item({
-      title: article.title,
-      url: `https://bloginote.benbinbin.com${article._path}`,
-      description: article.description
+  // feed items
+  const docs = await serverQueryContent(event).find()
+
+  // get all markdown files
+  // the data structure is mdast
+  const articles = docs.filter(doc => doc?._type === 'markdown')
+
+  if (articles.length > 0) {
+    articles.forEach((article) => {
+      const articleDate = article.updated || article.created
+
+      feed.addItem({
+        id: article._path,
+        title: article.title,
+        link: `${config.hostname}${article._path}`,
+        description: article.description,
+        // this property should be the full content of the article
+        // but Nuxt Content now don't provide explicit method to convert mdast to html
+        // although there are some solutions https://journal.maciejpedzi.ch/generating-rss-feeds-for-a-nuxt-content-site
+        content: 'this should be the full content',
+        date: articleDate
+      })
     })
   }
 
-  const feedString = feed.xml({ indent: true })
-  event.res.setHeader('content-type', 'text/xml')
-  event.res.end(feedString)
+  appendHeader(event, 'Content-Type', 'application/xml')
+
+  return feed.rss2()
 })
