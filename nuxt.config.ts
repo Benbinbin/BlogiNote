@@ -60,10 +60,9 @@ export default defineNuxtConfig({
       routes: ['/rss.xml', '/sitemap.xml']
     }
   },
-  runtimeConfig: {
-    // hostname: 'https//bloginote.benbinbin.com'
-    hostname: 'http://localhost:3000'
-  },
+  // runtimeConfig: {
+  //   // hostname: 'https//bloginote.benbinbin.com'
+  // },
   modules: [
     '@nuxt-themes/config/module',
     '@nuxt/content',

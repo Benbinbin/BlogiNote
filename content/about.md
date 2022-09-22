@@ -27,6 +27,6 @@ BlogiNote 是由内容驱动的，即它可以基于多种不同格式的文件�
 :SocialCard{name="Benbinbin" imagePath="juejin.svg" url="https://juejin.cn/user/3175045314389278/columns"}
 ::
 
-If you have any idea or feedback, feel free to contact me with :envelope: <a href="mailto:benthomsonbin@gmail.com" class="text-blue-400">benthomsonbin@gmail.com</a>
+If you have any idea or feedback, feel free to contact me with :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
 
-如果你有任何的想法和反馈，请随时发送邮件到 :envelope: <a href="mailto:benthomsonbin@gmail.com" class="text-blue-400">benthomsonbin@gmail.com</a> 与我取得联系。
+如果你有任何的想法和反馈，请随时发送邮件到 :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} 与我取得联系。

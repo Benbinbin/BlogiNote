@@ -24,7 +24,7 @@ const props = defineProps<{
         :name="props.iconName"
         :class="props.iconClass ? props.iconClass :'w-10 h-10'"
       />
-      <img v-else-if="props.imagePath" :src="props.imagePath" :alt="props.name" class="w-20">
+      <img v-else-if="props.imagePath" :src="props.imagePath" :alt="props.name" class="w-10">
       <IconCustom v-else name="ion:share-social" :class="props.iconClass ? props.iconClass :'w-10 h-10'" />
     </div>
 
