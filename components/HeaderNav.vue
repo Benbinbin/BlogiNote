@@ -112,11 +112,11 @@ const changeFlexiMode = () => {
           About
         </NuxtLink>
         <NuxtLink
-          to="/rss"
+          to="/subscribe"
           class="btn"
           :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
         >
-          RSS
+          Subscribe
         </NuxtLink>
         <button
           v-if="props.headerFlexiMode"

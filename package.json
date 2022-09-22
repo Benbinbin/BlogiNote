@@ -47,6 +47,8 @@
     "remark-math": "^5.1.1",
     "remark-sub": "^1.0.0",
     "remark-super": "^1.0.1",
-    "sass": "^1.52.3"
+    "rss": "^1.2.2",
+    "sass": "^1.52.3",
+    "sitemap": "^7.1.1"
   }
 }

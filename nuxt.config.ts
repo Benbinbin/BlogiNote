@@ -1,5 +1,3 @@
-import { defineNuxtConfig } from 'nuxt'
-
 /**
  *
  * copy asset files to public folder
@@ -56,6 +54,15 @@ export default defineNuxtConfig({
   app: {},
   typescript: {
     shim: false
+  },
+  nitro: {
+    prerender: {
+      routes: ['/rss.xml', '/sitemap.xml']
+    }
+  },
+  runtimeConfig: {
+    // hostname: 'https//bloginote.benbinbin.com'
+    hostname: 'http://localhost:3000'
   },
   modules: [
     '@nuxt-themes/config/module',

@@ -147,12 +147,12 @@ const toggleCatalogHandler = () => {
             About
           </NuxtLink>
           <NuxtLink
-            to="/rss"
+            to="/subscribe"
             class="option-item"
             :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
             @click="showMoreOptions = false"
           >
-            RSS
+            Subscribe
           </NuxtLink>
         </div>
       </Transition>

@@ -1,4 +1,4 @@
-// https://nuxt-themes.netlify.app/
+// the alternative to Nuxt theme https://nuxt-themes.netlify.app/
 export default defineAppConfig({
   theme: {
     meta: {
