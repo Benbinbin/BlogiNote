@@ -15,6 +15,7 @@ export default defineAppConfig({
       showBlogPosts: true,
       postItemLimit: 5
     },
+    subscribePage: true,
     articlePage: {
       showTime: true,
       outdated: {

@@ -112,6 +112,7 @@ const changeFlexiMode = () => {
           About
         </NuxtLink>
         <NuxtLink
+          v-if="appConfig.theme.subscribePage"
           to="/subscribe"
           class="btn"
           :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
