@@ -1,5 +1,7 @@
 import { SitemapStream, streamToPromise } from 'sitemap'
+import { defineEventHandler } from 'h3'
 import { serverQueryContent } from '#content/server'
+import { useRuntimeConfig } from '#imports'
 
 // refer to https://content.nuxtjs.org/guide/recipes/sitemap
 export default defineEventHandler(async (event) => {
