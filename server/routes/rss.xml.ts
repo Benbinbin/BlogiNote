@@ -26,16 +26,21 @@ export default defineEventHandler(async (event) => {
 
   if (articles.length > 0) {
     articles.forEach((article) => {
-      let articleDate = article.updated || article.created
-
-      if (!articleDate) {
-        const today = new Date()
-        const year = today.getFullYear()
-        const month = today.getMonth() + 1
-        const day = today.getDate()
-
-        articleDate = `${year}-${month}-${day}`
+      let articleDate = new Date() // should we set the default date as today?
+      if (article.updated) {
+        articleDate = new Date(article.updated)
+      } else if (article.created) {
+        articleDate = new Date(article.created)
       }
+
+      // if (!articleDate) {
+      //   const today = new Date()
+      //   const year = today.getFullYear()
+      //   const month = today.getMonth() + 1
+      //   const day = today.getDate()
+
+      //   articleDate = `${year}-${month}-${day}`
+      // }
 
       feed.addItem({
         id: article._path,
