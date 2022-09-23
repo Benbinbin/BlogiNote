@@ -7,10 +7,10 @@ export default defineEventHandler(async (event) => {
 
   // feed information
   const feed = new Feed({
-    id: config.hostname,
+    id: config.public.hostname,
     title: config.rss.title,
     description: config.rss.description,
-    link: config.hostname,
+    link: config.public.hostname,
     image: config.rss.image,
     copyright: config.rss.copyright
   })
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       feed.addItem({
         id: article._path,
         title: article.title,
-        link: `${config.hostname}${article._path}`,
+        link: `${config.public.hostname}${article._path}`,
         description: article.description,
         // this property should be the full content of the article
         // but Nuxt Content now don't provide explicit method to convert mdast to html

@@ -61,13 +61,15 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
-    hostname: 'https://bloginote.benbinbin.com',
     rss: {
       title: 'BlogiNote',
       description: 'BlogiNote is a website for showing your blogs and notes with flexible layouts and multiple optimizations.',
       image: 'https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/default-avatar.png',
       favicon: 'https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/default-favicon.ico',
       copyright: `All rights reserved ${(new Date()).getFullYear()}, Benbinbin`
+    },
+    public: {
+      hostname: 'https://bloginote.benbinbin.com'
     }
   },
   modules: [

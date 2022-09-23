@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+const config = useRuntimeConfig()
 </script>
 
 <template>
@@ -8,23 +8,37 @@
       <Title>Subscribe</Title>
     </Head>
     <NuxtLayout name="base">
-      <!-- <div class="grow flex justify-center items-center">
-        <p class="text-xl font-bold text-purple-400">
-          Still working on this page
-        </p>
-      </div> -->
       <ContentDoc class="subscribe-content-container container mx-auto lg:max-w-4xl px-6 md:px-12 py-12">
         <template #not-found>
           <div class="subscribe-content-container">
             <h1>
               Subscribe
             </h1>
-            <p class="max-w-prose mx-auto p-4">
-              This website does not provide any subscription option.
-            </p>
-            <p class="max-w-prose mx-auto p-4">
-              Please check out <a href="https:/blogiNote.benbinbin.com/tutorial/subscribe" target="_blank" class="text-blue-500 hover:text-blue-600 underline font-bold transition-colors duration-300">this tutorial</a> to set up the RSS Feed and sitemap for the website.
-            </p>
+            <div class="max-w-prose mx-auto p-4 space-y-4 ">
+              <div class="flex items-center gap-2">
+                <CopyContent
+                  :content="`${config.public.hostname}/rss.xml`"
+                  :icon-name="'fa-solid:rss-square'"
+                  :icon-color-class="'text-orange-400'"
+                  :icon-size-class="'w-6 h-6'"
+                />
+                <NuxtLink to="/rss.xml" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                  RSS
+                </NuxtLink>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <CopyContent
+                  :content="`${config.public.hostname}/sitemap.xml`"
+                  :icon-name="'majesticons:sitemap'"
+                  :icon-color-class="'text-purple-400'"
+                  :icon-size-class="'w-6 h-6'"
+                />
+                <NuxtLink to="/sitemap.xml" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                  Sitemap
+                </NuxtLink>
+              </div>
+            </div>
           </div>
         </template>
       </ContentDoc>
