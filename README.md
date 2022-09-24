@@ -8,6 +8,7 @@ It can be used to show your blog posts and learning notes, because BlogiNote has
 
 :link: [Demo](http://bloginote.vercel.app/)
 
+:gift: [Play Online](https://stackblitz.com/edit/github-qrmhoj)
 
 ## Features
 
