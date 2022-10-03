@@ -276,10 +276,10 @@ watch(showZoomImage, () => {
 
   ul,
   ol {
-    @apply pl-4 my-2;
+    @apply pl-4 my-2.5;
 
     li {
-      @apply my-1;
+      @apply my-2.5;
     }
   }
 
