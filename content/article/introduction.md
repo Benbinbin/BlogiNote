@@ -19,7 +19,7 @@ Visit this [StackBlitz](https://stackblitz.com/edit/github-qrmhoj) project and t
 
 Magic :sparkles: right? How about building your own project with BlogiNote?
 
-Now you can check out the :point_right: [Quick Start](./tutorial/quick-start) tutorial to setup your project.
+Now you can check out the :point_right: [Get Start](./tutorial/get-start) tutorial to setup your project.
 
 ::TipBox{type="announce" name="Contact Me"}
 If you have any idea or feedback, feel free to contact me with :mailbox: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
