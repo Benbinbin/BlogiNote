@@ -148,7 +148,7 @@ if (!nameValue.value) {
 }
 
 if (bgColorStyleValue.value) {
-  containerStyle.value += ' ' + `background-color: ${bgColorClassValue.value};`
+  containerStyle.value += ' ' + `background-color: ${bgColorStyleValue.value};`
 } else if (bgColorClassValue.value) {
   containerClass.value += ' ' + bgColorClassValue.value
 }

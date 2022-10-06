@@ -7,9 +7,6 @@ import { Icon as Iconify, loadIcon } from '@iconify/vue'
 const props = defineProps<{
   name: string;
   iconClass?: string;
-  colorStyle?: string;
-  widthStyle?: string;
-  heightStyle?: string;
 }>()
 
 // icon
@@ -20,21 +17,6 @@ icon.value = await loadIcon(props.name).catch(_ => null)
 watch(() => props.name, async () => {
   icon.value = await loadIcon(props.name).catch(_ => null)
 })
-
-// class and style value
-let iconStyle = ''
-
-if (props.colorStyle) {
-  iconStyle += ' ' + `color: ${props.colorStyle}`
-}
-
-if (props.widthStyle) {
-  iconStyle += ' ' + `width: ${props.widthStyle}`
-}
-
-if (props.heightStyle) {
-  iconStyle += ' ' + `width: ${props.heightStyle}`
-}
 </script>
 
 <template>
@@ -43,7 +25,6 @@ if (props.heightStyle) {
     :icon="icon"
     class="inline-block"
     :class="props.iconClass"
-    :style="iconStyle"
   />
   <span v-else>{{ name }}</span>
 </template>
