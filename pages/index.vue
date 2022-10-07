@@ -207,7 +207,7 @@ const getFileTypeIcon = (type) => {
                       v-for="article in data"
                       :key="article._path"
                       :article="article"
-                      :list-len="data.length"
+                      :list-len="articleFolderFiles.length"
                       class="flex flex-col sm:hidden"
                     />
                   </template>
