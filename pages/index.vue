@@ -194,6 +194,7 @@ const getFileTypeIcon = (type) => {
                   :key="item._path"
                   :path="item._path"
                   :only="queryPostsOnly"
+                  :limit="1"
                 >
                   <template #default="{ data }">
                     <PostListItem
