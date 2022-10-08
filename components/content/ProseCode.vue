@@ -34,6 +34,14 @@ onMounted(() => {
   }
 })
 
+// toggle code block expand state
+const toggleExpand = () => {
+  expand.value = !expand.value
+  if (!expand.value && codeContainer.value) {
+    codeContainer.value.scrollIntoView(true)
+  }
+}
+
 /**
  *
  * program language the block code belong to
@@ -136,7 +144,7 @@ onMounted(() => {
       :class="props.language === 'mermaid' ? 'bg-gray-50 border-gray-300' : 'border-gray-600 bg-gray-900'"
     >
       <div class="shrink-0">
-        <button v-show="codeLines > 3 && props.language !== 'mermaid'" @click="expand = !expand">
+        <button v-show="codeLines > 3 && props.language !== 'mermaid'" @click="toggleExpand">
           <IconCustom
             name="material-symbols:keyboard-arrow-down-rounded"
             class="w-4 h-4 text-gray-400 transition-transform duration-300"
