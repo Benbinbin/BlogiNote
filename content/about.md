@@ -30,3 +30,9 @@ BlogiNote 是由内容驱动的，即它可以基于多种不同格式的文件�
 If you have any idea or feedback, feel free to contact me with :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
 
 如果你有任何的想法和反馈，请随时发送邮件到 :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} 与我取得联系。
+
+If you're interested in this project, you can sponsor me in the following platform
+
+[![ko-fi](/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
+
+[![afdian](/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)
