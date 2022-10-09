@@ -36,3 +36,5 @@ If you're interested in this project, you can sponsor me in the following platfo
 [![ko-fi](/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
 
 [![afdian](/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)
+
+如果你对该项目感兴趣，可以在上面的两个平台里资助本项目的进一步开发
