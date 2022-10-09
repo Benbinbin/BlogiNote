@@ -1,13 +1,8 @@
 {
   "name": "bloginote",
   "version": "1.0.1",
-  "type": "module",
   "description": "A Nuxt theme for showing blog posts and snippet notes with flexible layouts and multiple optimizations.",
-  "main": "./nuxt.config.ts",
-  "exports": {
-    ".": "./nuxt.config.ts",
-    "./*": "./*/*.*"
-  },
+  "main": "nuxt.config.ts",
   "scripts": {
     "dev": "nuxi dev",
     "build": "nuxi build",
@@ -37,10 +32,9 @@
   },
   "dependencies": {
     "@iconify/vue": "^3.2.1",
-    "@nuxt-themes/config": "npm:@nuxt-themes/config-edge@latest",
-    "@nuxt/content": "^2.1.0",
+    "@nuxt/content": "^2.1.1",
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
-    "@nuxtjs/tailwindcss": "^5.1.2",
+    "@nuxtjs/tailwindcss": "^5.3.5",
     "feed": "^4.2.2",
     "mermaid": "^9.1.6",
     "rehype-katex": "^6.0.2",
