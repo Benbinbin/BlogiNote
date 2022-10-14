@@ -26,14 +26,13 @@
   "author": "Benbinbin <benthomsonbin@gmail.com> (https://benbinbin.com)",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^8.17.0",
-    "nuxt": "3.0.0-rc.11",
-    "typescript": "^4.7.3"
+    "eslint": "^8.25.0",
+    "nuxt": "3.0.0-rc.11"
   },
   "dependencies": {
     "@iconify/vue": "^3.2.1",
     "@nuxt/content": "^2.1.1",
-    "@nuxtjs/eslint-config-typescript": "^10.0.0",
+    "@nuxtjs/eslint-config-typescript": "^11.0.0",
     "@nuxtjs/tailwindcss": "^5.3.5",
     "feed": "^4.2.2",
     "mermaid": "^9.1.6",
