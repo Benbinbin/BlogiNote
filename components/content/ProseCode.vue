@@ -221,6 +221,11 @@ onMounted(() => {
   @apply p-0 overflow-x-auto;
   counter-reset: lines;
 
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
   code {
 
     @apply block p-0 py-4 m-0 whitespace-pre bg-transparent border-0 rounded-none break-normal;
