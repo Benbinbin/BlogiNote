@@ -8,8 +8,23 @@ const tabNodes = slotArr.filter((slot: any) => {
   return slot.type && slot.type.tag && slot.type.tag === 'tab-item'
 })
 
+/**
+ *
+ * change active tab index
+ *
+ */
+const tabGroupContainer = ref(null)
 const activeTabIndex = ref(0)
 
+const changeActiveTabIndexHandler = (index) => {
+  activeTabIndex.value = index
+
+  if (tabGroupContainer.value) {
+      nextTick(() => {
+        tabGroupContainer.value.scrollIntoView({ block: "nearest" })
+      })
+  }
+}
 /**
  *
  * scroll the tabs header
@@ -84,7 +99,7 @@ const tabsHeaderScrollingHandler = () => {
 }
 </script>
 <template>
-  <div class="my-4 border border-gray-200 rounded">
+  <div ref="tabGroupContainer" class="my-4 border border-gray-200 rounded">
     <div class="w-full p-2 flex justify-between items-center sticky top-0 z-30 bg-gray-100 shadow-md rounded-t">
       <div v-if="tabNodes && tabNodes.length > 1" ref="tabsHeaderContainer"
         class="tabs-header grow flex justify-start items-center gap-2 overflow-x-auto scroll-smooth"
@@ -92,7 +107,7 @@ const tabsHeaderScrollingHandler = () => {
         <button v-for="(tab, index) in tabNodes" :key="index"
           class="shrink-0 px-4 py-2 text-sm rounded transition-colors duration-300"
           :class="index === activeTabIndex ? 'bg-gray-300 hover:bg-gray-200' : 'bg-gray-100 hover:bg-gray-200'"
-          @click="activeTabIndex = index">
+          @click="changeActiveTabIndexHandler(index)">
           {{tab.props.name}}
         </button>
       </div>

@@ -28,17 +28,49 @@ const props = defineProps({
 const expand = ref(true)
 const codeContainer = ref(null)
 const codeLines = ref(3)
+
 onMounted(() => {
   if (codeContainer.value) {
     codeLines.value = codeContainer.value.getElementsByClassName('line').length
   }
 })
 
+// page height
+// const height = ref(0)
+// onMounted(() => {
+//   if (document && document.documentElement) {
+//     height.value = document.documentElement.clientHeight
+//   }
+// })
+
+// onMounted(() => {
+//   // listen window resize event
+//   // and adjust the height value
+//   let resizeTimer = null
+
+//   window.addEventListener('resize', () => {
+//     if (resizeTimer) {
+//       clearTimeout(resizeTimer)
+//     }
+
+//     resizeTimer = setTimeout(() => {
+//       if (document && document.documentElement) {
+//         height.value = document.documentElement.clientHeight
+//       }
+
+//       resizeTimer = null
+//     }, 300)
+//   })
+// })
+
 // toggle code block expand state
 const toggleExpand = () => {
   expand.value = !expand.value
+  // if (!expand.value && codeContainer.value && codeContainer.value.offsetHeight > height.value) {
+  //   codeContainer.value.scrollIntoView({ block: "nearest" })
+  // }
   if (!expand.value && codeContainer.value) {
-    codeContainer.value.scrollIntoView(true)
+    codeContainer.value.scrollIntoView({ block: "nearest" })
   }
 }
 
