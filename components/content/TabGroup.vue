@@ -1,142 +1,86 @@
-<script setup lang="ts">
-const slots = useSlots()
-const { flatUnwrap } = useUnwrap()
+<script lang="ts">
+import { defineComponent, h, nextTick, ref } from '#imports'
+import TabGroupHeader from './TabGroupHeader.vue'
 
-const slotArr = slots.default()
+// refer to @nuxt-themes/docus-edge module component: components/content/CodeGroup.vue
+export default defineComponent({
+  setup(props, { slots }) {
 
-const tabNodes = slotArr.filter((slot: any) => {
-  return slot.type && slot.type.tag && slot.type.tag === 'tab-item'
-})
+    /**
+     *
+     * change active tab index
+     *
+     */
+    const tabGroupContainer = ref(null)
+    const activeTabIndex = ref(0)
 
-/**
- *
- * change active tab index
- *
- */
-const tabGroupContainer = ref(null)
-const activeTabIndex = ref(0)
+    const changeActiveTabIndexHandler = (index) => {
+      activeTabIndex.value = index
 
-const changeActiveTabIndexHandler = (index) => {
-  activeTabIndex.value = index
+      if (tabGroupContainer.value) {
+          nextTick(() => {
+            tabGroupContainer.value.scrollIntoView({ block: "nearest" })
+          })
+      }
+    }
 
-  if (tabGroupContainer.value) {
-      nextTick(() => {
-        tabGroupContainer.value.scrollIntoView({ block: "nearest" })
+    return () => {
+      const slotArr = slots.default()
+
+      const tabNameArr = []
+      const tabNodes = slotArr.filter((slot: any) => {
+        if (slot?.type?.tag === 'tab-item') {
+          if (slot.props.name) {
+            tabNameArr.push(slot.props.name)
+          } else {
+            tabNameArr.push('Tab')
+          }
+          return true
+        }
+        return false
       })
+
+
+      return h(
+        'div',
+        {
+          ref: tabGroupContainer,
+          class: 'my-4 border border-gray-200 rounded',
+        },
+        [
+          h(
+            TabGroupHeader,
+            {
+              activeTabIndex: activeTabIndex.value,
+              tabNameArr: tabNameArr,
+              'onUpdate:activeTabIndex': changeActiveTabIndexHandler,
+            }
+          ),
+          h(
+            'div',
+            {
+              class: 'p-2'
+            },
+            // map tabs to content children
+            tabNodes.map((node: any, index) => {
+              return h(
+                'div',
+                {
+                  // show active tab
+                  style: {
+                    display: index === activeTabIndex.value ? 'block' : 'none'
+                  }
+                },
+                [h(
+                  'div',
+                  [node.children?.default?.() || h('div')],
+                )]
+              )
+            })
+          )
+        ]
+      )
+    }
   }
-}
-/**
- *
- * scroll the tabs header
- *
- */
-const showScrollBtn = ref(true)
-
-const scrollPos = ref<'start' | 'middle' | 'end'>('start')
-
-const tabsHeaderContainer = ref(null)
-
-const rejudgeShowScrollBtn = () => {
-  // show of hide the scroll button
-  if (tabsHeaderContainer.value) {
-    if (tabsHeaderContainer.value.scrollWidth <= tabsHeaderContainer.value.clientWidth) {
-      showScrollBtn.value = false
-    } else {
-      showScrollBtn.value = true
-    }
-
-    if (tabsHeaderContainer.value.scrollLeft + tabsHeaderContainer.value.clientWidth >= tabsHeaderContainer.value.scrollWidth) {
-      scrollPos.value = 'end'
-    } else if (tabsHeaderContainer.value.scrollLeft === 0) {
-      scrollPos.value = 'start'
-    } else {
-      scrollPos.value = 'middle'
-    }
-  }
-}
-
-onMounted(() => {
-  rejudgeShowScrollBtn()
-
-  // listen window resize event
-  // and rejudge showing scroll or note
-  let resizeTimer = null
-
-  window.addEventListener('resize', () => {
-    if (resizeTimer) {
-      clearTimeout(resizeTimer)
-    }
-
-    resizeTimer = setTimeout(() => {
-      rejudgeShowScrollBtn()
-
-      resizeTimer = null
-    }, 300)
-  })
 })
-
-const scrollTabsHeaderHandler = (direction) => {
-  if (!tabsHeaderContainer.value) { return }
-  const containerWidth = tabsHeaderContainer.value.clientWidth
-
-  if (direction === 'left') {
-    tabsHeaderContainer.value.scrollLeft -= containerWidth
-  } else if (direction === 'right') {
-    tabsHeaderContainer.value.scrollLeft += containerWidth
-  }
-}
-
-const tabsHeaderScrollingHandler = () => {
-  if (tabsHeaderContainer.value) {
-    if (tabsHeaderContainer.value.scrollLeft + tabsHeaderContainer.value.clientWidth >= tabsHeaderContainer.value.scrollWidth) {
-      scrollPos.value = 'end'
-    } else if (tabsHeaderContainer.value.scrollLeft === 0) {
-      scrollPos.value = 'start'
-    } else {
-      scrollPos.value = 'middle'
-    }
-  }
-}
 </script>
-<template>
-  <div ref="tabGroupContainer" class="my-4 border border-gray-200 rounded">
-    <div class="w-full p-2 flex justify-between items-center sticky top-0 z-30 bg-gray-100 shadow-md rounded-t">
-      <div v-if="tabNodes && tabNodes.length > 1" ref="tabsHeaderContainer"
-        class="tabs-header grow flex justify-start items-center gap-2 overflow-x-auto scroll-smooth"
-        @scroll.passive="tabsHeaderScrollingHandler">
-        <button v-for="(tab, index) in tabNodes" :key="index"
-          class="shrink-0 px-4 py-2 text-sm rounded transition-colors duration-300"
-          :class="index === activeTabIndex ? 'bg-gray-300 hover:bg-gray-200' : 'bg-gray-100 hover:bg-gray-200'"
-          @click="changeActiveTabIndexHandler(index)">
-          {{tab.props.name}}
-        </button>
-      </div>
-      <div v-show="showScrollBtn" class="shrink-0 pl-2 hidden sm:flex items-center gap-0.5">
-        <button v-show="showScrollBtn" :disabled="scrollPos === 'start'"
-          class="shrink-0 p-2 items-center bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-300"
-          :class="scrollPos === 'start' ? 'opacity-30' : ''" @click="scrollTabsHeaderHandler('left')">
-          <IconCustom name="ic:round-keyboard-arrow-left" class="w-4 h-4" />
-        </button>
-        <button v-show="showScrollBtn" :disabled="scrollPos === 'end'"
-          class="shrink-0 p-2 items-center bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-300"
-          :class="scrollPos === 'end' ? 'opacity-30' : ''" @click="scrollTabsHeaderHandler('right')">
-          <IconCustom name="ic:round-keyboard-arrow-right" class="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-
-    <div class="p-2">
-     <div v-for="(item, index) of flatUnwrap($slots.default(), ['div'])" :class="index=== activeTabIndex ? 'block' : 'hidden'">
-      <ContentSlot :use="() => item" />
-     </div>
-    </div>
-  </div>
-
-</template>
-<style lang="scss" scoped>
-.tabs-header {
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-</style>
