@@ -212,13 +212,12 @@ const doubleClickHandler = (event) => {
       :style="`height: ${props.height}`"
       @scroll.passive="scrollingHandler"
     >
-      <div
-        v-for="(item, index) of flatUnwrap($slots.default(), ['p'])"
-        :key="index"
-        class="shrink-0 w-full h-full flex justify-center items-center"
-      >
+    <template v-for="(item, index) of (flatUnwrap($slots.default(), ['p'])) as any">
+      <div v-if="item?.type?.tag === 'img'" :key="index"
+        class="shrink-0 w-full h-full flex justify-center items-center">
         <img :src="item.props.src" :alt="item.props.alt" @dblclick="doubleClickHandler">
       </div>
+    </template>
     </div>
     <Transition
       enter-from-class="translate-x-0"
