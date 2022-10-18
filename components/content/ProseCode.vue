@@ -36,11 +36,13 @@ onMounted(() => {
 })
 
 // toggle code block expand state
+// and scroll the code block into view when collapse it
+const codeBlockContainer = ref(null)
 const toggleExpand = () => {
   expand.value = !expand.value
-  if (!expand.value && codeContainer.value) {
+  if (!expand.value && codeBlockContainer.value) {
     nextTick(() => {
-      codeContainer.value.scrollIntoView({ block: "nearest" })
+      codeBlockContainer.value.scrollIntoView({ block: "nearest" })
     })
 
   }
@@ -140,6 +142,7 @@ onMounted(() => {
 
 <template>
   <div
+    ref="codeBlockContainer"
     class="my-4 rounded-lg"
     :class="props.language === 'mermaid' ? 'border border-gray-300' : ''"
   >
