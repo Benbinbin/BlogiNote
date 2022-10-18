@@ -1,6 +1,6 @@
 {
   "name": "bloginote",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "A Nuxt theme for showing blog posts and snippet notes with flexible layouts and multiple optimizations.",
   "main": "nuxt.config.ts",
   "scripts": {
