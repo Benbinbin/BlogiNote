@@ -27,11 +27,11 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^8.25.0",
-    "nuxt": "3.0.0-rc.11"
+    "nuxt": "3.0.0-rc.12"
   },
   "dependencies": {
     "@iconify/vue": "^3.2.1",
-    "@nuxt/content": "^2.1.1",
+    "@nuxt/content": "^2.2.0",
     "@nuxtjs/eslint-config-typescript": "^11.0.0",
     "@nuxtjs/tailwindcss": "^5.3.5",
     "feed": "^4.2.2",
