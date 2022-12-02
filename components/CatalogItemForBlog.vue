@@ -173,7 +173,8 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
       <ul
         v-if="props.item.children"
         v-show="expand"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : ''"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) ?
+        (floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : 'ml-6') : ''"
       >
         <CatalogItemForBlog
           v-for="subItem in props.item.children"

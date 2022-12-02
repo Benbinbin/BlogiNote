@@ -192,7 +192,7 @@ const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
       <ul
         v-if="props.item.children"
         v-show="!collapseHeadings.has(props.item.id)"
-        :class="(sidebarFloatForNote || toggleNoteSidebarFloat) && floatNoteCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : ''"
+        :class="(sidebarFloatForNote || toggleNoteSidebarFloat) ? (floatNoteCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : 'ml-6'): ''"
       >
         <CatalogItemForNote
           v-for="subItem in props.item.children"
