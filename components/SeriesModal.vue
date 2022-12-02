@@ -131,7 +131,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .modal-content-container {
-  max-height: 70vh;
+  max-height: 65vh;
 
   &::-webkit-scrollbar {
     display: none;

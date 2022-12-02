@@ -23,7 +23,7 @@ if (intervalDays > outdatedThreshold) {
 <template>
   <div
     v-if="showOutdatedWarning"
-    class="w-fit mx-auto my-2 px-2 py-1 flex items-center gap-1 text-xs text-red-300 hover:text-red-500 bg-red-50 hover:bg-red-100 rounded transition-colors duration-30"
+    class="w-fit mx-auto mb-2 px-2 py-1 flex items-center gap-1 text-xs text-red-300 hover:text-red-500 bg-red-50 hover:bg-red-100 rounded transition-colors duration-30"
   >
     <IconCustom name="bi:exclamation-triangle-fill" class="shrink-0 w-4 h-4" />
     <p class="text-center">

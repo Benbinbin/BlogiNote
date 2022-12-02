@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const props = defineProps<{data: any}>()
+const props = defineProps<{
+  data: any;
+  prevArticleUrl: string;
+  nextArticleUrl: string;
+}>()
 
 // defineEmits(['showSeriesModal'])
 const showSeriesModal = useState('showSeriesModal')
@@ -115,7 +119,7 @@ const showTags = ref(true)
       <h1 class="py-4 text-3xl md:text-5xl font-bold text-center">
         {{ props.data.title || "Article" }}
       </h1>
-      <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+      <div class="py-2 flex flex-wrap justify-center items-center gap-2 sm:gap-4">
         <NuxtLink
           v-if="category"
           :to="{ path: '/list', query: { category: category } }"
@@ -144,7 +148,7 @@ const showTags = ref(true)
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
           <button
             v-if="props.data.series"
-            class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
+            class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="showSeriesModal=true"
           >
             <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
@@ -170,7 +174,18 @@ const showTags = ref(true)
         />
       </ClientOnly>
 
-      <hr class="w-1/3 mx-auto my-4">
+      <hr class="w-1/3 mx-auto">
+
+      <div v-if="(props.prevArticleUrl || props.nextArticleUrl)" class="p-2 flex flex-wrap justify-center items-center gap-4">
+        <NuxtLink v-if="props.prevArticleUrl" :to="props.prevArticleUrl" class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300">
+          <IconCustom name="ic:round-keyboard-arrow-left" class="w-4 h-4" />
+          <span>Prev Article</span>
+        </NuxtLink>
+        <NuxtLink v-if="props.nextArticleUrl" :to="props.nextArticleUrl" class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300">
+          <span>Next Article</span>
+          <IconCustom name="ic:round-keyboard-arrow-right" class="w-4 h-4" />
+        </NuxtLink>
+      </div>
 
       <div
         v-if="props.data.tags && props.data.tags.length>0"

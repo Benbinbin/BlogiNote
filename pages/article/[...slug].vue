@@ -40,11 +40,22 @@ const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent
 
 /**
  *
+ * get previous and next article
+ *
+ */
+const prevArticleUrl = ref('')
+const prevArticleName = ref('')
+const nextArticleUrl = ref('')
+const nextArticleName = ref('')
+
+/**
+ *
  * series modal
  *
  */
 // get series data
 const seriesList: any = ref([])
+
 if (data.value?.series) {
   const { data: seriesResult } = await useAsyncData(`${data.value.series}-series`, () => {
     return queryContent('article')
@@ -55,6 +66,41 @@ if (data.value?.series) {
   })
 
   seriesList.value = seriesResult.value
+
+  if (seriesResult.value && seriesResult.value.length>1) {
+    const currentArticleIndex = seriesResult.value.findIndex(item => route.path === item._path)
+
+    if(currentArticleIndex!==-1) {
+      if (currentArticleIndex === 0) {
+        nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
+        nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
+      } else if (currentArticleIndex === seriesResult.value.length - 1) {
+        prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
+        prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
+      } else {
+        nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
+        nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
+        prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
+        prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
+      }
+    }
+  }
+}
+
+if(data.value?.prevArticleUrl) {
+  prevArticleUrl.value = data.value.prevArticleUrl
+}
+
+if(data.value?.prevArticleName) {
+  prevArticleName.value = data.value.prevArticleName
+}
+
+if(data.value?.nextArticleUrl) {
+  nextArticleUrl.value = data.value.nextArticleUrl
+}
+
+if(data.value?.nextArticleName) {
+  nextArticleName.value = data.value.nextArticleName
 }
 
 // show or hide series modal
@@ -174,6 +220,8 @@ watch(showZoomImage, () => {
         v-if="!pending && data && data._type === 'markdown'"
         v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog')"
         :data="data"
+        :prevArticleUrl="prevArticleUrl"
+        :nextArticleUrl="nextArticleUrl"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
       />
       <MarkdownNote
@@ -188,6 +236,29 @@ watch(showZoomImage, () => {
         >
           <pre>{{ data }}</pre>
         </div>
+      </div>
+
+      <div v-if="(prevArticleUrl || nextArticleUrl)" class="container lg:max-w-4xl mx-auto px-6 md:px-12 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <NuxtLink v-if="prevArticleUrl" :to="prevArticleUrl"
+          class="px-4 py-6 flex justify-start items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300">
+          <div class="flex items-center gap-1">
+            <IconCustom name="ic:round-keyboard-arrow-left" class="shrink-0 w-8 h-8 opacity-70" />
+            <div class="flex flex-col gap-2">
+              <p class="text-lg font-bold">Previous Article</p>
+              <p v-if="prevArticleName" class="text-xs opacity-80">{{ prevArticleName }}</p>
+            </div>
+          </div>
+        </NuxtLink>
+        <NuxtLink v-if="nextArticleUrl" :to="nextArticleUrl"
+          class="px-4 py-6 flex justify-end items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300">
+          <div class="flex items-center gap-1">
+            <div class="flex flex-col gap-2">
+              <p class="text-lg font-bold text-end">Next Article</p>
+              <p v-if="nextArticleName" class="text-xs opacity-80 text-end">{{ nextArticleName }}</p>
+            </div>
+            <IconCustom name="ic:round-keyboard-arrow-right" class="shrink-0 w-8 h-8 opacity-70" />
+          </div>
+        </NuxtLink>
       </div>
     </NuxtLayout>
 

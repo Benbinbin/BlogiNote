@@ -342,7 +342,7 @@ provide('setActiveHeadingId', setActiveHeadingId)
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
           <button
             v-if="props.data.series"
-            class="p-2 flex items-center gap-1 text-gray-300 hover:text-white  hover:bg-green-500 focus:outline-green-500 focus:outline-none rounded transition-colors duration-300"
+            class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="showSeriesModal=true"
           >
             <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
