@@ -7,7 +7,9 @@ BlogiNote is a [Nuxt Content](https://content.nuxtjs.org) Theme, it can generate
 
 :gift: [Play Online](https://stackblitz.com/edit/github-qrmhoj)
 
-:link: [Starter Template](https://github.com/Benbinbin/BlogiNote-Starter-Template)
+:page_facing_up: [Starter Template](https://github.com/Benbinbin/BlogiNote-Starter-Template)
+
+:ledger: [Documentation](https://documentation.bloginote.benbinbin.com/)
 
 ## Features
 - content driving website, it can generate web pages based on lots of formats of files, like markdown, json, csv and more
@@ -19,7 +21,7 @@ BlogiNote is a [Nuxt Content](https://content.nuxtjs.org) Theme, it can generate
 ## Usage
 Use the [starter template](https://github.com/Benbinbin/BlogiNote-Starter-Template) to build your own project with the BlogiNote theme.
 
-:point_right: You can check out [this tutorial](https://bloginote.benbinbin.com/article/tutorial/get-start-cn) for more information.
+:point_right: You can check out [this tutorial](https://documentation.bloginote.benbinbin.com/article/tutorial/get-start) for more information.
 
 ## Develop
 You can also build your own template based on BlogiNote, adding some Remark plugins to extend the markdown syntax, or building some Vue components to add more custom features.
