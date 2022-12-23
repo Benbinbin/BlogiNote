@@ -41,6 +41,7 @@ const resetFloatSidebarHandler = () => {
  * and auto adjust the sidebar float state when resize window
  *
  */
+const windowSize = useWindowSize()
 onMounted(() => {
   const setSidebarWidth = () => {
     sidebarWidth.value = (document.documentElement.clientWidth - 896) / 2
@@ -57,43 +58,34 @@ onMounted(() => {
     setSidebarWidth()
   }
 
-  // listen window resize event
+  // watch the window size
   // and adjust the width of the fixed sidebar (not the float sidebar)
-  let resizeTimerForBlog = null
+  watch(() => windowSize.value.width, () => {
 
-  window.addEventListener('resize', () => {
-    if (resizeTimerForBlog) {
-      clearTimeout(resizeTimerForBlog)
+    if (document.documentElement.clientWidth < 1280 && !sidebarFloatForBlog.value) {
+      // when the window resize smaller than 1280px at the first time
+      // and if the sidebar not toggle to float manually
+
+      // reset the size and position of the float catalog
+      if (!toggleSidebarFloatForBlog.value) {
+        resetFloatSidebarHandler()
+        resetCatalogListScaleHandler()
+      }
+
+      // auto float the catalog
+      sidebarFloatForBlog.value = true
+    } else if (document.documentElement.clientWidth >= 1280 && !toggleSidebarFloatForBlog.value && sidebarFloatForBlog.value) {
+      // when the window resize bigger (or equal) than 1280px at the first time
+      // and if the sidebar not toggle to float manually
+
+      // change the float state to fixed
+      sidebarFloatForBlog.value = false
     }
 
-    resizeTimerForBlog = setTimeout(() => {
-      if (document.documentElement.clientWidth < 1280 && !sidebarFloatForBlog.value) {
-        // when the window resize smaller than 1280px at the first time
-        // and if the sidebar not toggle to float manually
-
-        // reset the size and position of the float catalog
-        if (!toggleSidebarFloatForBlog.value) {
-          resetFloatSidebarHandler()
-          resetCatalogListScaleHandler()
-        }
-
-        // auto float the catalog
-        sidebarFloatForBlog.value = true
-      } else if (document.documentElement.clientWidth >= 1280 && !toggleSidebarFloatForBlog.value && sidebarFloatForBlog.value) {
-        // when the window resize bigger (or equal) than 1280px at the first time
-        // and if the sidebar not toggle to float manually
-
-        // change the float state to fixed
-        sidebarFloatForBlog.value = false
-      }
-
-      // set the fixed sidebar width when window resize
-      if (!sidebarFloatForBlog.value && !toggleSidebarFloatForBlog.value) {
-        setSidebarWidth()
-      }
-
-      resizeTimerForBlog = null
-    }, 300)
+    // set the fixed sidebar width when window resize
+    if (!sidebarFloatForBlog.value && !toggleSidebarFloatForBlog.value) {
+      setSidebarWidth()
+    }
   })
 })
 
@@ -126,16 +118,17 @@ onMounted(() => {
  *
  */
 let currentResizePointer = null
-let startResizePointer = null
+let startResizePointer:(null|PointerEvent) = null
 let startSidebarWidth = 0
 let startSidebarHeight = 0
 let startSidebarLeft = 0
 let startSidebarBottom = 0
 type ResizeDirectionType = 'up' | 'bottom' | 'left' | 'right' | 'up-left' | 'up-right' | 'bottom-left' | 'bottom-right' | ''
 const resizeDirection = ref <ResizeDirectionType>('')
-const resizeSidebarPointerDownHandler = (direction, event) => {
+const resizeSidebarPointerDownHandler = (direction: ResizeDirectionType, event:PointerEvent) => {
   if (event) {
-    event.currentTarget.setPointerCapture(event.pointerId)
+    const currentTarget = event.currentTarget as HTMLElement
+    currentTarget.setPointerCapture(event.pointerId)
     currentResizePointer = event
     startResizePointer = event
     resizeDirection.value = direction
@@ -146,7 +139,7 @@ const resizeSidebarPointerDownHandler = (direction, event) => {
   }
 }
 
-const resizeSidebarPointerMoveHandler = (event) => {
+const resizeSidebarPointerMoveHandler = (event:PointerEvent) => {
   if (event && startResizePointer) {
     currentResizePointer = event
 
@@ -192,13 +185,13 @@ const resizeSidebarPointerCancelHandler = () => {
  *
  */
 let currentDragSidebarPointer = null
-let startDragSidebarPointer = null
+let startDragSidebarPointer:(null|PointerEvent) = null
 const dragSidebarState = ref(false)
-const dragSidebarPointerDownHandler = (event) => {
+const dragSidebarPointerDownHandler = (event:PointerEvent) => {
   if (event) {
     dragSidebarState.value = true
-
-    event.currentTarget.setPointerCapture(event.pointerId)
+    const currentTarget = event.currentTarget as HTMLElement
+    currentTarget.setPointerCapture(event.pointerId)
     currentDragSidebarPointer = event
     startDragSidebarPointer = event
 
@@ -207,7 +200,7 @@ const dragSidebarPointerDownHandler = (event) => {
   }
 }
 
-const dragSidebarPointerMoveHandler = (event) => {
+const dragSidebarPointerMoveHandler = (event:PointerEvent) => {
   if (event && startDragSidebarPointer) {
     currentDragSidebarPointer = event
 
@@ -230,7 +223,7 @@ const dragSidebarPointerCancelHandler = () => {
  * tree catalog type interaction
  *
  */
-const catalogList = ref(null)
+const catalogList = ref<HTMLElement | null>(null) // get the catalog DOM
 const catalogListScale = ref(1)
 const catalogListTranslateX = ref(0)
 const catalogListTranslateY = ref(0)
@@ -245,11 +238,13 @@ const resetCatalogListScaleHandler = () => {
 const miniScale = ref(0.5)
 const maxScale = ref(1.5)
 // scroll mouse (or use trackpad) to zoom
-const scrollToZoomCatalogHandler = (event) => {
+const scrollToZoomCatalogHandler = (event:WheelEvent) => {
   if (sidebarFloatForBlog.value && floatBlogCatalogType.value === 'tree' && catalogList.value) {
     event.stopPropagation()
     event.preventDefault()
-    const delta = (event.wheelDelta ? event.wheelDelta : -event.deltaY)
+    // wheelDelta seem from the mousewheel event (which is Deprecated), not from the wheel event
+    // const delta = (event.wheelDelta ? event.wheelDelta : -event.deltaY)
+    const delta = -event.deltaY
 
     // pinch in the trackpad is imitate the wheel event
     // but the Ctrl key will be always true
@@ -267,7 +262,8 @@ const scrollToZoomCatalogHandler = (event) => {
     let mouseRelativeY = event.offsetY
 
     if (event.target !== event.currentTarget) {
-      const eventTargetRect = event.target.getBoundingClientRect()
+      const target = event.target as HTMLElement
+      const eventTargetRect = target.getBoundingClientRect()
       const catalogListRect = catalogList.value.getBoundingClientRect()
       mouseRelativeX += eventTargetRect.x - catalogListRect.x
       mouseRelativeY += eventTargetRect.y - catalogListRect.y
@@ -282,8 +278,8 @@ const scrollToZoomCatalogHandler = (event) => {
 }
 
 // move the catalog
-let currentDragCatalogPointer = null
-let startDragCatalogPointer = null
+let currentDragCatalogPointer: (null | PointerEvent) = null
+let startDragCatalogPointer: (null | PointerEvent) = null
 let startCatalogListTranslateX = 0
 let startCatalogListTranslateY = 0
 
@@ -291,9 +287,12 @@ let startCatalogListTranslateY = 0
 // just execute the default action (change the anchor link of the page URL)
 const exceptTagNames = ['A', 'BUTTON', 'svg', 'path']
 
-const dragCatalogPointerDownHandler = (event) => {
-  if (sidebarFloatForBlog.value && floatBlogCatalogType.value === 'tree' && !exceptTagNames.includes(event.target.tagName) && !currentDragCatalogPointer) {
-    event.currentTarget.setPointerCapture(event.pointerId)
+const dragCatalogPointerDownHandler = (event:PointerEvent) => {
+  const target = event.target as HTMLElement
+  const currentTarget = event.currentTarget as HTMLElement
+
+  if (sidebarFloatForBlog.value && floatBlogCatalogType.value === 'tree' && !exceptTagNames.includes(target.tagName) && !currentDragCatalogPointer) {
+    currentTarget.setPointerCapture(event.pointerId)
     currentDragCatalogPointer = event
     startDragCatalogPointer = event
 
@@ -302,7 +301,7 @@ const dragCatalogPointerDownHandler = (event) => {
   }
 }
 
-const dragCatalogPointerMoveHandler = (event) => {
+const dragCatalogPointerMoveHandler = (event:PointerEvent) => {
   if (!currentDragCatalogPointer || event.pointerId !== currentDragCatalogPointer.pointerId) { return }
   if (sidebarFloatForBlog.value && floatBlogCatalogType.value === 'tree' && startDragCatalogPointer) {
     currentDragCatalogPointer = event
@@ -315,7 +314,7 @@ const dragCatalogPointerMoveHandler = (event) => {
   }
 }
 
-const dragCatalogPointerCancelHandler = (event) => {
+const dragCatalogPointerCancelHandler = (event:PointerEvent) => {
   if (currentDragCatalogPointer && event.pointerId === currentDragCatalogPointer.pointerId) {
     currentDragCatalogPointer = null
     startDragCatalogPointer = null
@@ -326,7 +325,7 @@ const dragCatalogPointerCancelHandler = (event) => {
 
 // toggle catalog type between "tree" and "list"
 const floatBlogCatalogType = useFloatBlogCatalogType()
-const catalogContainer = ref(null)
+const catalogContainer = ref<HTMLElement | null>(null) // get the catalog container DOM
 
 const toggleFloatCatalogTypeHandler = () => {
   if (floatBlogCatalogType.value === 'tree') {
@@ -343,11 +342,14 @@ const toggleFloatCatalogTypeHandler = () => {
 const scrollCatalogTo = ref('')
 onMounted(() => {
   watch(scrollCatalogTo, () => {
-    if (scrollCatalogTo.value === 'top') {
-      catalogContainer.value.scrollTop = 0
-    } else if (scrollCatalogTo.value === 'bottom') {
-      catalogContainer.value.scrollTop = catalogContainer.value.scrollHeight - catalogContainer.value.clientHeight
+    if (catalogContainer.value) {
+      if (scrollCatalogTo.value === 'top') {
+        catalogContainer.value.scrollTop = 0
+      } else if (scrollCatalogTo.value === 'bottom') {
+        catalogContainer.value.scrollTop = catalogContainer.value.scrollHeight - catalogContainer.value.clientHeight
+      }
     }
+
     scrollCatalogTo.value = ''
   })
 })

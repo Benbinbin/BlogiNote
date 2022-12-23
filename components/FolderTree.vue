@@ -17,9 +17,9 @@ const expand = ref(true)
  * get file type icon
  *
  */
-const fileTypeMap = useFileTypeMap()
+const fileTypeMap: any = useFileTypeMap() // 🚨 maybe should fix this any type
 
-const getFileTypeIcon = (type) => {
+const getFileTypeIcon = (type:string) => {
   const fileType = fileTypeMap.value[type]
 
   if (!fileType) {
@@ -117,7 +117,7 @@ const rejudgeShowScrollBtn = () => {
       showScrollBtn.value = true
     }
 
-    if (folderNavContainer.value.scrollLeft + folderNavContainer.value.clientWidth >= folderNavContainer.value.scrollWidth) {
+    if (Math.ceil(folderNavContainer.value.scrollLeft + folderNavContainer.value.clientWidth) >= folderNavContainer.value.scrollWidth) {
       scrollPos.value = 'end'
     } else if (folderNavContainer.value.scrollLeft === 0) {
       scrollPos.value = 'start'
@@ -127,8 +127,13 @@ const rejudgeShowScrollBtn = () => {
   }
 }
 
+const windowSize = useWindowSize()
 onMounted(() => {
   rejudgeShowScrollBtn()
+
+  watch(() => windowSize.value.width, () => {
+    rejudgeShowScrollBtn()
+  })
 })
 
 const scrollFolderNavHandler = (direction) => {
@@ -144,7 +149,7 @@ const scrollFolderNavHandler = (direction) => {
 
 const folderNavScrollingHandler = () => {
   if (folderNavContainer.value) {
-    if (folderNavContainer.value.scrollLeft + folderNavContainer.value.clientWidth >= folderNavContainer.value.scrollWidth) {
+    if (Math.ceil(folderNavContainer.value.scrollLeft + folderNavContainer.value.clientWidth) >= folderNavContainer.value.scrollWidth) {
       scrollPos.value = 'end'
     } else if (folderNavContainer.value.scrollLeft === 0) {
       scrollPos.value = 'start'

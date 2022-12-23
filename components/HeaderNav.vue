@@ -88,13 +88,13 @@ const changeFlexiMode = () => {
 <template>
   <div class="relative">
     <div
-      class="px-4 py-3 flex justify-between items-center text-sm bg-gray-50 border-b"
+      class="px-4 py-3 grid grid-cols-3 items-center gap-2 text-sm bg-gray-50 border-b"
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
       <NuxtLink to="/">
         <img :src="appConfig.theme.avatar" alt="avatar" class="w-8 h-8 rounded-full">
       </NuxtLink>
-      <div class="flex items-center gap-6">
+      <div class="flex justify-center items-center gap-6">
         <button
           class="btn hidden sm:block"
           :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
@@ -119,6 +119,16 @@ const changeFlexiMode = () => {
         >
           Subscribe
         </NuxtLink>
+      </div>
+      <div class="flex justify-end items-center gap-4">
+        <button class="self-stretch px-4 py-1.5 flex justify-center items-center gap-2 text-gray-600 border border-gray-400 rounded-md opacity-50 hover:opacity-100 transition-opacity duration-300">
+          <IconCustom name="tabler:search" class="w-4 h-4"></IconCustom>
+          <span class="hidden lg:block text-sm">Search</span>
+          <span class="hidden md:flex justify-center items-center gap-1 text-xs ">
+            <code class="px-2 py-0.5 border rounded bg-gray-200">Ctrl</code>
+            <code class="px-2 py-0.5 border rounded bg-gray-200">K</code>
+          </span>
+        </button>
         <button
           v-if="props.headerFlexiMode"
           :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
@@ -136,14 +146,15 @@ const changeFlexiMode = () => {
           </div>
         </button>
       </div>
+
     </div>
     <Transition
       enter-from-class="translate-y-0"
       enter-active-class="transition-all duration-300 ease-in"
       enter-to-class="translate-y-full"
       leave-from-class="translate-y-full"
-      leave-active-class="transition-all duration-75 ease-out"
-      leave-to-class="translate-y-0"
+      leave-active-class="transition-all duration-100 ease-out"
+      leave-to-class="-translate-y-full"
       @after-enter="onAfterEnter"
     >
       <div

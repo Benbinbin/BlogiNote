@@ -1,9 +1,34 @@
 // const appConfig = useAppConfig()
 
-// flexible mode
+/**
+ *
+ * window width and heigh
+ * change when window resize in /layout/base.vue component
+ *
+ */
+interface WindowSize {
+  height: number;
+  width: number;
+}
+export const useWindowSize = () => useState<WindowSize>('windowSize', () => {
+  return {
+    height: 0,
+    width: 0
+  }
+})
+
+/**
+ *
+ * flexible mode
+ *
+ */
 export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
 
-// article page catalog
+/**
+ *
+ * article catalog
+ *
+ */
 // move this share state to MarkdownBlog component
 // export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => {
 //   return false
@@ -25,8 +50,13 @@ export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNot
 // move this share state to page/article/[...slug] component
 // export const useShowSeriesModal = () => useState<Boolean>('showSeriesModal', () => false)
 
-// article page zoom image
-interface ZoomImageType {
+
+/**
+ *
+ * image zoom
+ *
+ */
+export interface ZoomImageType {
   src: string;
   alt?: string;
   width: number;

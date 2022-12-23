@@ -39,52 +39,40 @@ const resetFloatSidebarHandler = () => {
  * and auto adjust the sidebar float state when resize window
  *
  */
+const windowSize = useWindowSize()
 onMounted(() => {
   // init float sidebar
   resetFloatSidebarHandler()
 
-  // listen window resize event
+  // watch the window size
   // and adjust the width of the fixed sidebar (not the float sidebar)
-  let resizeTimerForNote = null
+  watch(() => windowSize.value.width, () => {
 
-  const setSidebarWidth = () => {
-    // 896 is the article max width
-    sidebarWidth.value = (document.documentElement.clientWidth - 896) / 2 - 16
-  }
+    if (document.documentElement.clientWidth < 1280 && !sidebarFloatForNote.value) {
+      // when the window resize smaller than 1280px at the first time
+      // and if the sidebar not toggle to float manually
 
-  window.addEventListener('resize', () => {
-    if (resizeTimerForNote) {
-      clearTimeout(resizeTimerForNote)
+      // reset the size and position of the float catalog
+      if (!toggleSidebarFloatForNote.value) {
+        resetFloatSidebarHandler()
+        resetCatalogListScaleHandler()
+      }
+
+      // auto float the catalog
+      sidebarFloatForNote.value = true
+    } else if (document.documentElement.clientWidth >= 1280 && !toggleSidebarFloatForNote.value && sidebarFloatForNote.value) {
+      // when the window resize bigger (or equal) than 1280px at the first time
+      // and if the sidebar not toggle to float manually
+
+      // change the float state to fixed
+      sidebarFloatForNote.value = false
     }
 
-    resizeTimerForNote = setTimeout(() => {
-      if (document.documentElement.clientWidth < 1280 && !sidebarFloatForNote.value) {
-        // when the window resize smaller than 1280px at the first time
-        // and if the sidebar not toggle to float manually
-
-        // reset the size and position of the float catalog
-        if (!toggleSidebarFloatForNote.value) {
-          resetFloatSidebarHandler()
-          resetCatalogListScaleHandler()
-        }
-
-        // auto float the catalog
-        sidebarFloatForNote.value = true
-      } else if (document.documentElement.clientWidth >= 1280 && !toggleSidebarFloatForNote.value && sidebarFloatForNote.value) {
-        // when the window resize bigger (or equal) than 1280px at the first time
-        // and if the sidebar not toggle to float manually
-
-        // change the float state to fixed
-        sidebarFloatForNote.value = false
-      }
-
-      // set the fixed sidebar width when window resize
-      if (!sidebarFloatForNote.value && !toggleSidebarFloatForNote.value) {
-        setSidebarWidth()
-      }
-
-      resizeTimerForNote = null
-    }, 300)
+    // set the fixed sidebar width when window resize
+    if (!sidebarFloatForNote.value && !toggleSidebarFloatForNote.value) {
+      // 896 is the article max width
+      sidebarWidth.value = (document.documentElement.clientWidth - 896) / 2 - 16
+    }
   })
 })
 

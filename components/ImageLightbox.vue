@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ZoomImageType } from '@/composables/states'
 const flexiMode = useFlexiMode()
 const showZoomImage = useShowZoomImage()
 const zoomImage = useZoomImage()
@@ -13,10 +14,10 @@ const showBlurBg = ref(false)
  */
 const zoomImageState = useShowZoomImage()
 
-const changeCurrentZoomImage = (target) => {
+const changeCurrentZoomImage = (target:('prev' | 'next')) => {
   if (zoomImageList.value.length === 0) { return }
   const index = zoomImageList.value.findIndex((item) => {
-    return item.src === currentZoomImg.value.src
+    return item.src === currentZoomImg.value?.src
   })
   if (index === -1) { return }
 
@@ -35,7 +36,7 @@ const changeCurrentZoomImage = (target) => {
   }
 }
 
-const lightboxKeyListener = function (event) {
+const lightboxKeyListener = function (event:KeyboardEvent) {
   if (event.key === 'Escape') {
     // press Esc key to hide lightbox
     zoomImageState.value = 'hiding'
@@ -69,14 +70,14 @@ onMounted(() => {
  * image list scroll
  *
  */
-const zoomImageListContainer = ref(null)
+const zoomImageListContainer = ref<HTMLElement | null>(null)
 const showScrollBtns = ref(false)
-
+const windowSize = useWindowSize()
 onMounted(() => {
   if (!zoomImageListContainer.value) { return }
   if (zoomImageListContainer.value.scrollWidth > zoomImageListContainer.value.offsetWidth) { showScrollBtns.value = true }
 
-  window.addEventListener('resize', () => {
+  watch(() => windowSize.value.width, () => {
     if (zoomImageListContainer.value && zoomImageListContainer.value.scrollWidth > zoomImageListContainer.value.offsetWidth) {
       showScrollBtns.value = true
     } else {
@@ -97,7 +98,7 @@ const scrollingHandler = () => {
   }
 }
 
-const scrollHandler = (direction) => {
+const scrollHandler = (direction:('left' | 'right')) => {
   if (!zoomImageListContainer.value) { return }
   if (direction === 'left') {
     zoomImageListContainer.value.scrollLeft -= zoomImageListContainer.value.offsetWidth
@@ -107,12 +108,12 @@ const scrollHandler = (direction) => {
 }
 
 // set current zoom image when click the image list item
-const setCurrentZoomImg = (item) => {
+const setCurrentZoomImg = (item: ZoomImageType) => {
   currentZoomImg.value = item
   transformInitial()
 }
 
-const image = ref(null)
+const image = ref<HTMLElement | null>(null) // get the image DOM
 
 const width = ref(0)
 const height = ref(0)
@@ -224,7 +225,8 @@ const transitionEndHandler = () => {
 }
 
 const onBeforeLeave = () => {
-  if (currentZoomImg.value.src === zoomImage.value.src) {
+
+  if (currentZoomImg.value && zoomImage.value && currentZoomImg.value.src === zoomImage.value.src) {
     toggleImageClassName('add')
     currentZoomImg.value = zoomImage.value
   } else {
@@ -269,7 +271,7 @@ const onAfterLeave = () => {
 
 const showBtns = ref(false)
 
-const clickHandler = (state) => {
+const clickHandler = (state:Boolean) => {
   if (state && zoomImage.value) {
     // show or hide the control buttons
     showBtns.value = !showBtns.value
@@ -286,11 +288,13 @@ const clickHandler = (state) => {
 // refer to https://stackoverflow.com/a/70251437/10699431
 const miniScale = 0.2
 const maxScale = 10
-const scrollToZoomHandler = (event) => {
-  if (showZoomImage.value === 'show' && zoomImage.value) {
+const scrollToZoomHandler = (event:WheelEvent) => {
+  if (image.value && showZoomImage.value === 'show' && zoomImage.value) {
     event.stopPropagation()
     event.preventDefault()
-    const delta = (event.wheelDelta ? event.wheelDelta : -event.deltaY)
+    // wheelDelta seem from the mousewheel event (which is Deprecated), not from the wheel event
+    // const delta = (event.wheelDelta ? event.wheelDelta : -event.deltaY)
+    const delta = -event.deltaY
 
     // pinch in the trackpad is imitate the wheel event
     // but the Ctrl key will be always true
@@ -323,19 +327,19 @@ const scrollToZoomHandler = (event) => {
  * listening the pointer event
  *
  */
-let startPointerA = null
-let startPointerB = null
-let pointerA = null
-let pointerB = null
+let startPointerA:(PointerEvent | null) = null
+let startPointerB: (PointerEvent | null) = null
+let pointerA: (PointerEvent | null) = null
+let pointerB: (PointerEvent | null) = null
 let originRelativeX = 0
 let originRelativeY = 0
 let prevDistance = 0
 
-const getDistance = (a, b) => {
+const getDistance = (a:PointerEvent, b:PointerEvent) => {
   return Math.sqrt((b.clientX - a.clientX) ** 2 + (b.clientY - a.clientY) ** 2)
 }
 
-const pointerDownHandler = (event) => {
+const pointerDownHandler = (event:PointerEvent) => {
   if (!showZoomImage.value) { return }
 
   if (!pointerA) {
@@ -346,7 +350,7 @@ const pointerDownHandler = (event) => {
     pointerB = startPointerB
   }
 
-  if (pointerA && pointerB) {
+  if (startPointerA && startPointerB && pointerA && pointerB) {
     // calculate the distance as reference value before the move event
     prevDistance = getDistance(pointerA, pointerB)
 
@@ -359,8 +363,8 @@ const pointerDownHandler = (event) => {
   translateStartPointY = translateY
 }
 
-const pointerMoveHandler = (event) => {
-  if (!showZoomImage.value) { return }
+const pointerMoveHandler = (event:PointerEvent) => {
+  if (!image.value || !showZoomImage.value) { return }
   if (pointerA && pointerB) {
     event.preventDefault()
 
@@ -392,7 +396,7 @@ const pointerMoveHandler = (event) => {
     prevDistance = currentDistance
 
     transformValue.value = `translate(${translateX}px, ${translateY}px) scale(${scale.value})`
-  } else if (pointerA || pointerB) {
+  } else if ((startPointerA && pointerA) || (startPointerB && pointerB)) {
     let prevPointer
     if (pointerA && event.pointerId === pointerA.pointerId) {
       prevPointer = startPointerA
@@ -402,10 +406,12 @@ const pointerMoveHandler = (event) => {
       pointerB = event
     }
 
-    translateX = translateStartPointX + (event.clientX - prevPointer.clientX)
-    translateY = translateStartPointY + (event.clientY - prevPointer.clientY)
+    if(prevPointer) {
+      translateX = translateStartPointX + (event.clientX - prevPointer.clientX)
+      translateY = translateStartPointY + (event.clientY - prevPointer.clientY)
 
-    transformValue.value = `translate(${translateX}px, ${translateY}px) scale(${scale.value})`
+      transformValue.value = `translate(${translateX}px, ${translateY}px) scale(${scale.value})`
+    }
 
     // set some style change when swipe from the initial transform state (scale = 1 translate x and y = 0)
     if (scale.value === 1 && translateStartPointX === 0 && translateStartPointY === 0) {
@@ -419,9 +425,9 @@ const pointerMoveHandler = (event) => {
   }
 }
 
-const pointerCancelHandler = (event) => {
+const pointerCancelHandler = (event:PointerEvent) => {
   // swipe from the initial transform state (scale = 1 translate x and y = 0) can trigger hide lightbox or change zoom image feature
-  if (scale.value === 1 && translateStartPointX === 0 && translateStartPointY === 0) {
+  if (image.value && scale.value === 1 && translateStartPointX === 0 && translateStartPointY === 0) {
     const imageRect = image.value.getBoundingClientRect()
 
     // swipe up/down to hide lightbox
@@ -549,13 +555,14 @@ const pointerCancelHandler = (event) => {
     >
       <div
         v-show="showBtns && zoomImageList.length > 1"
-        class="p-2 fixed bottom-20 sm:bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-x-2 bg-gray-100 rounded-lg border border-gray-200"
+        class="p-2 absolute  bottom-20 sm:bottom-4 left-1/2 z-10 -translate-x-1/2 flex items-center gap-x-2 bg-gray-100 rounded-lg border border-gray-200 cursor-default"
+        @click.stop
       >
         <button
           v-show="showScrollBtns"
           :disabled="scrollPos === 'start'"
           class="btn"
-          :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-green-500 active:bg-green-500 border-green-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
+          :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
           @click.stop.prevent="scrollHandler('left')"
         >
           <IconCustom name="material-symbols:arrow-left-rounded" class="w-6 h-6" />
@@ -579,7 +586,7 @@ const pointerCancelHandler = (event) => {
           v-show="showScrollBtns"
           :disabled="scrollPos === 'end'"
           class="btn"
-          :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-green-500 active:bg-green-500 border-green-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
+          :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
           @click.stop.prevent="scrollHandler('right')"
         >
           <IconCustom name="material-symbols:arrow-right-rounded" class="w-6 h-6" />

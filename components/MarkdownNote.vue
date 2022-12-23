@@ -220,6 +220,7 @@ const autoChangeColumns = ref(true)
 
 let resizeTimerForColumns = null
 
+const windowSize = useWindowSize()
 onMounted(() => {
   if (document.documentElement.clientWidth && window) {
     if (document.documentElement.clientWidth >= 1000) {
@@ -229,19 +230,11 @@ onMounted(() => {
       if (articleTree.length > 1) { layout.value = 'compact' }
     }
 
-    window.addEventListener('resize', () => {
-      if (resizeTimerForColumns) {
-        clearTimeout(resizeTimerForColumns)
+    watch(() => windowSize.value.width, () => {
+      recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
+      if (autoChangeColumns.value) {
+        divideColumns.value = recommendColumns.value
       }
-
-      resizeTimerForColumns = setTimeout(() => {
-        recommendColumns.value = Math.max(Math.floor(document.documentElement.clientWidth / 500), 1)
-        if (autoChangeColumns.value) {
-          divideColumns.value = recommendColumns.value
-        }
-
-        resizeTimerForColumns = null
-      }, 300)
     })
   }
 })

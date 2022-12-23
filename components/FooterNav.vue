@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import type { NavItem } from '@nuxt/content/dist/runtime/types'
+import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
 const props = defineProps({
   footerCatalog: {
@@ -36,7 +36,7 @@ const showCategoryOptions = ref(false)
 const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 let articleFolder
-const categoryArr = []
+const categoryArr: NavItem[] = []
 
 if (Array.isArray(navTree.value)) {
   articleFolder = navTree.value.find(item => item._path === '/article')
@@ -215,6 +215,14 @@ const toggleCatalogHandler = () => {
           <p class="text-xs">
             Catalog
           </p>
+        </div>
+      </button>
+
+      <button v-show="!showMoreOptions && !showCategoryOptions" class="grow px-2 py-3 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
+        >
+        <div class="flex flex-col justify-center items-center gap-1">
+          <IconCustom name="tabler:search" class="w-6 h-6"></IconCustom>
+          <p class="text-xs">Search</p>
         </div>
       </button>
 

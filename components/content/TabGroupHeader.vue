@@ -12,7 +12,7 @@ const props = defineProps({
 
 const emits = defineEmits(['update:activeTabIndex'])
 
-const tabsHeaderContainer = ref(null)
+const tabsHeaderContainer = ref<HTMLElement | null>(null) // get the tabs header DOM
 
 /**
   *
@@ -42,27 +42,18 @@ const rejudgeShowScrollBtn = () => {
   }
 }
 
+const windowSize = useWindowSize()
 onMounted(() => {
   rejudgeShowScrollBtn()
 
-  // listen window resize event
+  // watch window size change
   // and rejudge showing scroll or note
-  let resizeTimer = null
-
-  window.addEventListener('resize', () => {
-    if (resizeTimer) {
-      clearTimeout(resizeTimer)
-    }
-
-    resizeTimer = setTimeout(() => {
-      rejudgeShowScrollBtn()
-
-      resizeTimer = null
-    }, 300)
+  watch(() => windowSize.value.width, () => {
+    rejudgeShowScrollBtn()
   })
 })
 
-const scrollTabsHeaderHandler = (direction) => {
+const scrollTabsHeaderHandler = (direction:('left' | 'right')) => {
   if (!tabsHeaderContainer.value) { return }
   const containerWidth = tabsHeaderContainer.value.clientWidth
 

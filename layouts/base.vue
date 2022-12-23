@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useWindowSize } from '~~/composables/states';
+
 const props = defineProps({
   headerFlexiMode: {
     type: Boolean,
@@ -26,11 +28,9 @@ const appConfig = useAppConfig()
 useHead({
   style: [
     {
-      type: 'text/css',
       children: 'html, body { scroll-behavior: smooth }'
     },
     {
-      type: 'text/css',
       children: 'body { overflow: overlay }'
     }
   ],
@@ -43,27 +43,59 @@ useHead({
 })
 
 /**
+ *
+ * listen page resize
+ *
+ */
+let resizeTimer:(null | ReturnType<typeof setTimeout>) = null
+const windowSize = useWindowSize()
+// console.log(windowSize.value.width, windowSize.value.height);
+
+onMounted(() => {
+  if (document) {
+    windowSize.value.width = document.documentElement.clientWidth
+    windowSize.value.height = document.documentElement.clientHeight
+    // console.log(windowSize.value.width, windowSize.value.height);
+  }
+
+  window.addEventListener('resize', () => {
+    if (resizeTimer) {
+      clearTimeout(resizeTimer)
+    }
+
+    resizeTimer = setTimeout(() => {
+      windowSize.value.width = document.documentElement.clientWidth
+      windowSize.value.height = document.documentElement.clientHeight
+      // console.log(windowSize.value.width, windowSize.value.height);
+
+      resizeTimer = null
+    }, 300)
+  })
+})
+
+
+/**
  * listen page scroll
  */
 const isShowBackBtn = ref(false)
-let timer
+let scrollTimer:(null | ReturnType<typeof setTimeout>)
 onMounted(() => {
   if (document) {
     const scrollDistanceInit = document.body.scrollTop || document.documentElement.scrollTop
     if (scrollDistanceInit > 600) { isShowBackBtn.value = true }
     document.addEventListener('scroll', () => {
-      if (timer) {
-        clearTimeout(timer)
-        timer = null
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
+        scrollTimer = null
       }
-      timer = setTimeout(() => {
+      scrollTimer = setTimeout(() => {
         const scrollDistance = document.body.scrollTop || document.documentElement.scrollTop
         if (scrollDistance > 600) {
           isShowBackBtn.value = true
         } else {
           isShowBackBtn.value = false
         }
-        timer = null
+        scrollTimer = null
       }, 100)
     })
   }
@@ -75,6 +107,11 @@ onMounted(() => {
     <header class="hidden sm:block shrink-0" :class="route.path === '/' ? 'sm:sticky top-0 inset-x-0 z-30' : 'relative z-40'">
       <HeaderNav :header-flexi-mode="props.headerFlexiMode" />
     </header>
+    <div class="mx-4 my-10">
+      <!-- <ClientOnly>
+        <SearchBar></SearchBar>
+      </ClientOnly> -->
+    </div>
     <div class="grow flex flex-col">
       <slot />
     </div>
