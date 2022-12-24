@@ -17,7 +17,7 @@ const expand = ref(true)
  * get file type icon
  *
  */
-const fileTypeMap: any = useFileTypeMap() // 🚨 maybe should fix this any type
+const fileTypeMap: any = useFileTypeMap() // 🚨 maybe should fix this "any" type
 
 const getFileTypeIcon = (type:string) => {
   const fileType = fileTypeMap.value[type]
@@ -37,27 +37,32 @@ const getFileTypeIcon = (type:string) => {
 const folderNavArr = ref([
   {
     title: props.rootName,
-    path: []
+    path: [] as number[]
   }
 ])
 
-let folderNavPath = []
+let folderNavPath:number[] = []
 
 const currentTree = ref<NavItem[]>([])
 
 currentTree.value = props.rootTree
 
-const setFolderNavPath = (path) => {
-  folderNavPath = path
+const setFolderNavPath = (path:number[]) => {
+  // path is a number array, which folder at nav been clicked
+  folderNavPath = path // need to change the folder nav to this path
+  // rebuild the folderNavArr
+  // set the root folder (NavItem) as start
   let treeTemp = props.rootTree
 
+  // the start folderNavArr just contain the root folder
   const folderNavArrTemp = [{
     title: props.rootName,
-    path: []
+    path: [] as number[]
   }]
 
-  let folderNavPathTemp = []
+  let folderNavPathTemp:number[] = []
 
+  // loop the path to rebuild the folderNavArr
   if (path.length > 0) {
     path.forEach((index) => {
       folderNavPathTemp = folderNavPathTemp.concat(index)
@@ -65,7 +70,7 @@ const setFolderNavPath = (path) => {
         title: treeTemp[index].title,
         path: folderNavPathTemp
       })
-      treeTemp = treeTemp[index].children
+      treeTemp = treeTemp[index].children as NavItem[]
     })
   }
 
@@ -77,7 +82,7 @@ const setFolderNavPath = (path) => {
   })
 }
 
-const addFolderNav = (title, index) => {
+const addFolderNav = (title:string, index:number) => {
   folderNavPath = folderNavPath.concat(index)
 
   folderNavArr.value.unshift({
@@ -85,7 +90,7 @@ const addFolderNav = (title, index) => {
     path: folderNavPath
   })
 
-  currentTree.value = currentTree.value[index].children
+  currentTree.value = currentTree.value[index].children as NavItem[]
 
   nextTick(() => {
     rejudgeShowScrollBtn()
@@ -106,7 +111,7 @@ const showScrollBtn = ref(true)
 
 const scrollPos = ref<'start' | 'middle' | 'end'>('start')
 
-const folderNavContainer = ref(null)
+const folderNavContainer = ref<HTMLElement | null>(null) // get the folderNav container DOM
 
 const rejudgeShowScrollBtn = () => {
   // show of hide the scroll button
@@ -136,7 +141,7 @@ onMounted(() => {
   })
 })
 
-const scrollFolderNavHandler = (direction) => {
+const scrollFolderNavHandler = (direction:('left' | 'right')) => {
   if (!folderNavContainer.value) { return }
   const containerWidth = folderNavContainer.value.clientWidth
 
@@ -166,11 +171,14 @@ const folderNavScrollingHandler = () => {
   >
     <button
       v-show="!expand"
-      class="group w-full px-4 py-2 flex items-center gap-1 hover:text-yellow-500 hover:bg-yellow-50 rounded-lg transition-colors duration-300"
+      :title="props.rootName"
+      class="group w-full px-4 py-2 flex items-start gap-1 hover:text-yellow-500 hover:bg-yellow-50 rounded-lg transition-colors duration-300"
       @click="expand = true"
     >
-      <IconCustom name="ph:folder-fill" class="w-6 h-6 text-yellow-400" />
-      {{ props.rootName }}
+      <IconCustom name="ph:folder-fill" class="shrink-0 w-6 h-6 text-yellow-400" />
+      <span class="line-camp-2 break-all">
+        {{ props.rootName }}
+      </span>
     </button>
     <div v-show="expand" class="w-full flex flex-col">
       <div class="w-full flex justify-between items-center">
@@ -234,19 +242,23 @@ const folderNavScrollingHandler = () => {
             :key="item._path"
             :to="item._path"
             target="_blank"
-            class="p-2 flex items-center gap-1 text-sm rounded hover:text-blue-500 active:text-white hover:bg-blue-100 active:bg-blue-500 transition-colors duration-300"
+            class="p-2 flex items-start gap-1 rounded hover:text-blue-500 active:text-white hover:bg-blue-100 active:bg-blue-500 transition-colors duration-300"
           >
-            <IconCustom :name="getFileTypeIcon(item._type)" class="w-5 h-5" />
-            {{ item.title }}
+            <IconCustom :name="getFileTypeIcon(item._type)" class="shrink-0 w-5 h-5" />
+            <span class="text-sm break-all">
+              {{ item.title }}
+            </span>
           </NuxtLink>
           <button
             v-if="item.children"
             :key="item._path"
-            class="group p-2 flex items-center gap-1 text-sm rounded hover:text-yellow-500 active:text-white hover:bg-yellow-50 active:bg-yellow-500 transition-colors duration-300"
+            class="group p-2 flex items-start gap-1 rounded hover:text-yellow-500 active:text-white hover:bg-yellow-50 active:bg-yellow-500 transition-colors duration-300"
             @click="addFolderNav(item.title, index)"
           >
-            <IconCustom name="ph:folder-fill" class="w-5 h-5 text-yellow-400 group-active:text-white" />
-            {{ item.title }}
+            <IconCustom name="ph:folder-fill" class="shrink-0 w-5 h-5 text-yellow-400 group-active:text-white" />
+            <span class="text-sm break-all">
+              {{ item.title }}
+            </span>
           </button>
         </template>
       </div>
@@ -274,5 +286,12 @@ const folderNavScrollingHandler = () => {
   &::-webkit-scrollbar-thumb:hover {
     background-color: #94a3b8;
   }
+}
+
+.line-camp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 </style>

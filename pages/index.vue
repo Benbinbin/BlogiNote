@@ -292,18 +292,21 @@ const getFileTypeIcon = (type) => {
         </div>
         <hr class="p-4">
         <div
-          class="folders-container w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 grid-flow-row-dense"
+          class="folders-container w-full my-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 grid-flow-row-dense"
         >
           <template v-for="(item, index) in currentTree">
             <NuxtLink
               v-if="item._type"
               :key="item._path"
               :to="item._path"
+              :title="item.title"
               target="_blank"
-              class="self-start px-4 py-2 flex items-center gap-1 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded-lg"
+              class="self-start px-4 py-2 flex items-start gap-1 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded-lg"
             >
-              <IconCustom :name="getFileTypeIcon(item._type)" class="w-6 h-6" />
-              {{ item.title }}
+              <IconCustom :name="getFileTypeIcon(item._type)" class="shrink-0 w-6 h-6" />
+              <span class="line-camp-2 break-all">
+                {{ item.title }}
+              </span>
             </NuxtLink>
             <FolderTree
               v-if="item.children"
@@ -333,7 +336,6 @@ const getFileTypeIcon = (type) => {
 </template>
 
 <style lang="scss" scoped>
-
 .folders-container {
   grid-auto-rows: 40px
 }
@@ -344,5 +346,12 @@ const getFileTypeIcon = (type) => {
 
 .folder-nav-container::-webkit-scrollbar {
   display: none;
+}
+
+.line-camp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 </style>
