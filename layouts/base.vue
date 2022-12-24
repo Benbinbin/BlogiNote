@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '~~/composables/states';
-
 const props = defineProps({
   headerFlexiMode: {
     type: Boolean,
