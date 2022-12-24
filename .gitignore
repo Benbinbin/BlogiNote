@@ -8,4 +8,4 @@ node_modules
 dist
 
 public/article
-public/_pagefind
+# public/_pagefind

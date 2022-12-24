@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { SearchModal } from '~~/.nuxt/components';
-
 const pagefindPath = "/_pagefind/pagefind.js"
 let pagefind: any;
-if (process.env.NODE_ENV === 'development') {
+// if (process.env.NODE_ENV === 'production') {
   pagefind = await import(/* @vite-ignore */pagefindPath);
   // console.log(pagefind);
-}
+// }
 
 // search modal
 const showSearchModal = useShowSearchModal()
