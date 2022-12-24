@@ -70,43 +70,40 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="w-screen h-screen p-4 fixed inset-0 z-50 flex justify-center items-center">
+  <div class="expand-window p-4 fixed inset-0 z-[80] flex justify-center items-center">
     <div
-      class="w-screen h-screen absolute inset-0 -z-10 flex justify-center items-center bg-black/10 backdrop-blur"
+      class="expand-window absolute inset-0 -z-10 flex justify-center items-center bg-black/10 backdrop-blur"
       @click="showSeriesModal=false"
     />
-    <div class="lg:max-w-4xl">
-      <div v-if="seriesList && seriesList.length > 0" class="bg-white rounded-t-lg">
-        <h2 class="px-4 py-4 sm:py-6 text-lg sm:text-xl font-bold text-center border-b ">
-          {{ props.seriesName }}
-        </h2>
-        <ol class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto">
-          <li
-            v-for="article in seriesList"
-            ref="itemRefs"
-            :key="article._path"
-            tabindex="0"
-            class="py-2 hover:text-blue-500 hover:bg-blue-100 focus:outline-blue-500 transition-colors duration-300 rounded-md"
-            :class="props.currentPath === article._path ? 'text-blue-500' : 'text-gray-600'"
-          >
-            <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="showSeriesModal=false">
-              <h3 class="font-bold">
-                {{ article.title }}
-              </h3>
-              <p v-show="showDetail && article.description" class="text-sm opacity-60">
-                {{ article.description }}
-              </p>
-            </NuxtLink>
-          </li>
-        </ol>
-      </div>
+    <div class="modal-container flex flex-col lg:max-w-4xl">
+      <h2 class="px-4 py-4 sm:py-6 text-lg sm:text-xl font-bold text-center bg-white border-b rounded-t-lg">
+        {{ props.seriesName }}
+      </h2>
+      <ol v-if="seriesList && seriesList.length > 0" class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto bg-white">
+        <li
+          v-for="article in seriesList"
+          ref="itemRefs"
+          :key="article._path"
+          tabindex="0"
+          class="py-2 hover:text-blue-500 hover:bg-blue-100 focus:outline-blue-500 transition-colors duration-300 rounded-md"
+          :class="props.currentPath === article._path ? 'text-blue-500' : 'text-gray-600'"
+        >
+          <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="showSeriesModal=false">
+            <h3 class="font-bold">
+              {{ article.title }}
+            </h3>
+            <p v-show="showDetail && article.description" class="text-sm opacity-60">
+              {{ article.description }}
+            </p>
+          </NuxtLink>
+        </li>
+      </ol>
       <div v-else class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg">
-        <!-- <img src="@/assets/icons/empty.png" alt="empty" class="w-10 h-10"> -->
         <IconCustom name="fluent:mail-inbox-dismiss-28-filled" class="w-10 h-10" />
         <p>Oops! There is no series.</p>
       </div>
       <div
-        class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white rounded-b-lg"
+        class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white border-t rounded-b-lg"
       >
         <button
           class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-400 bg-red-50 hover:text-red-500 hover:bg-red-100 focus:outline-red-500 rounded transition-colors duration-300"
@@ -130,11 +127,17 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.modal-content-container {
-  max-height: 65vh;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+.expand-window {
+  width: 100dvw;
+  height: 100dvh;
 }
+
+.modal-container {
+  max-height: 80dvh;
+}
+
+.modal-content-container::-webkit-scrollbar {
+  display: none;
+}
+
 </style>
