@@ -92,6 +92,13 @@ const toggleCatalogHandler = () => {
     showNoteCatalog.value = !showNoteCatalog.value
   }
 }
+
+/**
+ *
+ * search modal
+ *
+ */
+const showSearchModal = useShowSearchModal()
 </script>
 
 <template>
@@ -219,6 +226,7 @@ const toggleCatalogHandler = () => {
       </button>
 
       <button v-show="!showMoreOptions && !showCategoryOptions" class="grow px-2 py-3 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
+      @click="showSearchModal=true"
         >
         <div class="flex flex-col justify-center items-center gap-1">
           <IconCustom name="tabler:search" class="w-6 h-6"></IconCustom>

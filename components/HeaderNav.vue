@@ -85,6 +85,13 @@ const changeFlexiMode = () => {
     flexiMode.value = 'blog'
   }
 }
+
+/**
+ *
+ * search modal
+ *
+ */
+const showSearchModal = useShowSearchModal()
 </script>
 
 <template>
@@ -123,7 +130,8 @@ const changeFlexiMode = () => {
         </NuxtLink>
       </div>
       <div class="flex justify-end items-center gap-4">
-        <button class="self-stretch px-4 py-1.5 flex justify-center items-center gap-2 text-gray-600 border border-gray-400 rounded-md opacity-50 hover:opacity-100 transition-opacity duration-300">
+        <button class="self-stretch px-4 py-1.5 flex justify-center items-center gap-2 text-gray-600 border border-gray-400 rounded-md opacity-50 hover:opacity-100 transition-opacity duration-300"
+        @click="showSearchModal=true">
           <IconCustom name="tabler:search" class="w-4 h-4"></IconCustom>
           <span class="hidden lg:block text-sm">Search</span>
           <span class="hidden md:flex justify-center items-center gap-1 text-xs ">

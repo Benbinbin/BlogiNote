@@ -71,7 +71,6 @@ onMounted(() => {
   })
 })
 
-
 /**
  * listen page scroll
  */
@@ -98,6 +97,46 @@ onMounted(() => {
     })
   }
 })
+
+/**
+ *
+ * search modal
+ *
+ */
+const showSearchModal = useShowSearchModal()
+
+// stop body scroll when search modal show up
+watch(showSearchModal, () => {
+  if (!document?.body) { return }
+
+  if (showSearchModal.value) {
+    document.body.classList.add('overflow-hidden')
+  } else {
+    document.body.classList.remove('overflow-hidden')
+  }
+})
+
+// keyboard shortcuts for search modal
+const ModalKeyListener = function (event: KeyboardEvent) {
+  console.log(event);
+
+  if(event.ctrlKey && event.key ==='k') {
+    event.preventDefault()
+    showSearchModal.value = !showSearchModal.value
+  } else if (showSearchModal.value && event.key === 'Escape') {
+    showSearchModal.value = false
+  }
+}
+
+onMounted(() => {
+  if (document) {
+    document.addEventListener('keydown', ModalKeyListener)
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', ModalKeyListener)
+})
 </script>
 
 <template>
@@ -105,11 +144,6 @@ onMounted(() => {
     <header class="hidden sm:block shrink-0" :class="route.path === '/' ? 'sm:sticky top-0 inset-x-0 z-30' : 'relative z-40'">
       <HeaderNav :header-flexi-mode="props.headerFlexiMode" />
     </header>
-    <div class="mx-4 my-10">
-      <!-- <ClientOnly>
-        <SearchBar></SearchBar>
-      </ClientOnly> -->
-    </div>
     <div class="grow flex flex-col">
       <slot />
     </div>
@@ -130,6 +164,10 @@ onMounted(() => {
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50">
       <FooterNav :footer-catalog="props.footerCatalog" :footer-flexi-mode="props.footerFlexiMode" />
     </nav>
+
+    <ClientOnly>
+      <SearchModal v-show="showSearchModal"></SearchModal>
+    </ClientOnly>
   </div>
 </template>
 
