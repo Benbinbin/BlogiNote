@@ -24,6 +24,14 @@ export default defineAppConfig({
       },
       showBlogCatalog: false,
       showNoteCatalog: false
+    },
+    search: {
+      exclude: [
+        '/',
+        '/about/',
+        '/subscribe/',
+        '/list/'
+      ]
     }
   }
 })

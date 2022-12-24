@@ -35,7 +35,7 @@ useHead({
   link: [
     {
       rel: 'icon',
-      href: appConfig.theme.favicon
+      href: appConfig?.theme?.favicon
     }
   ]
 })
@@ -47,13 +47,11 @@ useHead({
  */
 let resizeTimer:(null | ReturnType<typeof setTimeout>) = null
 const windowSize = useWindowSize()
-// console.log(windowSize.value.width, windowSize.value.height);
 
 onMounted(() => {
   if (document) {
     windowSize.value.width = document.documentElement.clientWidth
     windowSize.value.height = document.documentElement.clientHeight
-    // console.log(windowSize.value.width, windowSize.value.height);
   }
 
   window.addEventListener('resize', () => {
@@ -64,7 +62,6 @@ onMounted(() => {
     resizeTimer = setTimeout(() => {
       windowSize.value.width = document.documentElement.clientWidth
       windowSize.value.height = document.documentElement.clientHeight
-      // console.log(windowSize.value.width, windowSize.value.height);
 
       resizeTimer = null
     }, 300)
@@ -118,8 +115,6 @@ watch(showSearchModal, () => {
 
 // keyboard shortcuts for search modal
 const ModalKeyListener = function (event: KeyboardEvent) {
-  console.log(event);
-
   if(event.ctrlKey && event.key ==='k') {
     event.preventDefault()
     showSearchModal.value = !showSearchModal.value

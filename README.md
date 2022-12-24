@@ -15,6 +15,7 @@ BlogiNote is a [Nuxt Content](https://content.nuxtjs.org) Theme, it can generate
 - content driving website, it can generate web pages based on lots of formats of files, like markdown, json, csv and more
 - support [MDC syntax](https://content.nuxtjs.org/guide/writing/mdc) which supercharges markdown to be a more powerful tool, because Vue components can be used in it
 - provide navigation page and filter feature to query articles more convenient
+- full text search
 
 :muscle: it will keep evolving to add more features
 

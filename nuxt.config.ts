@@ -8,7 +8,7 @@ const fs = require('fs')
 const path = require('path')
 
 // clean the "article" folder (copy from the "content" folder) first
-const cleanContentFiles = (...folderPathArr) => {
+const cleanContentFiles = (...folderPathArr:string[]) => {
   folderPathArr.forEach((folderPath) => {
     const exists = fs.existsSync(folderPath)
     if (exists) {
@@ -19,7 +19,7 @@ const cleanContentFiles = (...folderPathArr) => {
 
 // then copy all other type of files except .md from "content" folder to public folder
 // so all the assets can link to inside the markdown file by relative path
-const copyContentFiles = (src, destFolderName, ignore = []) => {
+const copyContentFiles = (src:string, destFolderName:string, ignore:string[] = []) => {
   // url isn't case-sensitive but folder name is case-sensitive
   // change all the folders name to lowercase when copy them to public
   const dest = destFolderName.toLowerCase()
@@ -31,7 +31,7 @@ const copyContentFiles = (src, destFolderName, ignore = []) => {
     if (!fs.existsSync(dest) || !fs.statSync(src).isDirectory()) {
       fs.mkdirSync(dest)
     }
-    fs.readdirSync(src).forEach((childItemName) => {
+    fs.readdirSync(src).forEach((childItemName:string) => {
       copyContentFiles(
         path.join(src, childItemName),
         path.join(dest, childItemName),
@@ -51,7 +51,9 @@ copyContentFiles('content', 'public', ['.md', '.json', '.csv'])
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
-  app: {},
+  app: {
+    // baseURL: '/'
+  },
   typescript: {
     shim: false
   },
