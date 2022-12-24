@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NavItem } from '@nuxt/content/dist/runtime/types'
 // import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
 // import fileTypeMap from '@/utils/fileType.json'
 
@@ -33,8 +34,8 @@ const appConfig = useAppConfig()
  *
  */
 // Blog Posts
-let articleFolder
-const articleFolderFiles = []
+let articleFolder:(NavItem | undefined)
+const articleFolderFiles:NavItem[] = []
 
 // render blog posts or not
 let showBlogPosts = true
@@ -76,7 +77,7 @@ const getCategory = (path = '') => {
 
 // hide post section
 const hidePostCategorySections = ref(new Set())
-const togglePostCategorySectionsHandler = (category) => {
+const togglePostCategorySectionsHandler = (category:string) => {
   if (hidePostCategorySections.value.has(category)) {
     hidePostCategorySections.value.delete(category)
   } else {
@@ -90,35 +91,39 @@ const togglePostCategorySectionsHandler = (category) => {
  * data in a tree structure
  *
  */
-const currentTree = ref([])
+const currentTree = ref<NavItem[] | null>([])
 
 currentTree.value = navTree.value
 
-let folderNavPath = []
+let folderNavPath:number[] = []
 
 const folderNavArr = ref([
   {
     title: 'Root',
-    path: []
+    path: [] as number[]
   }
 ])
 
-const setTreeHandler = (path, type = 'drill-down') => {
+const setTreeHandler = (path: number[], type = 'drill-down') => {
   if (type === 'drill-down') {
     folderNavPath = folderNavPath.concat(path)
   } else if (type === 'reset') {
     folderNavPath = path
   }
 
-  let treeTemp = navTree.value
+  let treeTemp = navTree.value as NavItem[]
 
+  // rebuild the folderNavArr
+  // set the root as start
   const folderNavArrTemp = [
     {
       title: 'Root',
-      path: []
+      path: [] as number[]
     }
   ]
-  let folderNavPathTemp = []
+
+   // the start folderNavPath just contain empty array
+  let folderNavPathTemp:number[] = []
 
   if (folderNavPath.length > 0) {
     folderNavPath.forEach((index) => {
@@ -127,7 +132,7 @@ const setTreeHandler = (path, type = 'drill-down') => {
         title: treeTemp[index].title,
         path: folderNavPathTemp
       })
-      treeTemp = treeTemp[index].children
+      treeTemp = treeTemp[index].children as NavItem[]
     })
   }
 
@@ -135,8 +140,9 @@ const setTreeHandler = (path, type = 'drill-down') => {
   folderNavArr.value = folderNavArrTemp
 }
 
-const fileTypeMap = useFileTypeMap()
-const getFileTypeIcon = (type) => {
+const fileTypeMap: any = useFileTypeMap() // 🚨 maybe should fix this "any" type
+
+const getFileTypeIcon = (type:string) => {
   const fileType = fileTypeMap.value[type]
 
   if (!fileType) {

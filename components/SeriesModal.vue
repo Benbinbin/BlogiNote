@@ -15,10 +15,10 @@ const showDetail = ref(false)
  *
  */
 const router = useRouter()
-const itemRefs = ref([])
+const itemRefs = ref<HTMLElement[]>([])
 const itemNum = ref(0)
 let currentIndex = -1
-const ModalKeyListener = function (event) {
+const ModalKeyListener = function (event:KeyboardEvent) {
   if (event.key === 'Escape') {
     // press Esc key to hide modal
     // emits('close')

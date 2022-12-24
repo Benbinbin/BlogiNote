@@ -294,7 +294,7 @@ provide('toggleAllHeadings', toggleAllHeadings)
 const activeHeadingId = ref('')
 provide('activeHeadingId', activeHeadingId)
 
-const setActiveHeadingId = (id) => {
+const setActiveHeadingId = (id:string) => {
   activeHeadingId.value = id
 }
 provide('setActiveHeadingId', setActiveHeadingId)

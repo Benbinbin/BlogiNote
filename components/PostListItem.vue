@@ -4,7 +4,7 @@ const props = defineProps<{
   article: any
 }>()
 
-const getCoverUrl = (relativeURL) => {
+const getCoverUrl = (relativeURL:string) => {
   if (relativeURL.startsWith('./')) {
     const articleFolderPathArr = props.article._path.split('/').slice(0, -1)
     const imagePathArr = relativeURL.split('/').slice(1)

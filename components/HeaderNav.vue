@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { NavItem } from '@nuxt/content/dist/runtime/types'
+
 const props = defineProps({
   headerFlexiMode: {
     type: Boolean,
@@ -15,7 +17,7 @@ const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNav
 // const articleFolder = data.value[0]
 
 let articleFolder
-const categoryArr = []
+const categoryArr:NavItem[] = []
 
 if (Array.isArray(navTree.value)) {
   articleFolder = navTree.value.find(item => item._path === '/article')
@@ -42,9 +44,9 @@ const getCategory = (path = '') => {
 
 const showSubNav = ref(false)
 
-let timer = null
+let timer:(null | ReturnType<typeof setTimeout>) = null
 
-const setSubNav = (show) => {
+const setSubNav = (show:boolean) => {
   if (show) {
     if (timer) {
       clearTimeout(timer)
@@ -65,7 +67,7 @@ const setSubNav = (show) => {
 /**
  * sub transition effect
  */
-const onAfterEnter = (el) => {
+const onAfterEnter = (el:HTMLElement) => {
   el.classList.add('translate-y-full')
 }
 

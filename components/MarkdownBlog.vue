@@ -64,13 +64,13 @@ const showCatalog = useState<Boolean>('showBlogCatalog', () => {
   return appConfig.theme.articlePage.showBlogCatalog
 })
 
-const article = ref(null)
+const article = ref<HTMLElement | null>(null) // get the article DOM
 
 // set active heading
 const activeHeadings = ref(new Set<string>())
 provide('activeHeadings', activeHeadings)
 
-let observer
+let observer:IntersectionObserver
 onMounted(() => {
   // get headings list
   if (article.value) {
@@ -78,7 +78,7 @@ onMounted(() => {
     // set intersection observer
     observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        const id = entry.target.getAttribute('id')
+        const id = entry.target.getAttribute('id') as string
         if (entry.intersectionRatio > 0) {
           activeHeadings.value.add(id)
         } else {

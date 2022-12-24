@@ -19,7 +19,7 @@ const props = defineProps<{
 const initCollapseHeadings = ref(new Set<string>())
 const collapseHeadings = inject('collapseHeadings', initCollapseHeadings)
 
-const toggleCollapseHeadings = inject<(string) => void>('toggleCollapseHeadings')
+const toggleCollapseHeadings = inject<(arg0: string) => void>('toggleCollapseHeadings')
 
 /**
  *
@@ -117,7 +117,7 @@ watch([sidebarFloatForNote, toggleNoteSidebarFloat, floatNoteCatalogType], () =>
  * active heading
  *
  */
-const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
+const setActiveHeadingId = inject<(arg0: string) => void>('setActiveHeadingId')
 </script>
 
 <template>

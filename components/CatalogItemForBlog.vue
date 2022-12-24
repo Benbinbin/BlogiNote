@@ -13,8 +13,8 @@ const props = defineProps<{
   depth: number
 }>()
 
-const toggleAllCatalogState = inject<Ref<string>>('toggleAllCatalogState')
-const changeToggleAllCatalogState = inject<(value: 'expand' | 'collapse' | '') => void>('changeToggleAllCatalogState')
+const toggleAllCatalogState = inject('toggleAllCatalogState') as Ref<'expand' | 'collapse' | ''>
+const changeToggleAllCatalogState = inject('changeToggleAllCatalogState') as (value: 'expand' | 'collapse' | '') => void
 
 const expand = ref(true)
 
@@ -31,7 +31,8 @@ const toggleCatalogHandler = () => {
   changeToggleAllCatalogState('')
 }
 
-const bgColorMap = {
+// 🚨 maybe should fix this "any" type
+const bgColorMap:any = {
   2: {
     expand: 'bg-purple-500',
     collapse: 'bg-purple-200',
@@ -59,7 +60,8 @@ const bgColorMap = {
   }
 }
 
-const textColorMap = {
+// 🚨 maybe should fix this "any" type
+const textColorMap:any = {
   2: 'text-purple-400',
   3: 'text-red-400',
   4: 'text-green-400',
@@ -67,7 +69,8 @@ const textColorMap = {
   6: 'text-gray-400'
 }
 
-const borderColorMap = {
+// 🚨 maybe should fix this "any" type
+const borderColorMap:any = {
   2: { active: 'border-purple-500', expand: 'border-purple-300', collapse: 'border-purple-100' },
   3: { active: 'border-red-500', expand: 'border-red-300', collapse: 'border-red-100' },
   4: { active: 'border-green-500', expand: 'border-green-300', collapse: 'border-green-100' },

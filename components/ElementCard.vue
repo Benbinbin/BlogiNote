@@ -20,7 +20,7 @@ const props = defineProps({
 
 const emits = defineEmits(['spanAll'])
 
-const headingElem = ref(null)
+const headingElem = ref<HTMLElement | null>(null) // get heading DOM
 
 /**
  *
@@ -28,7 +28,8 @@ const headingElem = ref(null)
  *
  */
 const headingArr = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-const headingColorMap = {
+// 🚨 maybe should fix this "any" type
+const headingColorMap:any = {
   h1: 'text-gray-800',
   h2: 'text-purple-500',
   h3: 'text-red-500',
@@ -37,7 +38,8 @@ const headingColorMap = {
   h6: 'text-gray-500'
 }
 
-const headingBtnMap = {
+// 🚨 maybe should fix this "any" type
+const headingBtnMap:any = {
   h1: {
     expand: 'text-white bg-gray-500 hover:bg-gray-400 active:bg-gray-500 border-gray-500',
     collapse: 'text-gray-400 hover:text-gray-500 active:text-white active:bg-gray-500 border-gray-500'
@@ -64,7 +66,8 @@ const headingBtnMap = {
   }
 }
 
-const borderColorMap = {
+// 🚨 maybe should fix this "any" type
+const borderColorMap:any = {
   h1: 'border-gray-100',
   h2: 'border-purple-100',
   h3: 'border-red-100',
@@ -96,10 +99,11 @@ const toggleExpandStateHandler = () => {
  */
 const highlightTitle = ref(false)
 
-const activeHeadingId = inject<Ref<string>>('activeHeadingId')
-const setActiveHeadingId = inject<(string) => void>('setActiveHeadingId')
+const activeHeadingId = inject('activeHeadingId') as Ref<string>
+const setActiveHeadingId = inject('setActiveHeadingId') as (arg0: string) => void
 
-const highlightColorMap = {
+// 🚨 maybe should fix this "any" type
+const highlightColorMap:any = {
   h1: 'bg-gray-100',
   h2: 'bg-purple-100',
   h3: 'bg-red-100',
@@ -139,7 +143,7 @@ const setLayoutHandler = (value: 'waterfall' | 'compact' | 'card') => {
 
   if (headingElem.value) {
     nextTick(() => {
-      headingElem.value.scrollIntoView(true)
+      headingElem.value?.scrollIntoView(true)
       highlightTitle.value = true
       const timer = setTimeout(() => {
         highlightTitle.value = false
@@ -160,7 +164,7 @@ const toggleLayoutForContent = () => {
 // compact layout
 const childrenSpanAllNum = ref(0)
 
-const childrenSpanAllHandler = (state) => {
+const childrenSpanAllHandler = (state:Boolean) => {
   if (state) {
     childrenSpanAllNum.value += 1
   } else {
@@ -178,7 +182,7 @@ watch(childrenSpanAllNum, (newNum, oldNum) => {
 
 // divide columns
 const childrenDivideColumns = ref(1)
-const divideColumns = inject<Ref<number>>('divideColumns')
+const divideColumns = inject('divideColumns') as Ref<number>
 
 watch(divideColumns, () => {
   if (syncChangeColumns.value) {
@@ -207,7 +211,7 @@ onMounted(() => {
   }
 })
 
-const changeChildrenDivideColumns = (event) => {
+const changeChildrenDivideColumns = (event:MouseEvent) => {
   if (event.shiftKey) {
     childrenDivideColumns.value += 1
   } else if (event.ctrlKey || event.metaKey) {
