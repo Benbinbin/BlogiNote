@@ -9,21 +9,19 @@ let pagefind: any;
   try {
       pagefind = await import(/* @vite-ignore */pagefindPath);
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    // if (process.env.NODE_ENV === 'development') {
       console.log(error);
-    }
+    // }
   }
 
   // console.log(pagefind);
 // }
-
 
 if (baseURL !== '/') {
   await pagefind.options({
     baseURL: baseURL
   })
 }
-
 
 // search modal
 const showSearchModal = useShowSearchModal()
@@ -123,7 +121,7 @@ const inputHandler = (event: Event) => {
         <ul v-show="searchResults.length>0" class="search-result p-4 space-y-2">
           <li v-for="item in searchResults" :key="item.url"
             class="p-4 hover:text-white hover:bg-purple-500 rounded">
-            <NuxtLink :to="item.url" @click="showSearchModal=false">
+            <NuxtLink :to="item.url" @click.exact="showSearchModal=false">
               <p class="font-bold">{{ item.meta.title }}</p>
               <p class="text-sm" v-html="item.excerpt"></p>
             </NuxtLink>
