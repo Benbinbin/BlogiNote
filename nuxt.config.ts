@@ -87,8 +87,9 @@ export default defineNuxtConfig({
       // See the available themes on https://github.com/shikijs/shiki/blob/main/docs/themes.md#all-theme
       theme: 'one-dark-pro',
       // check out https://content.nuxtjs.org/api/configuration#highlightpreload for the default preload languages
+      // ['diff', 'json', 'js', 'ts', 'css', 'shell', 'html', 'md', 'yaml']
       // check out https://github.com/shikijs/shiki/blob/main/docs/languages.md for the available program language
-      preload: ['vue', 'python']
+      preload: ['vue', 'python', 'tsx']
     },
     markdown: {
       toc: {

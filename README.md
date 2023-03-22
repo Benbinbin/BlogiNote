@@ -1,15 +1,15 @@
-[![BlogiNote](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/cover.jpg)](https://github.com/Benbinbin/BlogiNote)
+[![BlogiNote](./public/cover.jpg)](https://github.com/Benbinbin/BlogiNote)
 
 # BlogiNote
-BlogiNote is a [Nuxt Content](https://content.nuxtjs.org) Theme, it can generate static website to show your blog posts and notes with flexible layouts and multiple optimizations.
+BlogiNote is a [Nuxt Theme](https://nuxt.com/docs/guide/going-further/layers) based on [Nuxt Content module](https://content.nuxtjs.org/), it can generate static website to show your blog posts and notes with flexible layouts and multiple optimizations.
 
-:link: [Demo](http://bloginote.vercel.app/)
+:link: [Demo](https://bloginote.benbinbin.com/)
 
-:gift: [Play Online](https://stackblitz.com/edit/github-qrmhoj)
+:joystick: [Play Online](https://stackblitz.com/edit/github-qrmhoj)
 
-:page_facing_up: [Starter Template](https://github.com/Benbinbin/BlogiNote-Starter-Template)
+:pencil: [Starter Template](https://github.com/Benbinbin/BlogiNote-Starter-Template)
 
-:ledger: [Documentation](https://documentation.bloginote.benbinbin.com/)
+:bookmark_tabs: [Documentation](https://documentation.bloginote.benbinbin.com/)
 
 ## Features
 - content driving website, it can generate web pages based on lots of formats of files, like markdown, json, csv and more
