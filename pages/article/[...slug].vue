@@ -324,7 +324,7 @@ watch(showZoomImage, () => {
   h4,
   h5,
   h6 {
-    @apply font-bold;
+    @apply font-bold inline-block;
 
     a {
       @apply text-inherit hover:text-inherit no-underline hover:no-underline visited:no-underline hover:visited:no-underline;
