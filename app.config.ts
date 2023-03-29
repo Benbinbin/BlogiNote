@@ -32,6 +32,7 @@ export default defineAppConfig({
         '/subscribe/',
         '/list/'
       ]
-    }
+    },
+    assetTypes: []
   }
 })
