@@ -5,18 +5,30 @@ const appConfig = useAppConfig()
 <template>
   <div class="py-4 flex justify-center items-center">
     <div class="flex flex-col md:flex-row gap-4 text-xs text-gray-400 text-center">
-      <p v-if="appConfig.theme.author">
+      <p v-if="appConfig.bloginote.author">
         Copyright &copy {{ (new Date()).getFullYear() }}
 
-        <a v-if="appConfig.theme.email" :href="`mailto:${appConfig.theme.email}`" class="text-blue-400">{{
-          appConfig.theme.author }}</a>
-        <span v-else>{{ appConfig.theme.author }}</span>
+        <a
+          v-if="appConfig.bloginote.email"
+          :href="`mailto:${appConfig.bloginote.email}`"
+          class="text-blue-400"
+        >{{
+          appConfig.bloginote.author }}</a>
+        <span v-else>{{ appConfig.bloginote.author }}</span>
       </p>
       <p>
-        blog theme <a href="https://github.com/Benbinbin/BlogiNote" target="_blank" class="text-blue-400">BlogiNote</a>
+        blog theme <a
+          href="https://github.com/Benbinbin/BlogiNote"
+          target="_blank"
+          class="text-blue-400"
+        >BlogiNote</a>
       </p>
       <p>
-        Icons from <a href="https://icones.js.org/" target="_blank" class="text-blue-400">Icônes</a>, <a
+        Icons from <a
+          href="https://icones.js.org/"
+          target="_blank"
+          class="text-blue-400"
+        >Icônes</a>, <a
           href="https://icons8.com/"
           target="_blank"
           class="text-blue-400"

@@ -115,7 +115,7 @@ const showSearchModal = useShowSearchModal()
       >
         <div class="flex flex-col justify-center items-center gap-1">
           <img
-            :src="appConfig.theme.avatar"
+            :src="appConfig.bloginote.avatar"
             alt="avatar"
             class="w-6 h-6"
           >
@@ -154,7 +154,7 @@ const showSearchModal = useShowSearchModal()
             About
           </NuxtLink>
           <NuxtLink
-            v-if="appConfig.theme.subscribePage"
+            v-if="appConfig.bloginote.subscribePage"
             to="/subscribe"
             class="option-item"
             :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
@@ -173,7 +173,10 @@ const showSearchModal = useShowSearchModal()
         @click="showCategoryOptions = !showCategoryOptions"
       >
         <div class="flex flex-col justify-center items-center gap-1">
-          <IconCustom name="ic:round-category" class="w-6 h-6" />
+          <IconCustom
+            name="ic:round-category"
+            class="w-6 h-6"
+          />
           <p class="text-xs">
             Category
           </p>
@@ -218,19 +221,29 @@ const showSearchModal = useShowSearchModal()
         @click="toggleCatalogHandler"
       >
         <div class="flex flex-col justify-center items-center gap-1">
-          <IconCustom name="entypo:list" class="w-6 h-6" />
+          <IconCustom
+            name="entypo:list"
+            class="w-6 h-6"
+          />
           <p class="text-xs">
             Catalog
           </p>
         </div>
       </button>
 
-      <button v-show="!showMoreOptions && !showCategoryOptions" class="grow px-2 py-3 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
-      @click="showSearchModal=true"
-        >
+      <button
+        v-show="!showMoreOptions && !showCategoryOptions"
+        class="grow px-2 py-3 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
+        @click="showSearchModal=true"
+      >
         <div class="flex flex-col justify-center items-center gap-1">
-          <IconCustom name="tabler:search" class="w-6 h-6"></IconCustom>
-          <p class="text-xs">Search</p>
+          <IconCustom
+            name="tabler:search"
+            class="w-6 h-6"
+          />
+          <p class="text-xs">
+            Search
+          </p>
         </div>
       </button>
 
@@ -241,11 +254,23 @@ const showSearchModal = useShowSearchModal()
         class="grow flex justify-center items-center"
         @click="changeFlexiMode"
       >
-        <div class="mx-2 w-11 h-11 flex flex-col justify-center items-center gap-1 transition-colors duration-300 rounded-lg" :class="flexiMode === 'blog' ? 'flex-col bg-purple-100' : 'bg-green-100'">
-          <div class="shrink-0 w-2 h-2 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
+        <div
+          class="mx-2 w-11 h-11 flex flex-col justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
+          :class="flexiMode === 'blog' ? 'flex-col bg-purple-100' : 'bg-green-100'"
+        >
+          <div
+            class="shrink-0 w-2 h-2 rounded-full"
+            :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'"
+          />
           <div class="shrink-0 space-y-1">
-            <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-            <div class="w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+            <div
+              class="w-1.5 h-1.5 rounded-full"
+              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+            />
+            <div
+              class="w-1.5 h-1.5 rounded-full"
+              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+            />
           </div>
         </div>
       </button>

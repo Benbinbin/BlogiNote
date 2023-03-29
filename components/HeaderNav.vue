@@ -101,7 +101,11 @@ const showSearchModal = useShowSearchModal()
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
       <NuxtLink to="/">
-        <img :src="appConfig.theme.avatar" alt="avatar" class="w-8 h-8 rounded-full">
+        <img
+          :src="appConfig.bloginote.avatar"
+          alt="avatar"
+          class="w-8 h-8 rounded-full"
+        >
       </NuxtLink>
       <div class="flex justify-center items-center gap-6">
         <button
@@ -121,7 +125,7 @@ const showSearchModal = useShowSearchModal()
           About
         </NuxtLink>
         <NuxtLink
-          v-if="appConfig.theme.subscribePage"
+          v-if="appConfig.bloginote.subscribePage"
           to="/subscribe"
           class="btn"
           :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
@@ -130,9 +134,14 @@ const showSearchModal = useShowSearchModal()
         </NuxtLink>
       </div>
       <div class="flex justify-end items-center gap-4">
-        <button class="self-stretch px-4 py-1.5 flex justify-center items-center gap-2 text-gray-600 border border-gray-400 rounded-md opacity-50 hover:opacity-100 transition-opacity duration-300"
-        @click="showSearchModal=true">
-          <IconCustom name="tabler:search" class="w-4 h-4"></IconCustom>
+        <button
+          class="self-stretch px-4 py-1.5 flex justify-center items-center gap-2 text-gray-600 border border-gray-400 rounded-md opacity-50 hover:opacity-100 transition-opacity duration-300"
+          @click="showSearchModal=true"
+        >
+          <IconCustom
+            name="tabler:search"
+            class="w-4 h-4"
+          />
           <span class="hidden lg:block text-sm">Search</span>
           <span class="hidden md:flex justify-center items-center gap-1 text-xs ">
             <code class="px-2 py-0.5 border rounded bg-gray-200">Ctrl</code>
@@ -151,12 +160,17 @@ const showSearchModal = useShowSearchModal()
             :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'"
           />
           <div class="shrink-0 space-y-1">
-            <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-            <div class="w-1.5 h-1.5 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+            <div
+              class="w-1.5 h-1.5 rounded-full "
+              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+            />
+            <div
+              class="w-1.5 h-1.5 rounded-full "
+              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+            />
           </div>
         </button>
       </div>
-
     </div>
     <Transition
       enter-from-class="translate-y-0"
@@ -180,7 +194,10 @@ const showSearchModal = useShowSearchModal()
             :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
             @click="showSubNav=false"
           >
-            <IconCustom name="material-symbols:category-rounded" class="w-8 h-8" />
+            <IconCustom
+              name="material-symbols:category-rounded"
+              class="w-8 h-8"
+            />
             <p class="py-2 font-bold text-center">
               All
             </p>
@@ -193,7 +210,10 @@ const showSearchModal = useShowSearchModal()
             :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
             @click="showSubNav=false"
           >
-            <IconCustom name="material-symbols:category-rounded" class="w-8 h-8" />
+            <IconCustom
+              name="material-symbols:category-rounded"
+              class="w-8 h-8"
+            />
             <p class="py-2 font-bold text-center">
               {{ category.title }}
             </p>

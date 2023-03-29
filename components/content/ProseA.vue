@@ -14,13 +14,13 @@ const props = defineProps({
 const isRelative = /^(\.\/|\.\.\/|\/|@\/|~\/)/.test(props.href)
 const isAssetType = ref(false)
 
-if (isRelative) {
+if(isRelative) {
   const appConfig = useAppConfig()
-  const extensionArr = appConfig.theme.assetTypes
+  const extensionArr = appConfig.bloginote.assetTypes
 
   const result = props.href.match(/\.(\w+)$/)
 
-  if (result) {
+  if(result) {
     const ext = result[1]
     isAssetType.value = extensionArr.includes(ext)
   }
@@ -28,7 +28,11 @@ if (isRelative) {
 </script>
 
 <template>
-  <NuxtLink :href="href" :target="isRelative && isAssetType ? '_blank' : target" :external="isRelative && isAssetType">
+  <NuxtLink
+    :href="href"
+    :target="isRelative && isAssetType ? '_blank' : target"
+    :external="isRelative && isAssetType"
+  >
     <slot />
   </NuxtLink>
 </template>

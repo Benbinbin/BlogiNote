@@ -8,22 +8,23 @@ const appConfig = useAppConfig()
  */
 useHead({
   style: [
-    {
-      type: 'text/css',
-      children: 'html, body { scroll-behavior: smooth }'
-    },
-    {
-      type: 'text/css',
-      children: 'body { overflow: overlay }'
-    }
+    'body { overflow: overlay }'
   ],
   link: [
     {
       rel: 'icon',
-      href: appConfig.theme.favicon
+      href: appConfig.bloginote.favicon
     }
   ]
 })
+
+if (appConfig.bloginote.scrollSmooth) {
+  useHead({
+    style: [
+      'html, body { scroll-behavior: smooth }'
+    ]
+  })
+}
 </script>
 
 <template>

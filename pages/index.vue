@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 // import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
-// import fileTypeMap from '@/utils/fileType.json'
 
 const flexiMode = useFlexiMode()
 
@@ -40,11 +39,11 @@ const articleFolderFiles:NavItem[] = []
 // render blog posts or not
 let showBlogPosts = true
 // if ('homePage' in themeOptions.value && 'showBlogPosts' in themeOptions.value.homePage) {
-showBlogPosts = appConfig.theme.homePage.showBlogPosts
+showBlogPosts = appConfig.bloginote.homePage.showBlogPosts
 // }
 
 const queryPostsWhere = { _type: 'markdown' }
-const queryPostsLimit = appConfig.theme.homePage.postItemLimit || 5
+const queryPostsLimit = appConfig.bloginote.homePage.postItemLimit || 5
 const queryPostsOnly = ['title', 'description', '_type', '_path', 'cover', 'series', 'seriesOrder', 'tags']
 
 if (showBlogPosts && Array.isArray(navTree.value)) {
@@ -158,8 +157,15 @@ const getFileTypeIcon = (type:string) => {
     <Head>
       <Title>Home</Title>
     </Head>
-    <NuxtLayout name="base" :footer-flexi-mode="true" :header-flexi-mode="true">
-      <div v-show="flexiMode === 'blog'" class="container px-8 mx-auto">
+    <NuxtLayout
+      name="base"
+      :footer-flexi-mode="true"
+      :header-flexi-mode="true"
+    >
+      <div
+        v-show="flexiMode === 'blog'"
+        class="container px-8 mx-auto"
+      >
         <div class="py-16">
           <ContentDoc>
             <template #empty>
@@ -172,7 +178,10 @@ const getFileTypeIcon = (type:string) => {
             </template>
           </ContentDoc>
         </div>
-        <div v-if="articleFolder" class="py-8">
+        <div
+          v-if="articleFolder"
+          class="py-8"
+        >
           <!-- <h2 class="flex justify-center items-center font-bold text-xl sm:text-3xl text-gray-600">
             <button
               class="px-4 py-2 rounded-md transition-colors duration-300"
@@ -222,7 +231,11 @@ const getFileTypeIcon = (type:string) => {
             </section>
 
             <template v-for="category in articleFolder.children">
-              <section v-if="'children' in category" :key="category._path" class="w-full sm:w-4/5 mx-auto space-y-4">
+              <section
+                v-if="'children' in category"
+                :key="category._path"
+                class="w-full sm:w-4/5 mx-auto space-y-4"
+              >
                 <div class="flex justify-between items-start">
                   <h2 class="border-l-8 border-purple-500 rounded-l-sm">
                     <button
@@ -277,10 +290,17 @@ const getFileTypeIcon = (type:string) => {
           </div>
         </div>
       </div>
-      <div v-if="navTree && navTree.length > 0" v-show="flexiMode === 'note'" class="container px-8 mx-auto">
+      <div
+        v-if="navTree && navTree.length > 0"
+        v-show="flexiMode === 'note'"
+        class="container px-8 mx-auto"
+      >
         <div class="flex py-8 justify-between">
           <div class="folder-nav-container flex sm:flex-wrap items-center gap-1 overflow-x-auto">
-            <IconCustom name="ph:folder-open-fill" class="shrink-0 w-6 h-6 text-yellow-400" />
+            <IconCustom
+              name="ph:folder-open-fill"
+              class="shrink-0 w-6 h-6 text-yellow-400"
+            />
             <div
               v-for="(folder, index) in folderNavArr"
               :key="folderNavArr.length>1 ? folder.path.join() : 'root'"
@@ -292,7 +312,10 @@ const getFileTypeIcon = (type:string) => {
               >
                 {{ folder.title }}
               </button>
-              <span v-if="index+1 < folderNavArr.length" class="text-gray-400">></span>
+              <span
+                v-if="index+1 < folderNavArr.length"
+                class="text-gray-400"
+              >></span>
             </div>
           </div>
         </div>
@@ -309,7 +332,10 @@ const getFileTypeIcon = (type:string) => {
               target="_blank"
               class="self-start px-4 py-2 flex items-start gap-1 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded-lg"
             >
-              <IconCustom :name="getFileTypeIcon(item._type)" class="shrink-0 w-6 h-6" />
+              <IconCustom
+                :name="getFileTypeIcon(item._type)"
+                class="shrink-0 w-6 h-6"
+              />
               <span class="line-camp-2 break-all">
                 {{ item.title }}
               </span>

@@ -48,12 +48,16 @@ export default defineNuxtConfig({
         depth: 5,
         searchDepth: 5
       },
-      remarkPlugins: ['remark-math', 'remark-sub', 'remark-super', 'remark-critic-markup'],
+      remarkPlugins: ['remark-math'],
       rehypePlugins: {
         'rehype-katex': {
-          output: 'htmlAndMathml'
+          // the math formula will render as HTML and Mathml
+          // because the Mathml <annotation> contain the formula text content
+          // and enable to copy the formula from the web page
+          // refer to https://katex.org/docs/options.html#:~:text=output
+          output: 'mathml' // the default value is `htmlAndMathml`
         }
       }
-    }
+    },
   }
 })

@@ -161,7 +161,10 @@ const doubleClickHandler = (event) => {
           :class="showSidebar ? (flexiMode === 'blog' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-white bg-green-500 hover:bg-green-400') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500')"
           @click="showSidebar = !showSidebar"
         >
-          <IconCustom name="bi:layout-sidebar" class="w-4 h-4 -rotate-90 sm:rotate-0" />
+          <IconCustom
+            name="bi:layout-sidebar"
+            class="w-4 h-4 -rotate-90 sm:rotate-0"
+          />
         </button>
         <span class="text-center text-xs text-gray-400">
           {{ showImgIndex }}/{{ imgLength }}
@@ -170,14 +173,20 @@ const doubleClickHandler = (event) => {
       <span class="image-text-container grow text-center text-xs text-gray-400 overflow-x-auto">
         {{ showImgAlt }}
       </span>
-      <div v-show="sidebarImgList.length > 1" class="shrink-0 flex space-x-2 items-center">
+      <div
+        v-show="sidebarImgList.length > 1"
+        class="shrink-0 flex space-x-2 items-center"
+      >
         <button
           :disabled="scrollPos === 'start'"
           class="btn hidden sm:flex active:text-white"
           :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500')"
           @click="scrollTopHandler('start')"
         >
-          <IconCustom name="material-symbols:vertical-align-top-rounded" class="w-4 h-4" />
+          <IconCustom
+            name="material-symbols:vertical-align-top-rounded"
+            class="w-4 h-4"
+          />
         </button>
         <button
           :disabled="scrollPos === 'end'"
@@ -185,7 +194,10 @@ const doubleClickHandler = (event) => {
           :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500')"
           @click="scrollTopHandler('end')"
         >
-          <IconCustom name="material-symbols:vertical-align-bottom-rounded" class="w-4 h-4" />
+          <IconCustom
+            name="material-symbols:vertical-align-bottom-rounded"
+            class="w-4 h-4"
+          />
         </button>
 
         <button
@@ -194,7 +206,10 @@ const doubleClickHandler = (event) => {
           :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500')"
           @click="scrollLeftHandler('start')"
         >
-          <IconCustom name="material-symbols:vertical-align-bottom-rounded" class="w-4 h-4 rotate-90" />
+          <IconCustom
+            name="material-symbols:vertical-align-bottom-rounded"
+            class="w-4 h-4 rotate-90"
+          />
         </button>
         <button
           :disabled="scrollPos === 'end'"
@@ -202,7 +217,10 @@ const doubleClickHandler = (event) => {
           :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500')"
           @click="scrollLeftHandler('end')"
         >
-          <IconCustom name="material-symbols:vertical-align-top-rounded" class="w-4 h-4 rotate-90" />
+          <IconCustom
+            name="material-symbols:vertical-align-top-rounded"
+            class="w-4 h-4 rotate-90"
+          />
         </button>
       </div>
     </div>
@@ -212,12 +230,19 @@ const doubleClickHandler = (event) => {
       :style="`height: ${props.height}`"
       @scroll.passive="scrollingHandler"
     >
-    <template v-for="(item, index) of (flatUnwrap($slots.default(), ['p'])) as any">
-      <div v-if="item?.type?.tag === 'img'" :key="index"
-        class="shrink-0 w-full h-full flex justify-center items-center">
-        <img :src="item.props.src" :alt="item.props.alt" @dblclick="doubleClickHandler">
-      </div>
-    </template>
+      <template v-for="(item, index) of (flatUnwrap($slots.default(), ['p'])) as any">
+        <div
+          v-if="item?.type?.tag === 'img'"
+          :key="index"
+          class="shrink-0 w-full h-full flex justify-center items-center"
+        >
+          <img
+            :src="item.props.src"
+            :alt="item.props.alt"
+            @dblclick="doubleClickHandler"
+          >
+        </div>
+      </template>
     </div>
     <Transition
       enter-from-class="translate-x-0"
@@ -239,7 +264,11 @@ const doubleClickHandler = (event) => {
           :class="showImgIndex - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
           @click="scrollTopHandler(index)"
         >
-          <img :src="item.src" :alt="item.alt" class="mx-auto max-h-full">
+          <img
+            :src="item.src"
+            :alt="item.alt"
+            class="mx-auto max-h-full"
+          >
         </button>
       </div>
     </Transition>
@@ -263,7 +292,11 @@ const doubleClickHandler = (event) => {
           :class="showImgIndex - 1 === index ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
           @click="scrollLeftHandler(index)"
         >
-          <img :src="item.src" :alt="item.alt" class="mx-auto max-h-full">
+          <img
+            :src="item.src"
+            :alt="item.alt"
+            class="mx-auto max-h-full"
+          >
         </button>
       </div>
     </Transition>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ZoomImageType } from '@/composables/states'
+import type { ZoomImageType } from '../composables/states'
 const flexiMode = useFlexiMode()
 const showZoomImage = useShowZoomImage()
 const zoomImage = useZoomImage()
@@ -541,7 +541,10 @@ const pointerCancelHandler = (event:PointerEvent) => {
         @click.stop.prevent="clickHandler(false)"
       >
         <span>Esc</span>
-        <IconCustom name="ic:round-close" class="w-4 h-4" />
+        <IconCustom
+          name="ic:round-close"
+          class="w-4 h-4"
+        />
       </button>
     </Transition>
 
@@ -565,7 +568,10 @@ const pointerCancelHandler = (event:PointerEvent) => {
           :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
           @click.stop.prevent="scrollHandler('left')"
         >
-          <IconCustom name="material-symbols:arrow-left-rounded" class="w-6 h-6" />
+          <IconCustom
+            name="material-symbols:arrow-left-rounded"
+            class="w-6 h-6"
+          />
         </button>
         <div
           ref="zoomImageListContainer"
@@ -579,7 +585,11 @@ const pointerCancelHandler = (event:PointerEvent) => {
             :class="currentZoomImg && currentZoomImg.src === item.src ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
             @click.stop.prevent="setCurrentZoomImg(item)"
           >
-            <img :src="item.src" :alt="item.alt" class="mx-auto max-h-full">
+            <img
+              :src="item.src"
+              :alt="item.alt"
+              class="mx-auto max-h-full"
+            >
           </button>
         </div>
         <button
@@ -589,7 +599,10 @@ const pointerCancelHandler = (event:PointerEvent) => {
           :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
           @click.stop.prevent="scrollHandler('right')"
         >
-          <IconCustom name="material-symbols:arrow-right-rounded" class="w-6 h-6" />
+          <IconCustom
+            name="material-symbols:arrow-right-rounded"
+            class="w-6 h-6"
+          />
         </button>
       </div>
     </Transition>

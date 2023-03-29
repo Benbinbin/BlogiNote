@@ -1,5 +1,3 @@
-// const appConfig = useAppConfig()
-
 /**
  *
  * window width and heigh

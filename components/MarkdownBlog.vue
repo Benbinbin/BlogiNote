@@ -17,8 +17,8 @@ const appConfig = useAppConfig()
  *
  */
 let showTime = true
-// if ('articlePage' in appConfig.theme && 'showTime' in appConfig.theme.articlePage) {
-showTime = appConfig.theme.articlePage.showTime
+// if ('articlePage' in appConfig.bloginote && 'showTime' in appConfig.bloginote.articlePage) {
+showTime = appConfig.bloginote.articlePage.showTime
 // }
 
 if ('showTime' in props.data) {
@@ -31,8 +31,8 @@ if ('showTime' in props.data) {
  *
  */
 let showOutdatedWarningComponent = true
-// if (appConfig?.theme?.articlePage?.outdated?.show) {
-showOutdatedWarningComponent = appConfig.theme.articlePage.outdated.show
+// if (appConfig?.bloginote?.articlePage?.outdated?.show) {
+showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
 // }
 
 if ('showOutdatedWarning' in props.data) {
@@ -61,7 +61,7 @@ if (props.data._path) {
  */
 // const showCatalog = useShowBlogCatalog()
 const showCatalog = useState<Boolean>('showBlogCatalog', () => {
-  return appConfig.theme.articlePage.showBlogCatalog
+  return appConfig.bloginote.articlePage.showBlogCatalog
 })
 
 const article = ref<HTMLElement | null>(null) // get the article DOM
@@ -126,22 +126,34 @@ const showTags = ref(true)
           target="_blank"
           class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
         >
-          <IconCustom name="material-symbols:category-rounded" class="shrink-0 w-4 h-4" />
+          <IconCustom
+            name="material-symbols:category-rounded"
+            class="shrink-0 w-4 h-4"
+          />
           <span class="text-xs">{{ category }}</span>
         </NuxtLink>
-        <div v-if="showTime" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+        <div
+          v-if="showTime"
+          class="flex flex-wrap justify-center items-center gap-2 sm:gap-4"
+        >
           <div
             v-if="props.data.created"
             class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
-            <IconCustom name="mdi:pencil-circle" class="w-4 h-4" />
+            <IconCustom
+              name="mdi:pencil-circle"
+              class="w-4 h-4"
+            />
             <span class="text-xs">Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
           </div>
           <div
             v-if="props.data.updated"
             class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
-            <IconCustom name="mdi:clock" class="w-4 h-4" />
+            <IconCustom
+              name="mdi:clock"
+              class="w-4 h-4"
+            />
             <span class="text-xs">Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
           </div>
         </div>
@@ -151,7 +163,10 @@ const showTags = ref(true)
             class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="showSeriesModal=true"
           >
-            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
+            <IconCustom
+              name="bi:collection"
+              class="shrink-0 w-4 h-4"
+            />
             <span class="text-xs">{{ props.data.series }}</span>
           </button>
           <button
@@ -160,7 +175,10 @@ const showTags = ref(true)
             :class="showTags ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'text-gray-300 hover:text-white hover:bg-blue-500 '"
             @click="showTags = !showTags"
           >
-            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
+            <IconCustom
+              name="bi:collection"
+              class="shrink-0 w-4 h-4"
+            />
             <span class="text-xs">Tags</span>
           </button>
         </div>
@@ -176,14 +194,31 @@ const showTags = ref(true)
 
       <hr class="w-1/3 mx-auto">
 
-      <div v-if="(props.prevArticleUrl || props.nextArticleUrl)" class="p-2 flex flex-wrap justify-center items-center gap-4">
-        <NuxtLink v-if="props.prevArticleUrl" :to="props.prevArticleUrl" class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300">
-          <IconCustom name="ic:round-keyboard-arrow-left" class="w-4 h-4" />
+      <div
+        v-if="(props.prevArticleUrl || props.nextArticleUrl)"
+        class="p-2 flex flex-wrap justify-center items-center gap-4"
+      >
+        <NuxtLink
+          v-if="props.prevArticleUrl"
+          :to="props.prevArticleUrl"
+          class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
+        >
+          <IconCustom
+            name="ic:round-keyboard-arrow-left"
+            class="w-4 h-4"
+          />
           <span>Prev Article</span>
         </NuxtLink>
-        <NuxtLink v-if="props.nextArticleUrl" :to="props.nextArticleUrl" class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300">
+        <NuxtLink
+          v-if="props.nextArticleUrl"
+          :to="props.nextArticleUrl"
+          class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
+        >
           <span>Next Article</span>
-          <IconCustom name="ic:round-keyboard-arrow-right" class="w-4 h-4" />
+          <IconCustom
+            name="ic:round-keyboard-arrow-right"
+            class="w-4 h-4"
+          />
         </NuxtLink>
       </div>
 
@@ -226,7 +261,10 @@ const showTags = ref(true)
       :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
       @click="showCatalog = !showCatalog"
     >
-      <IconCustom name="entypo:list" class="w-5 h-5" />
+      <IconCustom
+        name="entypo:list"
+        class="w-5 h-5"
+      />
     </button>
   </div>
 </template>

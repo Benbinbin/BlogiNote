@@ -8,7 +8,7 @@ const props = defineProps({
   },
   language: {
     type: String,
-    default: ''
+    default: null
   },
   filename: {
     type: String,
@@ -17,6 +17,10 @@ const props = defineProps({
   highlights: {
     type: Array as () => number[],
     default: () => []
+  },
+  meta: {
+    type: String,
+    default: null
   }
 })
 
@@ -71,7 +75,9 @@ const languageColorMap = {
 
 const programLanguage = ref('')
 
-programLanguage.value = props.language.toLowerCase()
+if(props.language) {
+  programLanguage.value = props.language.toLowerCase()
+}
 
 const extensionRegex = /\.([0-9a-z]+)$/
 if (props.filename) {

@@ -25,20 +25,23 @@ const appConfig = useAppConfig()
  */
 useHead({
   style: [
-    {
-      children: 'html, body { scroll-behavior: smooth }'
-    },
-    {
-      children: 'body { overflow: overlay }'
-    }
+    'body { overflow: overlay }'
   ],
   link: [
     {
       rel: 'icon',
-      href: appConfig?.theme?.favicon
+      href: appConfig?.bloginote?.favicon
     }
   ]
 })
+
+if(appConfig.bloginote.scrollSmooth) {
+  useHead({
+    style: [
+      'html, body { scroll-behavior: smooth }'
+    ]
+  })
+}
 
 /**
  *
@@ -136,7 +139,10 @@ onUnmounted(() => {
 
 <template>
   <div class="pb-20 sm:pb-0 bg-gray-50 flex flex-col min-h-screen">
-    <header class="hidden sm:block shrink-0" :class="route.path === '/' ? 'sm:sticky top-0 inset-x-0 z-30' : 'relative z-40'">
+    <header
+      class="hidden sm:block shrink-0"
+      :class="route.path === '/' ? 'sm:sticky top-0 inset-x-0 z-30' : 'relative z-40'"
+    >
       <HeaderNav :header-flexi-mode="props.headerFlexiMode" />
     </header>
     <div class="grow flex flex-col">
@@ -157,11 +163,14 @@ onUnmounted(() => {
     </Transition>
 
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50">
-      <FooterNav :footer-catalog="props.footerCatalog" :footer-flexi-mode="props.footerFlexiMode" />
+      <FooterNav
+        :footer-catalog="props.footerCatalog"
+        :footer-flexi-mode="props.footerFlexiMode"
+      />
     </nav>
 
     <ClientOnly>
-      <SearchModal v-show="showSearchModal"></SearchModal>
+      <SearchModal v-show="showSearchModal" />
     </ClientOnly>
   </div>
 </template>

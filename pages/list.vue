@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-// import fileTypeMap from '@/utils/fileType.json'
 
 interface MyCustomParsedContent extends ParsedContent {
   tags: string[]
@@ -291,7 +290,10 @@ const getFileTypeIcon = (type) => {
             :class="showMoreFilter ? 'bg-purple-500 hover:bg-purple-400 text-white' : 'bg-purple-100 text-purple-400 hover:text-purple-500'"
             @click="showMoreFilter = !showMoreFilter"
           >
-            <IconCustom name="mdi:filter-plus-outline" class="w-6 h-6" />
+            <IconCustom
+              name="mdi:filter-plus-outline"
+              class="w-6 h-6"
+            />
           </button>
           <div class="grow max-w-full space-y-2 ">
             <div class="p-2 flex items-start text-sm bg-gray-100 sm:space-x-4">
@@ -311,24 +313,37 @@ const getFileTypeIcon = (type) => {
               <p class="px-2 py-1 sm:hidden">
                 Category
               </p>
-              <ul class="filter-list-container" :class="showMoreCategory ? 'max-h-96' : 'max-h-8'">
+              <ul
+                class="filter-list-container"
+                :class="showMoreCategory ? 'max-h-96' : 'max-h-8'"
+              >
                 <li class="shrink-0">
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                     :class="currentCategory === 'all' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
                     @click="toggleCategory('all')"
                   >
-                    <IconCustom name="material-symbols:category-rounded" class="w-5 h-5" />
+                    <IconCustom
+                      name="material-symbols:category-rounded"
+                      class="w-5 h-5"
+                    />
                     <p>all</p>
                   </button>
                 </li>
-                <li v-for="item in categoryArr" :key="item._path" class="shrink-0">
+                <li
+                  v-for="item in categoryArr"
+                  :key="item._path"
+                  class="shrink-0"
+                >
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
                     :class="currentCategory === getCategory(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
                     @click="toggleCategory(getCategory(item._path))"
                   >
-                    <IconCustom name="material-symbols:category-rounded" class="shrink-0 w-5 h-5" />
+                    <IconCustom
+                      name="material-symbols:category-rounded"
+                      class="shrink-0 w-5 h-5"
+                    />
                     <p>
                       {{ getCategory(item._path) }}
                     </p>
@@ -345,7 +360,10 @@ const getFileTypeIcon = (type) => {
               leave-active-class="transition-all duration-100 ease-in"
               leave-to-class="-translate-y-8 opacity-0"
             >
-              <div v-show="showMoreFilter" class="space-y-2">
+              <div
+                v-show="showMoreFilter"
+                class="space-y-2"
+              >
                 <div class="p-2 flex items-start text-sm bg-gray-100 rounded sm:space-x-4">
                   <button
                     class="shrink-0 px-2 py-1 hidden sm:flex items-center text-gray-500 hover:bg-gray-200 rounded"
@@ -363,8 +381,16 @@ const getFileTypeIcon = (type) => {
                   <p class="px-2 py-1 sm:hidden">
                     Tags
                   </p>
-                  <ul v-if="tagSet" class="filter-list-container" :class="showMoreTag ? 'max-h-96' : 'max-h-8'">
-                    <li v-for="tag in ['all', ...tagSet as string[]]" :key="tag" class="shrink-0">
+                  <ul
+                    v-if="tagSet"
+                    class="filter-list-container"
+                    :class="showMoreTag ? 'max-h-96' : 'max-h-8'"
+                  >
+                    <li
+                      v-for="tag in ['all', ...tagSet as string[]]"
+                      :key="tag"
+                      class="shrink-0"
+                    >
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="(currentTags.length === 0 && tag === 'all') || currentTags.includes(tag) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
@@ -393,15 +419,26 @@ const getFileTypeIcon = (type) => {
                   <p class="px-2 py-1 sm:hidden">
                     Series
                   </p>
-                  <ul v-if="seriesSet" class="filter-list-container" :class="showMoreSeries ? 'max-h-96' : 'max-h-8'">
-                    <li v-for="series in ['all', ...seriesSet as string[]]" :key="series" class="shrink-0">
+                  <ul
+                    v-if="seriesSet"
+                    class="filter-list-container"
+                    :class="showMoreSeries ? 'max-h-96' : 'max-h-8'"
+                  >
+                    <li
+                      v-for="series in ['all', ...seriesSet as string[]]"
+                      :key="series"
+                      class="shrink-0"
+                    >
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="currentSeries === series ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
                         :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory]?.includes(series)) ? false : true"
                         @click="toggleSeries(series)"
                       >
-                        <IconCustom name="bi:collection" class="shrink-0 w-5 h-5" />
+                        <IconCustom
+                          name="bi:collection"
+                          class="shrink-0 w-5 h-5"
+                        />
                         <p>{{ series }}</p>
                       </button>
                     </li>
@@ -415,22 +452,41 @@ const getFileTypeIcon = (type) => {
                 class="px-4 py-1 sm:hidden text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
                 @click="toggleCategory('all')"
               >
-                <IconCustom name="ant-design:clear-outlined" class="w-4 h-4" />
+                <IconCustom
+                  name="ant-design:clear-outlined"
+                  class="w-4 h-4"
+                />
               </button>
               <button
                 class="grow py-1 sm:hidden text-purple-500 bg-purple-100 rounded"
                 @click="showMoreFilter = !showMoreFilter"
               >
-                <IconCustom v-show="!showMoreFilter" name="ic:round-keyboard-arrow-down" class="w-4 h-4" />
-                <IconCustom v-show="showMoreFilter" name="ic:round-keyboard-arrow-up" class="w-4 h-4" />
+                <IconCustom
+                  v-show="!showMoreFilter"
+                  name="ic:round-keyboard-arrow-down"
+                  class="w-4 h-4"
+                />
+                <IconCustom
+                  v-show="showMoreFilter"
+                  name="ic:round-keyboard-arrow-up"
+                  class="w-4 h-4"
+                />
               </button>
               <button
                 class="px-4 py-1 sm:hidden transition-colors duration-300 rounded"
                 :class="showListDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 hover:text-green-500 bg-green-50 hover:bg-green-100'"
                 @click="showListDetail = !showListDetail"
               >
-                <IconCustom v-show="showListDetail" name="ic:round-unfold-less" class="w-4 h-4" />
-                <IconCustom v-show="!showListDetail" name="ic:round-unfold-more" class="w-4 h-4" />
+                <IconCustom
+                  v-show="showListDetail"
+                  name="ic:round-unfold-less"
+                  class="w-4 h-4"
+                />
+                <IconCustom
+                  v-show="!showListDetail"
+                  name="ic:round-unfold-more"
+                  class="w-4 h-4"
+                />
               </button>
             </div>
           </div>
@@ -443,7 +499,10 @@ const getFileTypeIcon = (type) => {
           class="p-2 flex items-center text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
           @click="toggleCategory('all')"
         >
-          <IconCustom name="ant-design:clear-outlined" class="w-5 h-5" />
+          <IconCustom
+            name="ant-design:clear-outlined"
+            class="w-5 h-5"
+          />
           <p class="hidden sm:block">
             Clear Filter
           </p>
@@ -453,36 +512,64 @@ const getFileTypeIcon = (type) => {
           :class="showListDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 hover:text-green-500 bg-green-50 hover:bg-green-100'"
           @click="showListDetail = !showListDetail"
         >
-          <IconCustom v-show="showListDetail" name="ic:round-unfold-less" class="w-5 h-5" />
-          <IconCustom v-show="!showListDetail" name="ic:round-unfold-more" class="w-5 h-5" />
+          <IconCustom
+            v-show="showListDetail"
+            name="ic:round-unfold-less"
+            class="w-5 h-5"
+          />
+          <IconCustom
+            v-show="!showListDetail"
+            name="ic:round-unfold-more"
+            class="w-5 h-5"
+          />
           <p class="hidden sm:block">
             {{ showListDetail ? 'Less' : 'More' }} Detail
           </p>
         </button>
       </div>
 
-      <div v-if="pending" class="grow flex flex-col justify-center items-center space-y-2 text-gray-400">
-        <IconCustom name="eos-icons:loading" class="w-10 h-10" />
+      <div
+        v-if="pending"
+        class="grow flex flex-col justify-center items-center space-y-2 text-gray-400"
+      >
+        <IconCustom
+          name="eos-icons:loading"
+          class="w-10 h-10"
+        />
         <p class="text-xl">
           Loading
         </p>
       </div>
-      <div v-if="!pending && filterArticleList" class="grow container p-4 sm:p-8 mx-auto space-y-4">
+      <div
+        v-if="!pending && filterArticleList"
+        class="grow container p-4 sm:p-8 mx-auto space-y-4"
+      >
         <ul
           :class="showListDetail ? 'space-y-2' : 'grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-start gap-2'"
         >
-          <li v-for="item in filterArticleList" :key="item._path" class="space-y-2">
+          <li
+            v-for="item in filterArticleList"
+            :key="item._path"
+            class="space-y-2"
+          >
             <NuxtLink
               :to="item._path"
               class="block px-4 py-2 text-gray-600 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded-lg space-y-2"
             >
               <div class="flex items-start">
-                <IconCustom :name="getFileTypeIcon(item._type)" class="shrink-0 p-1 w-6 h-6 sm:w-7 sm:h-7" />
+                <IconCustom
+                  :name="getFileTypeIcon(item._type)"
+                  class="shrink-0 p-1 w-6 h-6 sm:w-7 sm:h-7"
+                />
                 <h2 class="grow font-bold text-base sm:text-lg">
                   {{ item.title }}
                 </h2>
               </div>
-              <p v-if="item.description" v-show="showListDetail" class="px-6 text-sm opacity-60">
+              <p
+                v-if="item.description"
+                v-show="showListDetail"
+                class="px-6 text-sm opacity-60"
+              >
                 {{ item.description }}
               </p>
             </NuxtLink>
@@ -506,7 +593,10 @@ const getFileTypeIcon = (type) => {
                 :class="currentSeries === item.series ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 hover:text-green-500 bg-green-100'"
                 @click="toggleSeries(item.series)"
               >
-                <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
+                <IconCustom
+                  name="bi:collection"
+                  class="shrink-0 w-4 h-4"
+                />
                 <p>{{ item.series }}</p>
               </button>
             </div>

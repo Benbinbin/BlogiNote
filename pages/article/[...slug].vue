@@ -4,16 +4,6 @@
 * set head meta for article page
 *
 */
-// add CSS stylesheet for katex
-useHead({
-  link: [
-    {
-      rel: 'stylesheet',
-      href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css'
-    }
-  ]
-})
-
 const route = useRoute()
 
 /**
@@ -37,6 +27,8 @@ const changeFlexiMode = () => {
  *
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
+
+// console.log(data);
 
 /**
  *
@@ -215,13 +207,17 @@ watch(showZoomImage, () => {
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>
-    <NuxtLayout name="base" :footer-catalog="data?.body?.toc && data.body.toc.links.length > 0" :footer-flexi-mode="data && data.articleType==='note'">
+    <NuxtLayout
+      name="base"
+      :footer-catalog="data?.body?.toc && data.body.toc.links.length > 0"
+      :footer-flexi-mode="data && data.articleType==='note'"
+    >
       <MarkdownBlog
         v-if="!pending && data && data._type === 'markdown'"
         v-show="!data.articleType || data.articleType === 'blog' || (data.articleType === 'note' && flexiMode === 'blog')"
         :data="data"
-        :prevArticleUrl="prevArticleUrl"
-        :nextArticleUrl="nextArticleUrl"
+        :prev-article-url="prevArticleUrl"
+        :next-article-url="nextArticleUrl"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
       />
       <MarkdownNote
@@ -230,7 +226,10 @@ watch(showZoomImage, () => {
         :data="data"
         class="px-4 py-12"
       />
-      <div v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')" class="container mx-auto ">
+      <div
+        v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')"
+        class="container mx-auto "
+      >
         <div
           class="json-content-container max-h-[calc(100vh*0.8)] m-6 p-4 border rounded-lg overflow-auto"
         >
@@ -238,25 +237,54 @@ watch(showZoomImage, () => {
         </div>
       </div>
 
-      <div v-if="(prevArticleUrl || nextArticleUrl)" class="container lg:max-w-4xl mx-auto px-6 md:px-12 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <NuxtLink v-if="prevArticleUrl" :to="prevArticleUrl"
-          class="px-4 py-6 flex justify-start items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300">
+      <div
+        v-if="(prevArticleUrl || nextArticleUrl)"
+        class="container lg:max-w-4xl mx-auto px-6 md:px-12 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        <NuxtLink
+          v-if="prevArticleUrl"
+          :to="prevArticleUrl"
+          class="px-4 py-6 flex justify-start items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300"
+        >
           <div class="flex items-center gap-1">
-            <IconCustom name="ic:round-keyboard-arrow-left" class="shrink-0 w-8 h-8 opacity-70" />
+            <IconCustom
+              name="ic:round-keyboard-arrow-left"
+              class="shrink-0 w-8 h-8 opacity-70"
+            />
             <div class="flex flex-col gap-2">
-              <p class="text-lg font-bold">Previous Article</p>
-              <p v-if="prevArticleName" class="text-xs opacity-80">{{ prevArticleName }}</p>
+              <p class="text-lg font-bold">
+                Previous Article
+              </p>
+              <p
+                v-if="prevArticleName"
+                class="text-xs opacity-80"
+              >
+                {{ prevArticleName }}
+              </p>
             </div>
           </div>
         </NuxtLink>
-        <NuxtLink v-if="nextArticleUrl" :to="nextArticleUrl"
-          class="px-4 py-6 flex justify-end items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300">
+        <NuxtLink
+          v-if="nextArticleUrl"
+          :to="nextArticleUrl"
+          class="px-4 py-6 flex justify-end items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300"
+        >
           <div class="flex items-center gap-1">
             <div class="flex flex-col gap-2">
-              <p class="text-lg font-bold text-end">Next Article</p>
-              <p v-if="nextArticleName" class="text-xs opacity-80 text-end">{{ nextArticleName }}</p>
+              <p class="text-lg font-bold text-end">
+                Next Article
+              </p>
+              <p
+                v-if="nextArticleName"
+                class="text-xs opacity-80 text-end"
+              >
+                {{ nextArticleName }}
+              </p>
             </div>
-            <IconCustom name="ic:round-keyboard-arrow-right" class="shrink-0 w-8 h-8 opacity-70" />
+            <IconCustom
+              name="ic:round-keyboard-arrow-right"
+              class="shrink-0 w-8 h-8 opacity-70"
+            />
           </div>
         </NuxtLink>
       </div>
@@ -269,10 +297,19 @@ watch(showZoomImage, () => {
       :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-50 border-purple-200' : 'flex-row bg-green-100 hover:bg-green-50 border-green-200'"
       @click="changeFlexiMode"
     >
-      <div class="shrink-0 w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
+      <div
+        class="shrink-0 w-1.5 h-1.5 rounded-full"
+        :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'"
+      />
       <div class="shrink-0 space-y-1">
-        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
+        <div
+          class="w-1 h-1 rounded-full "
+          :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+        />
+        <div
+          class="w-1 h-1 rounded-full "
+          :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
+        />
       </div>
     </button>
 

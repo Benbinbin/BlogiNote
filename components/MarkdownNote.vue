@@ -24,7 +24,7 @@ const appConfig = useAppConfig()
  */
 let showTime = true
 // if ('articlePage' in themeOptions.value && 'showTime' in themeOptions.value.articlePage) {
-showTime = appConfig.theme.articlePage.showTime
+showTime = appConfig.bloginote.articlePage.showTime
 // }
 
 if ('showTime' in props.data) {
@@ -38,7 +38,7 @@ if ('showTime' in props.data) {
  */
 let showOutdatedWarningComponent = false
 // if (themeOptions.value?.articlePage?.outdated?.show) {
-showOutdatedWarningComponent = appConfig.theme.articlePage.outdated.show
+showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
 // }
 
 if ('showOutdatedWarning' in props.data) {
@@ -218,7 +218,7 @@ provide('recommendColumns', recommendColumns)
 
 const autoChangeColumns = ref(true)
 
-let resizeTimerForColumns = null
+const resizeTimerForColumns = null
 
 const windowSize = useWindowSize()
 onMounted(() => {
@@ -259,7 +259,7 @@ const changeDivideColumnsHandler = (event) => {
  */
 // const showCatalog = useShowNoteCatalog()
 const showCatalog = useState<Boolean>('showNoteCatalog', () => {
-  return appConfig.theme.articlePage.showNoteCatalog
+  return appConfig.bloginote.articlePage.showNoteCatalog
 })
 
 // collapse heading section
@@ -303,7 +303,10 @@ provide('setActiveHeadingId', setActiveHeadingId)
 <template>
   <div>
     <div class="p-4 selection:text-white selection:bg-purple-400">
-      <h1 v-if="showTitle" class="py-4 text-3xl md:text-5xl font-bold text-center">
+      <h1
+        v-if="showTitle"
+        class="py-4 text-3xl md:text-5xl font-bold text-center"
+      >
         {{ props.data.title || "Article" }}
       </h1>
       <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
@@ -313,22 +316,34 @@ provide('setActiveHeadingId', setActiveHeadingId)
           target="_blank"
           class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
         >
-          <IconCustom name="material-symbols:category-rounded" class="shrink-0 w-4 h-4" />
+          <IconCustom
+            name="material-symbols:category-rounded"
+            class="shrink-0 w-4 h-4"
+          />
           <span class="text-xs">{{ category }}</span>
         </NuxtLink>
-        <div v-if="showTime" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+        <div
+          v-if="showTime"
+          class="flex flex-wrap justify-center items-center gap-2 sm:gap-4"
+        >
           <div
             v-if="props.data.created"
             class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
-            <IconCustom name="mdi:pencil-circle" class="w-4 h-4" />
+            <IconCustom
+              name="mdi:pencil-circle"
+              class="w-4 h-4"
+            />
             <span>Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
           </div>
           <div
             v-if="props.data.updated"
             class="flex items-center gap-1 text-xs text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
-            <IconCustom name="mdi:clock" class="w-4 h-4" />
+            <IconCustom
+              name="mdi:clock"
+              class="w-4 h-4"
+            />
             <span>Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
           </div>
         </div>
@@ -338,7 +353,10 @@ provide('setActiveHeadingId', setActiveHeadingId)
             class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
             @click="showSeriesModal=true"
           >
-            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
+            <IconCustom
+              name="bi:collection"
+              class="shrink-0 w-4 h-4"
+            />
             <span class="text-xs">{{ props.data.series }}</span>
           </button>
           <button
@@ -347,7 +365,10 @@ provide('setActiveHeadingId', setActiveHeadingId)
             :class="showTags ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'text-gray-300 hover:text-white hover:bg-blue-500 '"
             @click="showTags = !showTags"
           >
-            <IconCustom name="bi:collection" class="shrink-0 w-4 h-4" />
+            <IconCustom
+              name="bi:collection"
+              class="shrink-0 w-4 h-4"
+            />
             <span class="text-xs">Tags</span>
           </button>
         </div>
@@ -406,7 +427,10 @@ provide('setActiveHeadingId', setActiveHeadingId)
         :class="autoChangeColumns ? 'text-yellow-500 bg-yellow-100 hover:bg-yellow-50 border border-yellow-200' : 'text-gray-500 bg-gray-100 hover:bg-gray-50 border border-gray-200'"
         @click="autoChangeColumns = !autoChangeColumns"
       >
-        <IconCustom name="fluent:desktop-sync-24-regular" class="w-4 h-4" />
+        <IconCustom
+          name="fluent:desktop-sync-24-regular"
+          class="w-4 h-4"
+        />
       </button>
       <button
         class="p-2 flex justify-center items-center text-green-500 bg-green-100 hover:bg-green-50 border border-green-200 transition-colors duration-300 rounded-lg"
@@ -422,7 +446,10 @@ provide('setActiveHeadingId', setActiveHeadingId)
       :class="showCatalog ? 'text-green-500 bg-green-100 hover:bg-green-50 border-green-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
       @click="showCatalog = !showCatalog"
     >
-      <IconCustom name="entypo:list" class="w-5 h-5" />
+      <IconCustom
+        name="entypo:list"
+        class="w-5 h-5"
+      />
     </button>
   </div>
 </template>
