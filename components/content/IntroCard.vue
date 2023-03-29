@@ -6,7 +6,7 @@ const props = defineProps({
   },
   colorClass: {
     type: String,
-    default: 'text-purple-600 bg-purple-100'
+    default: 'text-purple-500 bg-purple-100/20 border-purple-100'
   },
   colorStyle: {
     type: String,
@@ -17,11 +17,11 @@ const props = defineProps({
 
 <template>
   <div
-    class="p-8 sm:p-16 w-full flex flex-col sm:flex-row justify-between items-center sm:item-start gap-16 rounded-xl"
+    class="p-10 sm:p-16 2xl:p-24 w-full flex flex-col sm:flex-row justify-between items-center sm:item-start gap-16 border-2 rounded-xl"
     :class="props.colorClass"
     :style="props.colorStyle"
   >
-    <div class="space-y-8">
+    <div class="space-y-4">
       <slot>
         <h1>
           Hi
@@ -31,16 +31,17 @@ const props = defineProps({
         </p>
       </slot>
     </div>
-    <img v-if="props.avatar" :src="props.avatar" alt="avatar" class="hidden sm:block w-28 h-28 rounded-full">
+    <img v-if="props.avatar" :src="props.avatar" alt="avatar" class="hidden lg:block w-28 h-28 rounded-full">
   </div>
 </template>
 
 <style scoped lang="scss">
 :slotted(h1), h1 {
-    @apply font-bold text-5xl;
+    @apply pb-6 sm:pb-10 font-bold text-3xl sm:text-5xl;
+    word-wrap: break-word;
 }
 
 :slotted(p), p {
-    @apply text-2xl opacity-50;
+    @apply text-lg sm:text-2xl opacity-95;
 }
 </style>

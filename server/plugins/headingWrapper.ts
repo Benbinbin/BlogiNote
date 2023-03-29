@@ -38,7 +38,7 @@
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('content:file:afterParse', (file) => {
     // manipulate the tree (the parsed result of markdown file)
-    if (file._extension === 'md') {
+    if (file?._path?.startsWith('/article/') && file?._extension === 'md') {
       // build a new children for article
       const newChildren: any[] = []
 

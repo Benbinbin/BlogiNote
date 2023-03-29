@@ -1,10 +1,6 @@
----
-head.description: 'This is a custom description for Content Wind about page.'
----
+# [About]{.text-3xl .sm:text-5xl .text-purple-500}
 
-# About
-
-This website is generate by BlogiNote, it can show your blogs and notes with flexible layouts and fancy interaction.
+This website is generate by BlogiNote, it can show your blog and note with flexible layouts and fancy interaction.
 
 BlogiNote is content driving website, it can generate web pages based on different file formats, like `markdown`,`json` and `csv` and more.
 
@@ -12,7 +8,7 @@ BlogiNote is content driving website, it can generate web pages based on differe
 
 BlogiNote 是由内容驱动的，即它可以基于多种不同格式的文件生成网页，例如 `markdown`、`json`、`csv` 等文件。
 
-## [Contact Me]{.text-purple-500}
+## [Contact Me]{.text-2xl .sm:text-3xl .text-purple-500}
 
 If you have any feedback, feel free to contact me :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
 

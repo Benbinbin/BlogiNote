@@ -30,16 +30,12 @@
 
 <style lang="scss">
 .about-me-content-container {
-  h1 {
-    @apply py-8 text-3xl sm:text-5xl text-purple-500 font-bold text-center
-  }
-
-  h2 {
-    @apply py-8 text-2xl font-bold text-center
+  h1, h2, h3, h4, h5, h6 {
+    @apply py-8 sm:py-10 font-bold text-center;
   }
 
   p {
-    @apply py-4 text-lg text-gray-500
+    @apply py-4 text-lg
   }
 }
 </style>

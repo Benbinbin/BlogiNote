@@ -166,7 +166,7 @@ const getFileTypeIcon = (type:string) => {
         v-show="flexiMode === 'blog'"
         class="container px-8 mx-auto"
       >
-        <div class="py-16">
+        <div class="sm:px-10 py-16">
           <ContentDoc>
             <template #empty>
               <IntroCard :avatar="'/default-avatar.png'" />

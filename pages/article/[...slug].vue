@@ -362,6 +362,7 @@ watch(showZoomImage, () => {
   h5,
   h6 {
     @apply font-bold inline-block;
+    word-wrap: break-word;
 
     a {
       @apply text-inherit hover:text-inherit no-underline hover:no-underline visited:no-underline hover:visited:no-underline;
