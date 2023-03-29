@@ -14,6 +14,10 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    timestamp: {
+      created: false,
+      updated: true
+    },
     rss: {
       title: 'BlogiNote',
       description: 'BlogiNote is a website for showing your blogs and notes with flexible layouts and multiple optimizations.',

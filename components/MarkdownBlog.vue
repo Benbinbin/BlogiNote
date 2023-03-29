@@ -13,29 +13,29 @@ const appConfig = useAppConfig()
 
 /**
  *
- * show article created or last update time
+ * show article created or last updated time
  *
  */
 let showTime = true
-// if ('articlePage' in appConfig.bloginote && 'showTime' in appConfig.bloginote.articlePage) {
+// show time or not with app config
 showTime = appConfig.bloginote.articlePage.showTime
-// }
 
 if ('showTime' in props.data) {
+  // show time or not decide by page metadata
   showTime = props.data.showTime
 }
 
 /**
  *
- * show outdated warning
+ * show expired warning
  *
  */
 let showOutdatedWarningComponent = true
-// if (appConfig?.bloginote?.articlePage?.outdated?.show) {
+// show expire warning or not decide by app config
 showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
-// }
 
 if ('showOutdatedWarning' in props.data) {
+// show expire warning or not decide by page metadata
   showOutdatedWarningComponent = props.data.showOutdatedWarning
 }
 
@@ -55,8 +55,7 @@ if (props.data._path) {
 
 /**
  *
- * catalog
- * toc for markdown article
+ * catalog (it's like the toc for markdown article)
  *
  */
 // const showCatalog = useShowBlogCatalog()
@@ -137,24 +136,24 @@ const showTags = ref(true)
           class="flex flex-wrap justify-center items-center gap-2 sm:gap-4"
         >
           <div
-            v-if="props.data.created"
+            v-if="props.data.created || props.data.git_time_created"
             class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
             <IconCustom
               name="mdi:pencil-circle"
               class="w-4 h-4"
             />
-            <span class="text-xs">Created Time: {{ (new Date(props.data.created)).toLocaleDateString() }}</span>
+            <span class="text-xs">Created {{ (new Date(props.data.created || props.data.git_time_created)).toLocaleDateString() }}</span>
           </div>
           <div
-            v-if="props.data.updated"
+            v-if="props.data.updated || props.data.git_time_updated"
             class="flex items-center gap-1 text-gray-300 hover:text-gray-400 transition-colors duration-300"
           >
             <IconCustom
               name="mdi:clock"
               class="w-4 h-4"
             />
-            <span class="text-xs">Updated Time: {{ (new Date(props.data.updated)).toLocaleDateString() }}</span>
+            <span class="text-xs">Updated {{ (new Date(props.data.updated || props.data.git_time_updated)).toLocaleDateString() }}</span>
           </div>
         </div>
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">

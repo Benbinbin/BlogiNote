@@ -1,39 +1,42 @@
 /**
- * refer to a rehype plugin
- * https://github.com/Benbinbin/rehype-details-wrapper
+ *
  * wrap the heading with a <details> element
- * and the heading move to a <summary> element inside the <details> element
- * and the content below this heading between the next siblings heading (same level) will move to this <details> element
- * for example
  *
- * <h2>heading 2</h2>
- * <p>content 2</p>
- * <h3>heading 3</h3>
- * <p>content 3</p>
- * <h2>another heading 2</h2>
- * <p>content 4</p>
- *
- * will be transform to
- *
- * <details>
- *   <summary>
- *     <h2>heading 2</h2>
- *   </summary>
- *   <p>content 2</p>
- *   <details>
- *     <summary>
- *       <h3>heading 3</h3>
- *     </summary>
- *     <p>content 3</p>
- *   </details>
- * </details>
- * <details>
- *   <summary>
- *     <h2>another heading 2</h2>
- *   </summary>
- *   <p>content 4</p>
- * </details>
  */
+ // refer to a rehype plugin
+ // https://github.com/Benbinbin/rehype-details-wrapper
+ //
+ // and the heading move to a <summary> element inside the <details> element
+ // and the content below this heading between the next siblings heading (same level) will move to this <details> element
+ // for example
+ //
+ // <h2>heading 2</h2>
+ // <p>content 2</p>
+ // <h3>heading 3</h3>
+ // <p>content 3</p>
+ // <h2>another heading 2</h2>
+ // <p>content 4</p>
+ //
+ // will be transform to
+ //
+ // <details>
+ //   <summary>
+ //     <h2>heading 2</h2>
+ //   </summary>
+ //   <p>content 2</p>
+ //   <details>
+ //     <summary>
+ //       <h3>heading 3</h3>
+ //     </summary>
+ //     <p>content 3</p>
+ //   </details>
+ // </details>
+ // <details>
+ //   <summary>
+ //     <h2>another heading 2</h2>
+ //   </summary>
+ //   <p>content 4</p>
+ // </details>
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('content:file:afterParse', (file) => {
