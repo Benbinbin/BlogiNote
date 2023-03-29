@@ -7,6 +7,7 @@ node_modules
 .env
 .playground
 dist
+yarn.lock
 
 public/article
 public/_pagefind
