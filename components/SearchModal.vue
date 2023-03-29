@@ -5,9 +5,17 @@ const runtimeConfig = useRuntimeConfig()
 const baseURL = runtimeConfig.app.baseURL
 
 let pagefind: any;
-// if (process.env.NODE_ENV === 'production') {
+
+if (!process.dev) {
   try {
-      pagefind = await import(/* @vite-ignore */pagefindPath);
+    // @vite-ignore
+    pagefind = await import(/* @vite-ignore */pagefindPath);
+
+    if (baseURL !== '/') {
+      await pagefind.options({
+        baseURL: baseURL
+      })
+    }
   } catch (error) {
     // if (process.env.NODE_ENV === 'development') {
       console.log(error);
@@ -15,12 +23,6 @@ let pagefind: any;
   }
 
   // console.log(pagefind);
-// }
-
-if (baseURL !== '/') {
-  await pagefind.options({
-    baseURL: baseURL
-  })
 }
 
 // search modal
