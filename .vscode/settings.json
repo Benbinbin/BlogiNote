@@ -1,10 +1,12 @@
 {
+  // refer to https://nuxt.com/docs/community/contribution#use-eslint
   "editor.codeActionsOnSave": {
+    "source.fixAll": false,
     "source.fixAll.eslint": true
   },
-  "files.associations": {
-    "*.css": "scss"
-  },
+  // "files.associations": {
+  //   "*.css": "scss"
+  // },
   "editor.formatOnSave": false,
   "cSpell.words": [
     "bloginote",
