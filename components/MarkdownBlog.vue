@@ -22,6 +22,7 @@ showTime = appConfig.bloginote.articlePage.showTime
 
 if ('showTime' in props.data) {
   // show time or not decide by page metadata
+  // eslint-disable-next-line vue/no-setup-props-destructure
   showTime = props.data.showTime
 }
 
@@ -36,6 +37,7 @@ showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
 
 if ('showOutdatedWarning' in props.data) {
 // show expire warning or not decide by page metadata
+  // eslint-disable-next-line vue/no-setup-props-destructure
   showOutdatedWarningComponent = props.data.showOutdatedWarning
 }
 
