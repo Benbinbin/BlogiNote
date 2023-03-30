@@ -17,7 +17,7 @@ const appConfig = useAppConfig()
         <span v-else>{{ appConfig.bloginote.author }}</span>
       </p>
       <p>
-        blog theme <a
+        theme <a
           href="https://github.com/Benbinbin/BlogiNote"
           target="_blank"
           class="text-blue-400"

@@ -32,9 +32,4 @@ You can also build your own template based on BlogiNote, adding some Remark plug
 [MIT](./LICENSE)
 
 ## Feedback
-If you have any problem or suggestion about this project, feel free to open an [issue](https://github.com/Benbinbin/Bookshelf/issues/new) in Github or contact with me by email <a href="mailto:benthomsonbin@gmail.com">benthomsonbin@gmail.com</a>
-
-## Donate
-[![ko-fi](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/donate-banner/kofi.svg)](https://ko-fi.com/benbinbin)
-
-[![afdian](https://raw.githubusercontent.com/Benbinbin/BlogiNote/main/public/donate-banner/afdian.svg)](https://afdian.net/a/benbinbin)
+If you have any problem or suggestion about this project, feel free to open an [issue](https://github.com/Benbinbin/BlogiNote/issues/new) in Github or contact with me by email <a href="mailto:benthomsonbin@gmail.com">benthomsonbin@gmail.com</a>
