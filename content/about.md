@@ -10,6 +10,6 @@ BlogiNote 是由内容驱动的，即它可以基于多种不同格式的文件�
 
 ## [Contact Me]{.text-2xl .sm:text-3xl .text-purple-500}
 
-If you have any feedback, feel free to contact me :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
+If you have any feedback, feel free to contact me with email :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} or open an issue at :IconCustom{name="bi:github" iconClass="w-5 h-5"} [Github](https://github.com/Benbinbin/BlogiNote){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} of this project.
 
-如果你有任何的想法和反馈，请随时给我发送邮件 :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300}
+如果你有任何的想法和反馈，请随时给我发送邮件 :envelope: [benthomsonbin@gmail.com](mailto:benthomsonbin@gmail.com){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} 或在该项目的 :IconCustom{name="bi:github" iconClass="w-5 h-5"} [Github](https://github.com/Benbinbin/BlogiNote){.text-blue-500 .hover:text-blue-600 .transition-colors .duration-300} 仓库发起一个新的 issue。
