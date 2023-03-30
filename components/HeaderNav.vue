@@ -46,6 +46,13 @@ const showSubNav = ref(false)
 
 let timer:(null | ReturnType<typeof setTimeout>) = null
 
+/**
+ *
+ * sub nav menu
+ *
+ */
+const subNav = ref<null | HTMLElement>(null)
+// show or hide sub nav menu
 const setSubNav = (show:boolean) => {
   if (show) {
     if (timer) {
@@ -64,13 +71,32 @@ const setSubNav = (show:boolean) => {
   }
 }
 
-/**
- * sub transition effect
- */
+// fix the sub nav menu translate value after transition effect
 const onAfterEnter = (el:HTMLElement) => {
   el.classList.add('translate-y-full')
 }
 
+// control the scroll behavior
+const scrollHandler = (event: WheelEvent) => {
+  // console.log(event);
+  event.stopPropagation()
+  // console.log(!!subNav.value);
+  // if(subNav.value) {
+  //   console.log(event.deltaY);
+  //   console.log(subNav.value.scrollTop + subNav.value.clientHeight >= subNav.value.scrollHeight);
+  // }
+
+
+  if(subNav.value) {
+    if (event.deltaY < 0 &&
+      subNav.value.scrollTop === 0) {
+      event.preventDefault();
+    } else if (event.deltaY > 0 &&
+      Math.ceil(subNav.value.scrollTop + subNav.value.clientHeight) >= subNav.value.scrollHeight) {
+      event.preventDefault();
+    }
+  }
+}
 /**
  *
  * toggle flexible mode
@@ -100,13 +126,15 @@ const showSearchModal = useShowSearchModal()
       class="px-4 py-3 grid grid-cols-3 items-center gap-2 text-sm bg-gray-50 border-b"
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
     >
-      <NuxtLink to="/">
-        <img
-          :src="appConfig.bloginote.avatar"
-          alt="avatar"
-          class="w-8 h-8 rounded-full"
-        >
-      </NuxtLink>
+      <div class="flex justify-start items-center">
+        <NuxtLink to="/">
+          <img
+            :src="appConfig.bloginote.avatar"
+            alt="avatar"
+            class="w-8 h-8 rounded-full"
+          >
+        </NuxtLink>
+      </div>
       <div class="flex justify-center items-center gap-6">
         <button
           class="btn hidden sm:block"
@@ -173,19 +201,21 @@ const showSearchModal = useShowSearchModal()
       </div>
     </div>
     <Transition
-      enter-from-class="translate-y-0"
+      enter-from-class="translate-y-0 opacity-0"
       enter-active-class="transition-all duration-300 ease-in"
-      enter-to-class="translate-y-full"
-      leave-from-class="translate-y-full"
-      leave-active-class="transition-all duration-100 ease-out"
-      leave-to-class="-translate-y-full"
+      enter-to-class="translate-y-full opacity-100"
+      leave-from-class="translate-y-full opacity-100"
+      leave-active-class="transition-all duration-[1500ms] ease-out"
+      leave-to-class="-translate-y-full opacity-0"
       @after-enter="onAfterEnter"
     >
       <div
         v-show="showSubNav"
-        class="sub-nav-scroll-container w-full max-h-[60vh] overflow-y-auto overscroll-y-none absolute -z-10 bottom-0 inset-x-0 hidden sm:flex justify-center items-start bg-gray-50 shadow-md shadow-gray-200"
+        ref="subNav"
+        class="sub-nav-scroll-container w-full max-h-[60vh] overflow-y-auto overscroll-y-container absolute -z-10 bottom-0 inset-x-0 hidden sm:flex justify-center items-start bg-gray-50 shadow-md shadow-gray-200"
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
+        @wheel="scrollHandler"
       >
         <div class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink
