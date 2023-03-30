@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     timestamp: {
       created: false,
-      updated: true
+      updated: false
     },
     rss: {
       title: 'BlogiNote',
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
         depth: 5,
         searchDepth: 5
       },
-      remarkPlugins: ['remark-math'],
+      remarkPlugins: ['remark-math', 'remark-sub', 'remark-super'],
       rehypePlugins: {
         'rehype-katex': {
           // the math formula will render as HTML and Mathml

@@ -78,25 +78,17 @@ const onAfterEnter = (el:HTMLElement) => {
 
 // control the scroll behavior
 const scrollHandler = (event: WheelEvent) => {
-  // console.log(event);
   event.stopPropagation()
-  // console.log(!!subNav.value);
-  // if(subNav.value) {
-  //   console.log(event.deltaY);
-  //   console.log(subNav.value.scrollTop + subNav.value.clientHeight >= subNav.value.scrollHeight);
-  // }
-
 
   if(subNav.value) {
-    if (event.deltaY < 0 &&
-      subNav.value.scrollTop === 0) {
+    if (subNav.value.scrollTop === 0 && event.deltaY < 0) {
       event.preventDefault();
-    } else if (event.deltaY > 0 &&
-      Math.ceil(subNav.value.scrollTop + subNav.value.clientHeight) >= subNav.value.scrollHeight) {
+    } else if (Math.ceil(subNav.value.scrollTop + subNav.value.clientHeight) >= subNav.value.scrollHeight && event.deltaY > 0) {
       event.preventDefault();
     }
   }
 }
+
 /**
  *
  * toggle flexible mode

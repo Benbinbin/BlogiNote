@@ -79,7 +79,10 @@ onUnmounted(() => {
       <h2 class="px-4 py-4 sm:py-6 text-lg sm:text-xl font-bold text-center bg-white border-b rounded-t-lg">
         {{ props.seriesName }}
       </h2>
-      <ol v-if="seriesList && seriesList.length > 0" class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto bg-white">
+      <ol
+        v-if="seriesList && seriesList.length > 0"
+        class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto bg-white"
+      >
         <li
           v-for="article in seriesList"
           ref="itemRefs"
@@ -88,18 +91,31 @@ onUnmounted(() => {
           class="py-2 hover:text-blue-500 hover:bg-blue-100 focus:outline-blue-500 transition-colors duration-300 rounded-md"
           :class="props.currentPath === article._path ? 'text-blue-500' : 'text-gray-600'"
         >
-          <NuxtLink :to="article._path" class="block px-4 space-y-2 " @click="showSeriesModal=false">
+          <NuxtLink
+            :to="article._path"
+            class="block px-4 space-y-2 "
+            @click="showSeriesModal=false"
+          >
             <h3 class="font-bold">
               {{ article.title }}
             </h3>
-            <p v-show="showDetail && article.description" class="text-sm opacity-60">
+            <p
+              v-show="showDetail && article.description"
+              class="text-sm opacity-60"
+            >
               {{ article.description }}
             </p>
           </NuxtLink>
         </li>
       </ol>
-      <div v-else class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg">
-        <IconCustom name="fluent:mail-inbox-dismiss-28-filled" class="w-10 h-10" />
+      <div
+        v-else
+        class="p-4 flex flex-col justify-center items-center space-y-2 bg-white rounded-t-lg"
+      >
+        <IconCustom
+          name="fluent:mail-inbox-dismiss-28-filled"
+          class="w-10 h-10"
+        />
         <p>Oops! There is no series.</p>
       </div>
       <div
