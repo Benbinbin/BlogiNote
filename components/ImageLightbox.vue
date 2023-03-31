@@ -479,8 +479,9 @@ const pointerCancelHandler = (event:PointerEvent) => {
   <div
     v-show="showZoomImage !== 'hidden'"
     class="w-screen h-screen fixed inset-0 z-[999] flex justify-center items-center cursor-zoom-out"
-    :class="(showZoomImage !== 'hidden' && showBlurBg) ? 'touch-none bg-white/30 backdrop-blur-sm' : ''"
+    :class="(showZoomImage !== 'hidden' && showBlurBg) ? 'touch-none bg-white/90 backdrop-blur' : ''"
     @click="clickHandler(false)"
+    @wheel="$event.preventDefault()"
   >
     <Transition
       @before-enter="onBeforeEnter"

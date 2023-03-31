@@ -44,7 +44,6 @@ let timer:(null | ReturnType<typeof setTimeout>) = null
  * sub nav menu
  *
  */
-const subNav = ref<null | HTMLElement>(null)
 // show or hide sub nav menu
 const setSubNav = (show:boolean) => {
   if (show) {
@@ -70,15 +69,11 @@ const onAfterEnter = (el:HTMLElement) => {
 }
 
 // control the scroll behavior
+// fix the overscroll bug
+const subNavDOM = ref<null | HTMLElement>(null)
 const scrollHandler = (event: WheelEvent) => {
-  event.stopPropagation()
-
-  if(subNav.value) {
-    if (subNav.value.scrollTop === 0 && event.deltaY < 0) {
-      event.preventDefault();
-    } else if (Math.ceil(subNav.value.scrollTop + subNav.value.clientHeight) >= subNav.value.scrollHeight && event.deltaY > 0) {
-      event.preventDefault();
-    }
+  if(subNavDOM.value) {
+    overscrollHandler(event, subNavDOM.value)
   }
 }
 
@@ -159,7 +154,7 @@ const showSearchModal = useShowSearchModal()
     >
       <div
         v-show="showSubNav"
-        ref="subNav"
+        ref="subNavDOM"
         class="sub-nav-scroll-container w-full max-h-[60vh] overflow-y-auto overscroll-y-container absolute -z-10 bottom-0 inset-x-0 hidden sm:flex justify-center items-start bg-gray-50 shadow-md shadow-gray-200"
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
