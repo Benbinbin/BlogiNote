@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     },
     rss: {
       title: 'BlogiNote',
-      description: 'BlogiNote is a website for showing your blogs and notes with flexible layouts and multiple optimizations.',
+      description: 'BlogiNote is a Nuxt Theme to build a static website for showing blog and note with flexible layouts and fancy interaction.',
       image: 'https://bloginote.benbinbin.com/default-avatar.png',
       favicon: 'https://bloginote.benbinbin.com/default-favicon.ico',
       copyright: `All rights reserved ${(new Date()).getFullYear()}, Benbinbin`

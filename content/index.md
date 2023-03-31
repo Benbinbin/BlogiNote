@@ -5,7 +5,7 @@ title: BlogiNote
 ::IntroCard{avatar="/default-avatar.png"}
 # BlogiNote
 
-BlogiNote is a Nuxt Theme for blog and note with flexible layouts and fancy interaction.
+BlogiNote is a Nuxt Theme to build a static website for showing blog and note with flexible layouts and fancy interaction.
 
 Check out the [Documentation](https://documentation.bloginote.benbinbin.com/){.underline .text-blue-500 .hover:text-blue-700 .transition-colors .duration-300}.
 
