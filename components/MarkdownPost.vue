@@ -60,7 +60,6 @@ if (props.data._path) {
  * catalog (it's like the toc for markdown article)
  *
  */
-// const showCatalog = useShowBlogCatalog()
 const showCatalog = useState<Boolean>('showBlogCatalog', () => {
   return appConfig.bloginote.articlePage.showBlogCatalog
 })
@@ -242,7 +241,7 @@ const showTags = ref(true)
 
     <ContentRenderer
       :value="props.data"
-      class="article-container markdown-blog-container selection:text-white selection:bg-purple-400"
+      class="article-container markdown-post-content-container selection:text-white selection:bg-purple-400"
     >
       <template #empty>
         <div class="mx-auto font-bold">
@@ -278,10 +277,22 @@ const showTags = ref(true)
   }
 }
 
-.markdown-blog-container {
-  // hide the h1 element if it's the first dom in the .markdown-blog-container
+.markdown-post-content-container {
+  // hide the h1 element if it's the first dom in the .markdown-post-content-container
   & > h1:first-child {
     @apply hidden
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6
+  {
+    @apply font-bold inline-block;
+    a {
+      @apply text-inherit hover:text-inherit no-underline hover:no-underline visited:no-underline hover:visited:no-underline;
+    }
   }
 
   h1 {
@@ -327,5 +338,81 @@ const showTags = ref(true)
   details:not([open]) summary :is(h2, h3, h4, h5, h6) {
     @apply before:text-white before:bg-purple-500 before:opacity-100 hover:before:opacity-80
   }
+
+  p {
+    @apply text-base;
+  }
+
+  blockquote {
+    @apply px-2 border-l-4 border-gray-300;
+  }
+
+  ul,
+  ol {
+    @apply pl-4 my-2.5;
+
+    li {
+      @apply my-2.5;
+    }
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  dl {
+    dt {
+      @apply font-bold italic my-2;
+    }
+
+    dd {
+      @apply pl-4;
+    }
+  }
+
+  p,
+  blockquote,
+  dl {
+    @apply my-4;
+  }
+
+  table {
+    @apply my-0.5;
+  }
+
+  table {
+    @apply mx-auto table-auto;
+
+    thead tr,
+    tr:nth-child(2n) {
+      @apply bg-gray-100;
+    }
+
+    th,
+    td {
+      @apply px-4 py-2 border border-gray-200 text-center;
+    }
+  }
+
+  hr {
+    @apply text-gray-400;
+  }
+
+  a {
+    @apply text-blue-500 underline decoration-2 decoration-blue-400 hover:decoration-blue-500 visited:decoration-blue-100 hover:visited:decoration-blue-200 transition-colors duration-300;
+  }
+
+  code {
+    @apply px-1 py-0.5 mx-0.5 text-sm bg-gray-100 border rounded break-words;
+  }
+
+  .math {
+    @apply px-2 py-1 overflow-x-auto border-2 border-transparent rounded-md select-none transition-colors duration-300;
+  }
+
 }
 </style>

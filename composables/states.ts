@@ -27,7 +27,7 @@ export const useHomepageLayoutMode = () => useState<'post' | 'folder'>('homepage
  * article catalog
  *
  */
-// move this share state to MarkdownBlog component
+// move this share state to MarkdownPost component
 // export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => {
 //   return false
 // })

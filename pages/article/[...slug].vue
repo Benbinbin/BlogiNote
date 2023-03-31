@@ -1,23 +1,16 @@
 <script setup lang="ts">
-/**
-*
-* set head meta for article page
-*
-*/
 const route = useRoute()
 
 /**
  *
- * get article data
+ * fetch the article data based on the current route path
  *
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-/**
- *
- * get previous and next article
- *
- */
+console.log(data);
+
+// the previous and next article
 const prevArticleUrl = ref('')
 const prevArticleName = ref('')
 const nextArticleUrl = ref('')
@@ -25,16 +18,17 @@ const nextArticleName = ref('')
 
 /**
  *
- * series modal
+ * series articles
  *
  */
-// get series data
 const seriesList: any = ref([])
 
 if (data.value?.series) {
+  // if this post belong to a series
+  // fetch articles list based on series
   const { data: seriesResult } = await useAsyncData(`${data.value.series}-series`, () => {
     return queryContent('article')
-      .where({ series: data.value.series })
+      .where({ series: data.value?.series })
       .only(['title', 'description', '_path', '_type', 'seriesOrder'])
       .sort({ seriesOrder: 1, $numeric: true })
       .find()
@@ -42,19 +36,29 @@ if (data.value?.series) {
 
   seriesList.value = seriesResult.value
 
-  if (seriesResult.value && seriesResult.value.length>1) {
+  // based on the series articles list
+  // set the previous article and next article
+  if (seriesResult.value && seriesResult.value.length > 1) {
+    // find the current article index inside the series articles list
     const currentArticleIndex = seriesResult.value.findIndex(item => route.path === item._path)
 
     if(currentArticleIndex!==-1) {
       if (currentArticleIndex === 0) {
+        // if current page is the first article in the series list
+        // just set the next article
         nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
         nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
       } else if (currentArticleIndex === seriesResult.value.length - 1) {
+        // if current page is the last article in the series list
+        // just set the previous article
         prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
         prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
       } else {
+        // if current page is in the middle of the series list
+        // set the previous article
         nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
         nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
+        // set the next article
         prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
         prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
       }
@@ -62,6 +66,11 @@ if (data.value?.series) {
   }
 }
 
+// show or hide series modal
+const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
+
+// if the page metadata has the information about previous or next article
+// rewrite the default value
 if(data.value?.prevArticleUrl) {
   prevArticleUrl.value = data.value.prevArticleUrl
 }
@@ -78,36 +87,16 @@ if(data.value?.nextArticleName) {
   nextArticleName.value = data.value.nextArticleName
 }
 
-// show or hide series modal
-// const showSeriesModal = ref(false)
-const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
-// provide('showSeriesModal', showSeriesModal)
-
-// const changeSeriesModalState = (state) => {
-//   showSeriesModal.value = state
-// }
-
-// stop body scroll when series modal show up
-watch(showSeriesModal, () => {
-  if (!document?.body) { return }
-
-  if (showSeriesModal.value) {
-    document.body.classList.add('overflow-hidden')
-  } else {
-    document.body.classList.remove('overflow-hidden')
-  }
-})
-
 /**
  *
  * math formula
- * support double click to copy the formula
  *
  */
-const articleContainer = ref(null)
-const clipboard = ref(null)
+const clipboard = ref<null | Clipboard>(null)
 
-const addListener = (list, prefix, suffix) => {
+// add click event listener for a list of DOM
+// make them support the feature about double click to copy the formula
+const addClickListener = (list: NodeListOf<Element>, prefix: string , suffix: string) => {
   list.forEach((element) => {
     // add event listener for double click
     element.addEventListener('dblclick', (event) => {
@@ -154,39 +143,25 @@ const addListener = (list, prefix, suffix) => {
   })
 }
 
+const articleContainerDOM = ref<null | HTMLElement>(null)
 onMounted(() => {
   clipboard.value = navigator.clipboard
 
-  if (articleContainer.value && clipboard.value) {
-    const mathInlineList = articleContainer.value.querySelectorAll('.math-inline')
-    const mathBlockList = articleContainer.value.querySelectorAll('.math-display')
+  if (articleContainerDOM.value && clipboard.value) {
+    // get all the inline math <span> dom
+    const mathInlineList = articleContainerDOM.value.querySelectorAll('.math-inline')
+    // get all the block math <div> dom
+    const mathBlockList = articleContainerDOM.value.querySelectorAll('.math-display')
 
-    if (mathInlineList.length > 0) { addListener(mathInlineList, '$', '$') }
-    if (mathBlockList.length > 0) { addListener(mathBlockList, '$$\n', '\n$$') }
-  }
-})
-
-/**
- *
- * show or hide image lightbox
- *
- */
-const showZoomImage = useShowZoomImage()
-
-// stop body scroll when image lightbox show up
-watch(showZoomImage, () => {
-  if (!document?.body) { return }
-  if (showZoomImage.value !== 'hidden') {
-    document.body.classList.add('overflow-hidden')
-  }
-  if (showZoomImage.value === 'hidden') {
-    document.body.classList.remove('overflow-hidden')
+    // add click event listener for each dom
+    if (mathInlineList.length > 0) { addClickListener(mathInlineList, '$', '$') }
+    if (mathBlockList.length > 0) { addClickListener(mathBlockList, '$$\n', '\n$$') }
   }
 })
 </script>
 
 <template>
-  <div ref="articleContainer">
+  <div ref="articleContainerDOM">
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>
@@ -194,12 +169,12 @@ watch(showZoomImage, () => {
       name="base"
       :footer-catalog="data?.body?.toc && data.body.toc.links.length > 0"
     >
-      <MarkdownBlog
+      <MarkdownPost
         v-if="!pending && data && data._type === 'markdown'"
         :data="data"
         :prev-article-url="prevArticleUrl"
         :next-article-url="nextArticleUrl"
-        class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
+        class="markdown-post container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
       />
       <div
         v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')"
@@ -298,112 +273,14 @@ watch(showZoomImage, () => {
 </style>
 
 <style lang="scss">
-.article-container {
-  a {
-    @apply text-blue-500 underline decoration-2 decoration-blue-400 hover:decoration-blue-500 visited:decoration-blue-100 hover:visited:decoration-blue-200 transition-colors duration-300;
-  }
-
-  p {
-    @apply text-base;
-  }
-
+.markdown-post {
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-bold inline-block;
     word-wrap: break-word;
-
-    a {
-      @apply text-inherit hover:text-inherit no-underline hover:no-underline visited:no-underline hover:visited:no-underline;
-    }
-  }
-
-  p,
-  blockquote,
-  dl {
-    @apply my-4;
-  }
-
-  table {
-    @apply my-0.5;
-  }
-
-  hr {
-    @apply text-gray-400;
-  }
-
-  ul,
-  ol {
-    @apply pl-4 my-2.5;
-
-    li {
-      @apply my-2.5;
-    }
-  }
-
-  ul {
-    @apply list-disc;
-  }
-
-  ol {
-    @apply list-decimal;
-  }
-
-  dl {
-    dt {
-      @apply font-bold italic my-2;
-    }
-
-    dd {
-      @apply pl-4;
-    }
-  }
-
-  blockquote {
-    @apply px-2 border-l-4 border-gray-300;
-  }
-
-  table {
-    @apply mx-auto table-auto;
-
-    thead tr,
-    tr:nth-child(2n) {
-      @apply bg-gray-100;
-    }
-
-    th,
-    td {
-      @apply px-4 py-2 border border-gray-200 text-center;
-    }
-  }
-
-  code {
-    @apply px-1 py-0.5 mx-0.5 text-sm bg-gray-100 border rounded break-words;
-  }
-
-  .math {
-    @apply px-2 py-1 overflow-x-auto border-2 border-transparent rounded-md select-none transition-colors duration-300;
-  }
-
-  .critic-addition {
-    @apply bg-green-200 decoration-green-400;
-  }
-
-  del,
-  .critic-deletion {
-    @apply bg-red-200 decoration-red-400;
-  }
-
-  mark,
-  .critic-highlight {
-    @apply bg-yellow-200;
-  }
-
-  .critic-comment {
-    @apply bg-purple-200;
   }
 }
 </style>
