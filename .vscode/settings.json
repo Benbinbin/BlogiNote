@@ -17,5 +17,6 @@
     "nuxtjs",
     "pagefind",
     "rehype"
-  ]
+  ],
+  "scss.lint.unknownAtRules": "ignore"
 }
