@@ -316,6 +316,8 @@ const showTags = ref(true)
     @apply before:font-light before:p-1 before:mr-0.5 before:rounded before:transition-opacity before:duration-300 before:cursor-pointer before:text-purple-300 before:bg-none before:opacity-50 hover:before:opacity-100;
   }
 
+  // refine the design for detail (toggle heading)
+  // refer to https://web.dev/learn/html/details/
   details summary:has(:is(h2, h3, h4, h5, h6)) {
     &::marker {
       content: none;
