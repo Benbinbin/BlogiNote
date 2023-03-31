@@ -288,16 +288,8 @@ const showTags = ref(true)
     @apply py-8 md:py-12 text-3xl md:text-5xl text-center;
   }
 
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply before:font-light before:mr-1 before:text-purple-300 sm:before:opacity-50 hover:sm:before:opacity-100 before:transition-opacity before:duration-300;
-  }
-
   h2 {
-    @apply py-4 text-2xl md:text-3xl before:content-['H2'] before:text-sm md:before:text-lg sm:-translate-x-6;
+    @apply py-4 text-2xl md:text-3xl before:content-['H2'] before:text-sm md:before:text-base sm:-translate-x-5;
   }
 
   h3 {
@@ -314,6 +306,24 @@ const showTags = ref(true)
 
   h6 {
     @apply py-2 text-lg md:text-xl before:content-['H6'] before:text-xs md:before:text-sm sm:-translate-x-4;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply before:font-light before:p-1 before:mr-0.5 before:rounded before:transition-opacity before:duration-300 before:cursor-pointer before:text-purple-300 before:bg-none before:opacity-50 hover:before:opacity-100;
+  }
+
+  details summary:has(:is(h2, h3, h4, h5, h6)) {
+    &::marker {
+      content: none;
+    }
+  }
+
+  details:not([open]) summary :is(h2, h3, h4, h5, h6) {
+    @apply before:text-white before:bg-purple-500 before:opacity-100 hover:before:opacity-80
   }
 }
 </style>
