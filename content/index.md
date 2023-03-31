@@ -1,5 +1,5 @@
 ---
-title: Home
+title: BlogiNote
 ---
 
 ::IntroCard{avatar="/default-avatar.png"}

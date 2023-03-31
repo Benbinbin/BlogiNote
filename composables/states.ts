@@ -17,10 +17,10 @@ export const useWindowSize = () => useState<WindowSize>('windowSize', () => {
 
 /**
  *
- * flexible mode
+ * home page layout mode
  *
  */
-export const useFlexiMode = () => useState<'blog' | 'note'>('flexiMode', () => 'blog')
+export const useHomepageLayoutMode = () => useState<'post' | 'folder'>('homepageLayoutMode', () => 'post')
 
 /**
  *

@@ -6,10 +6,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  footerFlexiMode: {
-    type: Boolean,
-    default: false
-  }
 })
 
 // const route = useRoute()
@@ -63,34 +59,12 @@ const getCategory = (path = '') => {
 
 /**
  *
- * toggle flexible mode
- *
- */
-const flexiMode = useFlexiMode()
-
-const changeFlexiMode = () => {
-  if (flexiMode.value === 'blog') {
-    flexiMode.value = 'note'
-  } else {
-    flexiMode.value = 'blog'
-  }
-}
-
-/**
- *
  * toggle catalog
  *
  */
-// const showBlogCatalog = useShowBlogCatalog()
 const showBlogCatalog = useState('showBlogCatalog')
-// const showNoteCatalog = useShowNoteCatalog()
-const showNoteCatalog = useState('showNoteCatalog')
 const toggleCatalogHandler = () => {
-  if (flexiMode.value === 'blog') {
     showBlogCatalog.value = !showBlogCatalog.value
-  } else {
-    showNoteCatalog.value = !showNoteCatalog.value
-  }
 }
 
 /**
@@ -121,7 +95,7 @@ const showSearchModal = useShowSearchModal()
           >
           <p
             class="text-xs"
-            :class="showMoreOptions ? (flexiMode === 'blog' ? 'text-purple-500' : 'text-green-500') : 'text-gray-500'"
+            :class="showMoreOptions ? 'text-purple-500' : 'text-gray-500'"
           >
             More
           </p>
@@ -139,16 +113,14 @@ const showSearchModal = useShowSearchModal()
         >
           <NuxtLink
             to="/"
-            class="option-item"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
             @click="showMoreOptions = false"
           >
             Home
           </NuxtLink>
           <NuxtLink
             to="/about"
-            class="option-item"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
             @click="showMoreOptions = false"
           >
             About
@@ -156,8 +128,7 @@ const showSearchModal = useShowSearchModal()
           <NuxtLink
             v-if="appConfig.bloginote.subscribePage"
             to="/subscribe"
-            class="option-item"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
             @click="showMoreOptions = false"
           >
             Subscribe
@@ -167,8 +138,8 @@ const showSearchModal = useShowSearchModal()
 
       <button
         v-show="!showMoreOptions"
-        class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
-        :class="showCategoryOptions ? 'shrink-0' : 'grow'"
+        class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center space-y-1 bg-gray-50"
+        :class="showCategoryOptions ? 'shrink-0 text-purple-500' : 'grow text-gray-500'"
         :style="showCategoryOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1), 2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
         @click="showCategoryOptions = !showCategoryOptions"
       >
@@ -177,7 +148,9 @@ const showSearchModal = useShowSearchModal()
             name="ic:round-category"
             class="w-6 h-6"
           />
-          <p class="text-xs">
+          <p
+            class="text-xs"
+          >
             Category
           </p>
         </div>
@@ -194,8 +167,7 @@ const showSearchModal = useShowSearchModal()
         >
           <NuxtLink
             to="/list"
-            class="option-item"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
             @click="showCategoryOptions = false"
           >
             all
@@ -204,8 +176,7 @@ const showSearchModal = useShowSearchModal()
             v-for="category in categoryArr"
             :key="category._path"
             :to="{ path: '/list', query: { category: getCategory(category._path) } }"
-            class="option-item"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-500'"
+            class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
             @click="showCategoryOptions = false"
           >
             {{ category.title }}
@@ -217,7 +188,7 @@ const showSearchModal = useShowSearchModal()
         v-if="props.footerCatalog"
         v-show="!showMoreOptions && !showCategoryOptions"
         class="grow px-2 py-3 flex justify-center items-center space-y-1 bg-gray-50"
-        :class="showBlogCatalog ? (flexiMode === 'blog' ? 'text-purple-500': 'text-green-500'): 'text-gray-500'"
+        :class="showBlogCatalog ? 'text-purple-500' : 'text-gray-500'"
         @click="toggleCatalogHandler"
       >
         <div class="flex flex-col justify-center items-center gap-1">
@@ -247,33 +218,9 @@ const showSearchModal = useShowSearchModal()
         </div>
       </button>
 
-      <button
-        v-if="props.footerFlexiMode"
-        v-show="!showMoreOptions && !showCategoryOptions"
-        :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
-        class="grow flex justify-center items-center"
-        @click="changeFlexiMode"
-      >
-        <div
-          class="mx-2 w-11 h-11 flex flex-col justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
-          :class="flexiMode === 'blog' ? 'flex-col bg-purple-100' : 'bg-green-100'"
-        >
-          <div
-            class="shrink-0 w-2 h-2 rounded-full"
-            :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'"
-          />
-          <div class="shrink-0 space-y-1">
-            <div
-              class="w-1.5 h-1.5 rounded-full"
-              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
-            />
-            <div
-              class="w-1.5 h-1.5 rounded-full"
-              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
-            />
-          </div>
-        </div>
-      </button>
+      <slot
+        name="footer-nav-right"
+      />
     </div>
   </div>
 </template>

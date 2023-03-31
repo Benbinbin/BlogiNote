@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
-const props = defineProps({
-  headerFlexiMode: {
-    type: Boolean,
-    default: false
-  }
-})
-
 const appConfig = useAppConfig()
 
 // const queryBuilder = queryContent().where({ _path: { $contains: '/article' } })
@@ -91,21 +84,6 @@ const scrollHandler = (event: WheelEvent) => {
 
 /**
  *
- * toggle flexible mode
- *
- */
-const flexiMode = useFlexiMode()
-
-const changeFlexiMode = () => {
-  if (flexiMode.value === 'blog') {
-    flexiMode.value = 'note'
-  } else {
-    flexiMode.value = 'blog'
-  }
-}
-
-/**
- *
  * search modal
  *
  */
@@ -123,14 +101,13 @@ const showSearchModal = useShowSearchModal()
           <img
             :src="appConfig.bloginote.avatar"
             alt="avatar"
-            class="w-8 h-8 rounded-full"
+            class="w-10 h-10 rounded-full"
           >
         </NuxtLink>
       </div>
       <div class="flex justify-center items-center gap-6">
         <button
-          class="btn hidden sm:block"
-          :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
+          class="btn hidden sm:block text-purple-500 hover:bg-purple-100"
           @mouseover="setSubNav(true)"
           @mouseleave="setSubNav(false)"
           @click="showSubNav=!showSubNav"
@@ -139,16 +116,14 @@ const showSearchModal = useShowSearchModal()
         </button>
         <NuxtLink
           to="/about"
-          class="btn"
-          :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
+          class="btn text-purple-500 hover:bg-purple-100"
         >
           About
         </NuxtLink>
         <NuxtLink
           v-if="appConfig.bloginote.subscribePage"
           to="/subscribe"
-          class="btn"
-          :class="flexiMode === 'blog' ? 'text-purple-500 hover:bg-purple-100' : 'text-green-500 hover:bg-green-100'"
+          class="btn text-purple-500 hover:bg-purple-100"
         >
           Subscribe
         </NuxtLink>
@@ -168,28 +143,9 @@ const showSearchModal = useShowSearchModal()
             <code class="px-2 py-0.5 border rounded bg-gray-200">K</code>
           </span>
         </button>
-        <button
-          v-if="props.headerFlexiMode"
-          :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
-          class="hidden w-10 h-10 sm:flex justify-center items-center gap-1 transition-colors duration-300 rounded-lg"
-          :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-200 ' : 'flex-row bg-green-100 hover:bg-green-200 '"
-          @click="changeFlexiMode"
-        >
-          <div
-            class="shrink-0 w-2 h-2 rounded-full "
-            :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'"
-          />
-          <div class="shrink-0 space-y-1">
-            <div
-              class="w-1.5 h-1.5 rounded-full "
-              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
-            />
-            <div
-              class="w-1.5 h-1.5 rounded-full "
-              :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'"
-            />
-          </div>
-        </button>
+        <slot
+          name="header-nav-right"
+        />
       </div>
     </div>
     <Transition
@@ -212,8 +168,7 @@ const showSearchModal = useShowSearchModal()
         <div class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink
             to="/list"
-            class="sub-nav-item-card"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
+            class="sub-nav-item-card text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100"
             @click="showSubNav=false"
           >
             <IconCustom
@@ -228,8 +183,7 @@ const showSearchModal = useShowSearchModal()
             v-for="category in categoryArr"
             :key="category._path"
             :to="{ path: '/list', query: { category: getCategory(category._path) } }"
-            class="sub-nav-item-card"
-            :class="flexiMode === 'blog' ? 'text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100' : 'text-green-500 bg-green-50 hover:bg-green-100 border-green-100 '"
+            class="sub-nav-item-card text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100"
             @click="showSubNav=false"
           >
             <IconCustom

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ZoomImageType } from '../composables/states'
-const flexiMode = useFlexiMode()
 const showZoomImage = useShowZoomImage()
 const zoomImage = useZoomImage()
 const currentZoomImg = useCurrentZoomImage()
@@ -519,8 +518,7 @@ const pointerCancelHandler = (event:PointerEvent) => {
     >
       <button
         v-show="showBtns"
-        class="h-fit px-4 sm:px-2 py-2 flex justify-center items-center text-xs active:text-white border fixed top-4 left-4 z-[1000] rounded"
-        :class="flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500'"
+        class="h-fit px-4 sm:px-2 py-2 flex justify-center items-center fixed top-4 left-4 z-[1000] text-xs text-purple-400 hover:text-purple-500 active:text-white bg-purple-100 border border-purple-500 active:bg-purple-500 rounded"
         @click.stop.prevent="resetTransform('screen')"
       >
         {{ Math.round(scale * 100) }}%
@@ -564,8 +562,8 @@ const pointerCancelHandler = (event:PointerEvent) => {
         <button
           v-show="showScrollBtns"
           :disabled="scrollPos === 'start'"
-          class="btn"
-          :class="scrollPos === 'start' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
+          class="btn bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500"
+          :class="scrollPos === 'start' ? ' opacity-30' : ('opacity-100')"
           @click.stop.prevent="scrollHandler('left')"
         >
           <IconCustom
@@ -582,7 +580,7 @@ const pointerCancelHandler = (event:PointerEvent) => {
             v-for="(item, index) in zoomImageList"
             :key="index"
             class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 ring sm:ring-4 focus:outline-none rounded overflow-hidden"
-            :class="currentZoomImg && currentZoomImg.src === item.src ? (flexiMode === 'blog' ? 'ring-purple-400' : 'ring-green-400') : 'ring-transparent'"
+            :class="currentZoomImg && currentZoomImg.src === item.src ? 'ring-purple-400' : 'ring-transparent'"
             @click.stop.prevent="setCurrentZoomImg(item)"
           >
             <img
@@ -595,8 +593,8 @@ const pointerCancelHandler = (event:PointerEvent) => {
         <button
           v-show="showScrollBtns"
           :disabled="scrollPos === 'end'"
-          class="btn"
-          :class="scrollPos === 'end' ? (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500 opacity-30' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500 opacity-30') : (flexiMode === 'blog' ? 'bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500' : 'bg-green-100 text-green-400 hover:text-green-500 active:bg-green-500 border-green-500')"
+          class="btn bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-500"
+          :class="scrollPos === 'end' ? 'opacity-30' : 'opacity-100'"
           @click.stop.prevent="scrollHandler('right')"
         >
           <IconCustom

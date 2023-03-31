@@ -10,9 +10,6 @@ const props = defineProps<{
   catalogs: CatalogItem[]
 }>()
 
-// const flexiMode = useFlexiMode()
-
-// const showCatalogForBlog = useShowBlogCatalog()
 const showCatalogForBlog = useState('showBlogCatalog')
 
 const sidebar = ref(null)
@@ -379,7 +376,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
     :class="sidebarFloatForBlog ? 'bg-gray-100/90 backdrop-blur-sm shadow-md shadow-gray-500 rounded-lg touch-none' : 'top-1/2 right-0 -translate-y-1/2'"
     :style="sidebarFloatForBlog ? `left: ${sidebarLeft}px; bottom: ${sidebarBottom}px` : ''"
   >
-    <div v-show="sidebarFloatForBlog" class="flex">
+    <div
+      v-show="sidebarFloatForBlog"
+      class="flex"
+    >
       <button
         draggable="false"
         class="shrink-0 group pt-1 pl-1 flex justify-start items-start cursor-nwse-resize touch-none rounded-tl-lg"
@@ -463,7 +463,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
           @pointercancel="dragSidebarPointerCancelHandler"
           @pointerup="dragSidebarPointerCancelHandler"
         >
-          <IconCustom name="akar-icons:drag-horizontal" class="w-4 h-4" />
+          <IconCustom
+            name="akar-icons:drag-horizontal"
+            class="w-4 h-4"
+          />
         </button>
 
         <div
@@ -498,7 +501,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
               class="sidebar-btn flex active:text-white border bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-400"
               @click="scrollCatalogTo = 'top'"
             >
-              <IconCustom name="material-symbols:vertical-align-top-rounded" class="w-4 h-4" />
+              <IconCustom
+                name="material-symbols:vertical-align-top-rounded"
+                class="w-4 h-4"
+              />
             </button>
 
             <button
@@ -506,7 +512,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
               class="sidebar-btn flex active:text-white border bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-400"
               @click="scrollCatalogTo = 'bottom'"
             >
-              <IconCustom name="material-symbols:vertical-align-bottom-rounded" class="w-4 h-4" />
+              <IconCustom
+                name="material-symbols:vertical-align-bottom-rounded"
+                class="w-4 h-4"
+              />
             </button>
 
             <button
@@ -515,7 +524,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
               :class="floatBlogCatalogType === 'tree' ? 'bg-purple-500 hover:bg-purple-400 text-white border-purple-400' : 'bg-purple-100 text-purple-400 hover:text-purple-500 border-purple-400'"
               @click="toggleFloatCatalogTypeHandler"
             >
-              <IconCustom name="icon-park-outline:tree-diagram" class="w-4 h-4" />
+              <IconCustom
+                name="icon-park-outline:tree-diagram"
+                class="w-4 h-4"
+              />
             </button>
 
             <button
@@ -523,7 +535,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
               class="sidebar-btn flex border active:text-white bg-purple-100 text-purple-400 hover:text-purple-500 active:bg-purple-500 border-purple-400"
               @click="resetCatalogListScaleHandler"
             >
-              <IconCustom name="uil:focus-target" class="w-4 h-4" />
+              <IconCustom
+                name="uil:focus-target"
+                class="w-4 h-4"
+              />
             </button>
           </div>
 
@@ -532,14 +547,20 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
             :class="sidebarFloatForBlog ? 'border-purple-400 bg-purple-500 hover:bg-purple-400 text-white' : 'border-purple-400 bg-purple-100 text-purple-400 hover:text-purple-500'"
             @click="toggleSidebarFloatForBlog = !toggleSidebarFloatForBlog"
           >
-            <IconCustom name="clarity:window-restore-line" class="w-4 h-4" />
+            <IconCustom
+              name="clarity:window-restore-line"
+              class="w-4 h-4"
+            />
           </button>
         </div>
         <div
           v-show="sidebarFloatForBlog && floatBlogCatalogType === 'tree'"
           class="order-4 w-full my-2 flex sm:hidden items-center gap-1"
         >
-          <label for="zoom-catalog" class="shrink-0 text-gray-400 text-xs">zoom</label>
+          <label
+            for="zoom-catalog"
+            class="shrink-0 text-gray-400 text-xs"
+          >zoom</label>
           <input
             id="zoom-catalog"
             v-model="catalogListScale"
@@ -596,7 +617,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
       </button>
     </div>
 
-    <div v-show="sidebarFloatForBlog" class="flex">
+    <div
+      v-show="sidebarFloatForBlog"
+      class="flex"
+    >
       <button
         draggable="false"
         class="shrink-0 group pl-1 pb-1 flex justify-start items-end cursor-nesw-resize touch-none rounded-bl-lg"
@@ -655,7 +679,10 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
     class="p-3 sm:p-2 flex justify-center items-center fixed bottom-[8.5rem] sm:bottom-28 right-2 sm:right-4 z-40 active:text-white rounded-lg text-purple-400 hover:text-purple-500 bg-purple-100 active:bg-purple-500 border border-purple-200"
     @click="resetFloatSidebarHandler"
   >
-    <IconCustom name="bi:layout-sidebar-inset" class="w-5 h-5" />
+    <IconCustom
+      name="bi:layout-sidebar-inset"
+      class="w-5 h-5"
+    />
   </button>
 </template>
 

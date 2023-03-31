@@ -1,17 +1,9 @@
 <script setup lang="ts">
 const props = defineProps({
-  headerFlexiMode: {
-    type: Boolean,
-    default: false
-  },
   footerCatalog: {
     type: Boolean,
     default: false
   },
-  footerFlexiMode: {
-    type: Boolean,
-    default: false
-  }
 })
 
 const route = useRoute()
@@ -143,7 +135,11 @@ onUnmounted(() => {
       class="hidden sm:block shrink-0"
       :class="route.path === '/' ? 'sm:sticky top-0 inset-x-0 z-30' : 'relative z-40'"
     >
-      <HeaderNav :header-flexi-mode="props.headerFlexiMode" />
+      <HeaderNav>
+        <template #header-nav-right>
+          <slot name="header-right" />
+        </template>
+      </HeaderNav>
     </header>
     <div class="grow flex flex-col">
       <slot />
@@ -165,8 +161,11 @@ onUnmounted(() => {
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50">
       <FooterNav
         :footer-catalog="props.footerCatalog"
-        :footer-flexi-mode="props.footerFlexiMode"
-      />
+      >
+        <template #footer-nav-right>
+          <slot name="footer-right" />
+        </template>
+      </FooterNav>
     </nav>
 
     <ClientOnly>

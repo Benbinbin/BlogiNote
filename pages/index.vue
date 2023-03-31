@@ -2,20 +2,19 @@
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 // import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
 
-const flexiMode = useFlexiMode()
-
 /**
  *
- * switch the flexiMode
+ * switch the homepage layout mode
  *
  */
-// const changeFlexiMode = () => {
-//   if (flexiMode.value === 'blog') {
-//     flexiMode.value = 'note'
-//   } else {
-//     flexiMode.value = 'blog'
-//   }
-// }
+const homepageLayoutMode = useHomepageLayoutMode()
+const changeHomepageLayoutMode = () => {
+  if (homepageLayoutMode.value === 'post') {
+    homepageLayoutMode.value = 'folder'
+  } else if(homepageLayoutMode.value === 'folder') {
+    homepageLayoutMode.value = 'post'
+  }
+}
 
 /**
  *
@@ -159,11 +158,33 @@ const getFileTypeIcon = (type:string) => {
     </Head>
     <NuxtLayout
       name="base"
-      :footer-flexi-mode="true"
-      :header-flexi-mode="true"
     >
+      <template #header-right>
+        <button
+          title="toggle homepage layout mode"
+          class="hidden w-10 h-10 sm:flex justify-center items-center gap-1
+          border-2 transition-colors duration-300 rounded-lg"
+          :class="homepageLayoutMode === 'post' ? 'bg-purple-100 hover:bg-purple-200 border-purple-300' : 'bg-purple-500 hover:bg-purple-400 border-purple-500'"
+          @click="changeHomepageLayoutMode"
+        >
+          <div
+            class="shrink-0 w-3 h-3 rounded-full"
+            :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+          />
+          <div class="shrink-0 space-y-1">
+            <div
+              class="w-2 h-2 rounded-full"
+              :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+            />
+            <div
+              class="w-2 h-2 rounded-full"
+              :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+            />
+          </div>
+        </button>
+      </template>
       <div
-        v-show="flexiMode === 'blog'"
+        v-show="homepageLayoutMode === 'post'"
         class="container px-8 mx-auto"
       >
         <div class="sm:px-10 py-16">
@@ -292,7 +313,7 @@ const getFileTypeIcon = (type:string) => {
       </div>
       <div
         v-if="navTree && navTree.length > 0"
-        v-show="flexiMode === 'note'"
+        v-show="homepageLayoutMode === 'folder'"
         class="container px-8 mx-auto"
       >
         <div class="flex py-8 justify-between">
@@ -351,19 +372,34 @@ const getFileTypeIcon = (type:string) => {
           </template>
         </div>
       </div>
+      <template #footer-right>
+        <button
+          title="toggle homepage layout mode"
+          class="grow flex justify-center items-center"
+          @click="changeHomepageLayoutMode"
+        >
+          <div
+            class="mx-2 w-10 h-10 flex justify-center items-center gap-1 border-2 transition-colors duration-300 rounded-lg"
+            :class="homepageLayoutMode === 'post' ? 'bg-purple-100 hover:bg-purple-200 border-purple-300' : 'bg-purple-500 hover:bg-purple-400 border-purple-500'"
+          >
+            <div
+              class="shrink-0 w-3 h-3 rounded-full"
+              :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+            />
+            <div class="shrink-0 space-y-1">
+              <div
+                class="w-2 h-2 rounded-full"
+                :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+              />
+              <div
+                class="w-2 h-2 rounded-full"
+                :class="homepageLayoutMode === 'post' ? 'bg-purple-500' : 'bg-white'"
+              />
+            </div>
+          </div>
+        </button>
+      </template>
     </NuxtLayout>
-    <!-- <button
-      :title="`toggle flex mode to ${flexiMode === 'blog' ? 'note' : 'blog'}`"
-      class="w-9 h-9 hidden sm:flex justify-center items-center gap-1 fixed bottom-16 right-4 z-20 border transition-colors duration-300 rounded-lg"
-      :class="flexiMode === 'blog' ? 'flex-col bg-purple-100 hover:bg-purple-50 border-purple-200' : 'flex-row bg-green-100 hover:bg-green-50 border-green-200'"
-      @click="changeFlexiMode"
-    >
-      <div class="shrink-0 w-1.5 h-1.5 rounded-full" :class="flexiMode === 'blog' ? 'bg-purple-500' : 'bg-green-500'" />
-      <div class="shrink-0 space-y-1">
-        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-        <div class="w-1 h-1 rounded-full " :class="flexiMode === 'blog' ? 'bg-purple-400' : 'bg-green-400'" />
-      </div>
-    </button> -->
   </div>
 </template>
 
