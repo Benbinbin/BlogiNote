@@ -5,9 +5,18 @@ const props = defineProps<{
   seriesList: any;
 }>()
 
-// const emits = defineEmits(['close'])
 const showSeriesModal = useState('showSeriesModal')
+
 const showDetail = ref(false)
+
+// control the scroll behavior
+// fix the overscroll bug
+const seriesModalContentDOM = ref(null)
+const scrollHandler = (event: WheelEvent) => {
+  if (seriesModalContentDOM.value) {
+    overscrollHandler(event, seriesModalContentDOM.value)
+  }
+}
 
 /**
  *
@@ -70,9 +79,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="expand-window p-4 fixed inset-0 z-[80] flex justify-center items-center">
+  <div
+    class="expand-window p-4 fixed inset-0 z-[80] flex justify-center items-center"
+    @wheel="$event.preventDefault()"
+  >
     <div
-      class="expand-window absolute inset-0 -z-10 flex justify-center items-center bg-black/10 backdrop-blur"
+      class="expand-window absolute inset-0 -z-10 flex justify-center items-center bg-black/30 backdrop-blur"
       @click="showSeriesModal=false"
     />
     <div class="modal-container flex flex-col lg:max-w-4xl">
@@ -81,7 +93,9 @@ onUnmounted(() => {
       </h2>
       <ol
         v-if="seriesList && seriesList.length > 0"
+        ref="seriesModalContentDOM"
         class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto bg-white"
+        @wheel="scrollHandler"
       >
         <li
           v-for="article in seriesList"
@@ -122,7 +136,7 @@ onUnmounted(() => {
         class="p-2 grid grid-cols-2 gap-2 justify-items-stretch sticky bottom-0 inset-x-0 text-xs bg-white border-t rounded-b-lg"
       >
         <button
-          class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-400 bg-red-50 hover:text-red-500 hover:bg-red-100 focus:outline-red-500 rounded transition-colors duration-300"
+          class="px-4 py-2.5 flex justify-center items-center space-x-1 text-red-600 bg-red-100 hover:text-white hover:bg-red-500 focus:outline-red-500 rounded transition-colors duration-300"
           title="close window"
           @click="showSeriesModal=false"
         >
@@ -131,7 +145,7 @@ onUnmounted(() => {
 
         <button
           class="px-4 py-2.5 flex justify-center items-center space-x-1 focus:outline-green-500 rounded transition-colors duration-300"
-          :class="showDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-400 bg-green-50 hover:text-green-500 hover:bg-green-100 '"
+          :class="showDetail ? 'text-white bg-green-500 hover:bg-green-400' : 'text-green-600 bg-green-100 hover:text-white hover:bg-green-500 '"
           :title="showDetail ? 'Less Details' : 'More Details'"
           @click="showDetail = !showDetail"
         >
