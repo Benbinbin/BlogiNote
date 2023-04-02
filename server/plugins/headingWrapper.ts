@@ -37,6 +37,73 @@
  //   </summary>
  //   <p>content 4</p>
  // </details>
+// eslint-disable-next-line no-inner-declarations
+const headingArr = ['h2', 'h3', 'h4', 'h5', 'h6']
+const headingLevelMap = {
+  'h2': 2,
+  'h3': 3,
+  'h4': 4,
+  'h5': 5,
+  'h6': 6
+}
+
+interface CurrentHeadingWrapperMapType {
+  'h2': any;
+  'h3': any;
+  'h4': any;
+  'h5': any;
+  'h6': any;
+}
+
+const currentHeadingWrapperMap: CurrentHeadingWrapperMapType = {
+  'h2': null,
+  'h3': null,
+  'h4': null,
+  'h5': null,
+  'h6': null,
+}
+
+function wrapInDetails(headingNode: any) {
+  return {
+    type: 'element',
+    tag: 'details',
+    props: { open: true },
+    children: [
+      // the first element is summary (wrap the heading node)
+      {
+        type: 'element',
+        tag: 'summary',
+        props: {},
+        children: [headingNode]
+      }
+    ]
+  }
+}
+
+// eslint-disable-next-line no-inner-declarations
+function getParentWrapper(level: number) {
+  let parentWrapper = currentHeadingWrapperMap[`h${level - 1}` as ('h2' | 'h3' | 'h4' | 'h5')]
+  if (!parentWrapper) {
+    if (level - 1 > 2) {
+      const upperLevel = level - 1
+      parentWrapper = getParentWrapper(upperLevel)
+    } else {
+      // the highest wrapper
+      parentWrapper = currentHeadingWrapperMap['h2']
+    }
+  }
+  return parentWrapper
+}
+
+// eslint-disable-next-line no-inner-declarations
+function cleanDeepWrapper(level: number) {
+  currentHeadingWrapperMap[`h${level + 1}` as ('h3' | 'h4' | 'h5' | 'h6')] = null
+
+  if (level + 1 < 6) {
+    const deepLevel = level + 1
+    cleanDeepWrapper(deepLevel)
+  }
+}
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('content:file:afterParse', (file) => {
@@ -45,70 +112,7 @@ export default defineNitroPlugin((nitroApp) => {
       // build a new children for article
       const newChildren: any[] = []
 
-      const headingArr = ['h2', 'h3', 'h4', 'h5', 'h6']
-      const headingLevelMap = {
-        'h2': 2,
-        'h3': 3,
-        'h4': 4,
-        'h5': 5,
-        'h6': 6
-      }
-
-      let currentH2Wrapper: any = null
-      let currentH3Wrapper: any = null
-      let currentH4Wrapper: any = null
-      let currentH5Wrapper: any = null
-      let currentH6Wrapper: any = null
-
-      const currentHeadingWrapperMap = {
-        'h2': currentH2Wrapper,
-        'h3': currentH3Wrapper,
-        'h4': currentH4Wrapper,
-        'h5': currentH5Wrapper,
-        'h6': currentH6Wrapper,
-      }
-
       let currentWrapper: any = null
-
-      function wrapInDetails(headingNode: any) {
-        return {
-          type: 'element',
-          tag: 'details',
-          props: { open: true },
-          children: [
-            // the first element is summary (wrap the heading node)
-            {
-              type: 'element',
-              tag: 'summary',
-              props: {},
-              children: [headingNode]
-            }
-          ]
-        }
-      }
-
-      function getParentWrapper(level: number) {
-        let parentWrapper = currentHeadingWrapperMap[`h${level - 1}` as ('h2' | 'h3' | 'h4' | 'h5')]
-        if (!parentWrapper) {
-          if (level - 1 > 2) {
-            const upperLevel = level - 1
-            parentWrapper = getParentWrapper(upperLevel)
-          } else {
-            // the highest wrapper
-            parentWrapper = currentH2Wrapper
-          }
-        }
-        return parentWrapper
-      }
-
-      function cleanDeepWrapper(level: number) {
-        currentHeadingWrapperMap[`h${level + 1}` as ('h3' | 'h4' | 'h5' | 'h6')] = null
-
-        if (level + 1 < 6) {
-          const deepLevel = level + 1
-          cleanDeepWrapper(deepLevel)
-        }
-      }
 
       file.body.children.forEach((node: any) => {
         // if this is a heading node
@@ -139,6 +143,25 @@ export default defineNitroPlugin((nitroApp) => {
             cleanDeepWrapper(headingLevel)
           }
 
+          // set the heading path for the current heading node
+          // the heading path include all the level headings in current state
+          const headingPathObj = {
+            h2: currentHeadingWrapperMap['h2']?.children[0]?.children[0]?.props
+              ?.id,
+            h3: currentHeadingWrapperMap['h3']?.children[0]?.children[0]?.props
+              ?.id,
+            h4: currentHeadingWrapperMap['h4']?.children[0]?.children[0]?.props
+              ?.id,
+            h5: currentHeadingWrapperMap['h5']?.children[0]?.children[0]?.props
+              ?.id,
+            h6: currentHeadingWrapperMap['h6']?.children[0]?.children[0]?.props
+              ?.id,
+          };
+
+          const headingPathStr = JSON.stringify(headingPathObj);
+
+          // record it as the data-heading-path attribute for the current heading node
+          node.props.dataHeadingPath = headingPathStr;
         } else {
           // if this isn't a heading node
           if (currentWrapper) {

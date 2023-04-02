@@ -1,49 +1,16 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: any;
-  prevArticleUrl: string;
-  nextArticleUrl: string;
 }>()
 
-// defineEmits(['showSeriesModal'])
-const showSeriesModal = useState('showSeriesModal')
-
-// const themeOptions = useTheme()
 const appConfig = useAppConfig()
+const route = useRoute()
 
 /**
  *
- * show article created or last updated time
- *
- */
-let showTime = true
-// show time or not with app config
-showTime = appConfig.bloginote.articlePage.showTime
-
-if ('showTime' in props.data) {
-  // show time or not decide by page metadata
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  showTime = props.data.showTime
-}
-
-/**
- *
- * show expired warning
- *
- */
-let showOutdatedWarningComponent = true
-// show expire warning or not decide by app config
-showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
-
-if ('showOutdatedWarning' in props.data) {
-// show expire warning or not decide by page metadata
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  showOutdatedWarningComponent = props.data.showOutdatedWarning
-}
-
-/**
- *
- * get article category
+ * category (it's like the theme for the article)
+ * it's (direct) sub-directory under the `content/article`
+ * which containers the markdown file
  *
  */
 const category = ref('')
@@ -57,59 +24,299 @@ if (props.data._path) {
 
 /**
  *
- * catalog (it's like the toc for markdown article)
+ * article time
  *
  */
-const showCatalog = useState<Boolean>('showBlogCatalog', () => {
-  return appConfig.bloginote.articlePage.showBlogCatalog
-})
+let showTime = true
+// show created and updated time or not decided by appConfig
+showTime = appConfig.bloginote.articlePage.showTime
+// show created and updated time or not decided by page metadata
+if ('showTime' in props.data) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  showTime = props.data.showTime
+}
 
-const article = ref<HTMLElement | null>(null) // get the article DOM
+/**
+ *
+ * expired warning
+ *
+ */
+let showOutdatedWarningComponent = true
+// show expire warning or not decided by appConfig
+showOutdatedWarningComponent = appConfig.bloginote.articlePage.outdated.show
+if ('showOutdatedWarning' in props.data) {
+  // show expire warning or not decided by page metadata
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  showOutdatedWarningComponent = props.data.showOutdatedWarning
+}
 
-// set active heading
-const activeHeadings = ref(new Set<string>())
-provide('activeHeadings', activeHeadings)
+// the previous and next article
+const prevArticleUrl = ref('')
+const prevArticleName = ref('')
+const nextArticleUrl = ref('')
+const nextArticleName = ref('')
 
-let observer:IntersectionObserver
-onMounted(() => {
-  // get headings list
-  if (article.value) {
-    const headingDomList = article.value.querySelectorAll('h2, h3, h4, h5, h6')
-    // set intersection observer
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const id = entry.target.getAttribute('id') as string
-        if (entry.intersectionRatio > 0) {
-          activeHeadings.value.add(id)
-        } else {
-          activeHeadings.value.delete(id)
-        }
-      })
-    })
+/**
+ *
+ * series articles
+ *
+ */
+// #region series
+const seriesList: any = ref([])
+// show or hide series modal
+const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
+if (props.data.value?.series) {
+  // if this post belong to a series
+  // fetch articles list based on series
+  const { data: seriesResult } = await useAsyncData(`${props.data.value.series}-series`, () => {
+    return queryContent('article')
+      .where({ series: props.data.value?.series })
+      .only(['title', 'description', '_path', '_type', 'seriesOrder'])
+      .sort({ seriesOrder: 1, $numeric: true })
+      .find()
+  })
 
-    if (headingDomList.length > 0) {
-      headingDomList.forEach((heading) => {
-        observer.observe(heading)
-      })
+  seriesList.value = seriesResult.value
+
+  // based on the series articles list
+  // set the previous article and next article
+  if (seriesResult.value && seriesResult.value.length > 1) {
+    // find the current article index inside the series articles list
+    const currentArticleIndex = seriesResult.value.findIndex(item => route.path === item._path)
+
+    if (currentArticleIndex !== -1) {
+      if (currentArticleIndex === 0) {
+        // if current page is the first article in the series list
+        // just set the next article
+        nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
+        nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
+      } else if (currentArticleIndex === seriesResult.value.length - 1) {
+        // if current page is the last article in the series list
+        // just set the previous article
+        prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
+        prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
+      } else {
+        // if current page is in the middle of the series list
+        // set the previous article
+        nextArticleName.value = seriesResult.value[currentArticleIndex + 1].title
+        nextArticleUrl.value = seriesResult.value[currentArticleIndex + 1]._path
+        // set the next article
+        prevArticleName.value = seriesResult.value[currentArticleIndex - 1].title
+        prevArticleUrl.value = seriesResult.value[currentArticleIndex - 1]._path
+      }
     }
   }
-})
+}
 
-onUnmounted(() => {
-  if (observer) {
-    observer.disconnect()
-  }
-})
+
+
+// if the page metadata has the information about previous or next article
+// rewrite the default value
+if (props.data.value?.prevArticleUrl) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  prevArticleUrl.value = props.data.value.prevArticleUrl
+}
+
+if (props.data.value?.prevArticleName) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  prevArticleName.value = props.data.value.prevArticleName
+}
+
+if (props.data.value?.nextArticleUrl) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  nextArticleUrl.value = props.data.value.nextArticleUrl
+}
+
+if (props.data.value?.nextArticleName) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  nextArticleName.value = props.data.value.nextArticleName
+}
+// #endregion
 
 /**
  *
  * show or hide tags
  */
 const showTags = ref(true)
+
+/**
+ *
+ * math formula
+ *
+ */
+// #region math
+const clipboard = ref<null | Clipboard>(null)
+
+// add click event listener for a list of DOM
+// make them support the feature about double click to copy the formula
+const addClickListener = (list: NodeListOf<Element>, prefix: string, suffix: string) => {
+  list.forEach((element) => {
+    // add event listener for double click
+    element.addEventListener('dblclick', (event) => {
+      const target = event.currentTarget as HTMLElement
+
+      // after click set the math element border color to 'border-purple-400'
+      target.style.borderColor = '#c084fc'
+
+      // get the LaTeX source code of math formula
+      // refer to https://github.com/KaTeX/KaTeX/issues/645
+      const formulaElem = target.querySelector('annotation')
+
+      if (formulaElem && formulaElem.textContent) {
+        // add '$' or '$$' prefix and suffix for inline math or block math
+        const formula = prefix + formulaElem.textContent + suffix
+
+        if (clipboard.value) {
+          // write the formula to clipboard and set the math element border color based on the promise resolve result
+          clipboard.value.writeText(formula).then(() => {
+            target.style.borderColor = '#4ade80'
+            const timer = setTimeout(() => {
+              target.style.borderColor = 'transparent'
+              clearTimeout(timer)
+            }, 800)
+          })
+            .catch(() => {
+              target.style.borderColor = '#f87171'
+
+              const timer = setTimeout(() => {
+                target.style.borderColor = 'transparent'
+                clearTimeout(timer)
+              }, 800)
+            })
+        }
+      } else {
+        target.style.borderColor = '#f87171'
+
+        const timer = setTimeout(() => {
+          target.style.borderColor = 'transparent'
+          clearTimeout(timer)
+        }, 800)
+      }
+    })
+  })
+}
+
+const articleContainerDOM = ref<null | HTMLElement>(null)
+onMounted(() => {
+  clipboard.value = navigator.clipboard
+
+  if (articleContainerDOM.value && clipboard.value) {
+    // get all the inline math <span> dom
+    const mathInlineList = articleContainerDOM.value.querySelectorAll('.math-inline')
+    // get all the block math <div> dom
+    const mathBlockList = articleContainerDOM.value.querySelectorAll('.math-display')
+
+    // add click event listener for each dom
+    if (mathInlineList.length > 0) { addClickListener(mathInlineList, '$', '$') }
+    if (mathBlockList.length > 0) { addClickListener(mathBlockList, '$$\n', '\n$$') }
+  }
+})
+// #endregion
+
+/**
+ *
+ * catalog (it's the toc for markdown article)
+ *
+ */
+// #region catalog
+const showCatalog = useState<Boolean>('showBlogCatalog', () => {
+  return appConfig.bloginote.articlePage.showBlogCatalog
+})
+
+const articleDOM = ref<HTMLElement | null>(null) // get the article DOM
+
+// active headings
+// the active headings is the heading shown in the viewport
+const activeH2Headings = ref<string | undefined>()
+const activeH3Headings = ref<string | undefined>()
+const activeH4Headings = ref<string | undefined>()
+const activeH5Headings = ref<string | undefined>()
+const activeH6Headings = ref<string | undefined>()
+
+// provide for the catalog relative components
+provide('activeH2Headings', activeH2Headings)
+provide('activeH3Headings', activeH3Headings)
+provide('activeH4Headings', activeH4Headings)
+provide('activeH5Headings', activeH5Headings)
+provide('activeH6Headings', activeH6Headings)
+
+function setActiveHeading(heading: HTMLElement) {
+  const headingPathStr = heading?.dataset?.headingPath
+
+  if (headingPathStr) {
+    const headingPathObj = JSON.parse(headingPathStr)
+    activeH2Headings.value = headingPathObj['h2']
+    activeH3Headings.value = headingPathObj['h3']
+    activeH4Headings.value = headingPathObj['h4']
+    activeH5Headings.value = headingPathObj['h5']
+    activeH6Headings.value = headingPathObj['h6']
+  }
+}
+
+// observer the active headings
+let observer:IntersectionObserver
+
+// limited the observer just work on the client side
+// and only observer when the article has toc
+if(process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+  onMounted(() => {
+    if (articleDOM.value) {
+      // get the headings DOM of article
+      const headingDomList = articleDOM.value.querySelectorAll('h2, h3, h4, h5, h6')
+
+      // set intersection observer for these headings DOM
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const changeHeading = entry.target
+          // console.log(changeHeading);
+          const id = changeHeading.id
+          if (entry.intersectionRatio > 0) {
+            // when the heading appear in viewport
+            // reset the active headings
+            setActiveHeading(changeHeading as HTMLElement)
+          } else if (entry.boundingClientRect.y > 0) {
+            // when the heading disappear at the bottom
+            // it mean the user scroll up to see the previous content
+            // so we should fallback to the previous heading
+            let index;
+            for (let i = 0; i < headingDomList.length; i++) {
+              const item = headingDomList[i]
+              if(item.id === id) {
+                index = i
+                break;
+              }
+            }
+            if(index && index-1>= 0) {
+              const prevHeading = headingDomList[index-1]
+              setActiveHeading(prevHeading as HTMLElement)
+            }
+          }
+        })
+      })
+
+      if (headingDomList.length > 0) {
+        headingDomList.forEach((heading) => {
+          observer.observe(heading)
+        })
+      }
+    }
+  })
+
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect()
+    }
+  })
+}
+// #endregion
+
 </script>
 
 <template>
-  <div ref="article">
+  <div
+    ref="articleDOM"
+    class="markdown-post"
+  >
     <div
       v-if="props.data.cover"
       class="my-4 w-full h-60 lg:h-72 xl:h-80 bg-cover bg-center bg-no-repeat"
@@ -195,12 +402,12 @@ const showTags = ref(true)
       <hr class="w-1/3 mx-auto">
 
       <div
-        v-if="(props.prevArticleUrl || props.nextArticleUrl)"
+        v-if="(prevArticleUrl || nextArticleUrl)"
         class="p-2 flex flex-wrap justify-center items-center gap-4"
       >
         <NuxtLink
-          v-if="props.prevArticleUrl"
-          :to="props.prevArticleUrl"
+          v-if="prevArticleUrl"
+          :to="prevArticleUrl"
           class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
         >
           <IconCustom
@@ -210,8 +417,8 @@ const showTags = ref(true)
           <span>Prev Article</span>
         </NuxtLink>
         <NuxtLink
-          v-if="props.nextArticleUrl"
-          :to="props.nextArticleUrl"
+          v-if="nextArticleUrl"
+          :to="nextArticleUrl"
           class="p-2 flex items-center gap-1 text-xs text-gray-300 hover:text-white hover:bg-green-500 focus:outline-none rounded transition-colors duration-300"
         >
           <span>Next Article</span>
@@ -239,18 +446,61 @@ const showTags = ref(true)
       </div>
     </div>
 
-    <ContentRenderer
-      :value="props.data"
-      class="article-container markdown-post-content-container selection:text-white selection:bg-purple-400"
-    >
-      <template #empty>
-        <div class="mx-auto font-bold">
-          <p>Article is empty</p>
-        </div>
-      </template>
-    </ContentRenderer>
+    <MarkdownPostContent :data="props.data" />
 
-    <CatalogSidebarForBlog
+    <div
+      v-if="(prevArticleUrl || nextArticleUrl)"
+      class="container lg:max-w-4xl mx-auto px-6 md:px-12 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
+    >
+      <NuxtLink
+        v-if="prevArticleUrl"
+        :to="prevArticleUrl"
+        class="px-4 py-6 flex justify-start items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300"
+      >
+        <div class="flex items-center gap-1">
+          <IconCustom
+            name="ic:round-keyboard-arrow-left"
+            class="shrink-0 w-8 h-8 opacity-70"
+          />
+          <div class="flex flex-col gap-2">
+            <p class="text-lg font-bold">
+              Previous Article
+            </p>
+            <p
+              v-if="prevArticleName"
+              class="text-xs opacity-80"
+            >
+              {{ prevArticleName }}
+            </p>
+          </div>
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        v-if="nextArticleUrl"
+        :to="nextArticleUrl"
+        class="px-4 py-6 flex justify-end items-center text-gray-600 hover:text-white hover:bg-green-500 border border-gray-400 hover:border-green-500 focus:outline-none rounded-lg transition-colors duration-300"
+      >
+        <div class="flex items-center gap-1">
+          <div class="flex flex-col gap-2">
+            <p class="text-lg font-bold text-end">
+              Next Article
+            </p>
+            <p
+              v-if="nextArticleName"
+              class="text-xs opacity-80 text-end"
+            >
+              {{ nextArticleName }}
+            </p>
+          </div>
+          <IconCustom
+            name="ic:round-keyboard-arrow-right"
+            class="shrink-0 w-8 h-8 opacity-70"
+          />
+        </div>
+      </NuxtLink>
+    </div>
+
+    <CatalogSidebar
       v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
       :catalogs="props.data.body.toc.links"
     />
@@ -266,153 +516,37 @@ const showTags = ref(true)
         class="w-5 h-5"
       />
     </button>
+
+    <Teleport to="body">
+      <SeriesModal
+        v-if="data?.series && seriesList.length > 0 && showSeriesModal"
+        :current-path="data._path"
+        :series-name="data.series"
+        :series-list="seriesList"
+      />
+    </Teleport>
+
+    <Teleport to="body">
+      <ImageLightbox />
+    </Teleport>
   </div>
 </template>
 
 <style lang="scss">
+.markdown-post {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    word-wrap: break-word;
+  }
+}
 
 .tags-container {
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-.markdown-post-content-container {
-  // hide the h1 element if it's the first dom in the .markdown-post-content-container
-  & > h1:first-child {
-    @apply hidden
-  }
-
-  h2,
-  h3,
-  h4,
-  h5,
-  h6
-  {
-    @apply font-bold inline-block;
-    a {
-      @apply text-inherit hover:text-inherit no-underline hover:no-underline visited:no-underline hover:visited:no-underline;
-    }
-  }
-
-  h1 {
-    @apply py-8 md:py-12 text-3xl md:text-5xl text-center;
-  }
-
-  h2 {
-    @apply py-4 text-2xl md:text-3xl before:content-['H2'] before:text-sm md:before:text-base sm:-translate-x-5;
-  }
-
-  h3 {
-    @apply py-4 text-xl md:text-2xl before:content-['H3'] before:text-sm md:before:text-base sm:-translate-x-5;
-  }
-
-  h4 {
-    @apply py-2 text-lg md:text-xl before:content-['H4'] before:text-xs md:before:text-sm sm:-translate-x-4;
-  }
-
-  h5 {
-    @apply py-2 text-lg md:text-xl before:content-['H5'] before:text-xs md:before:text-sm sm:-translate-x-4;
-  }
-
-  h6 {
-    @apply py-2 text-lg md:text-xl before:content-['H6'] before:text-xs md:before:text-sm sm:-translate-x-4;
-  }
-
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply before:font-light before:p-1 before:mr-0.5 before:rounded before:transition-opacity before:duration-300 before:cursor-pointer before:text-purple-300 before:bg-none before:opacity-50 hover:before:opacity-100;
-  }
-
-  // refine the design for detail (toggle heading)
-  // refer to https://web.dev/learn/html/details/
-  details summary:has(:is(h2, h3, h4, h5, h6)) {
-    &::marker {
-      content: none;
-    }
-  }
-
-  details:not([open]) summary :is(h2, h3, h4, h5, h6) {
-    @apply before:text-white before:bg-purple-500 before:opacity-100 hover:before:opacity-80
-  }
-
-  p {
-    @apply text-base;
-  }
-
-  blockquote {
-    @apply px-2 border-l-4 border-gray-300;
-  }
-
-  ul,
-  ol {
-    @apply pl-4 my-2.5;
-
-    li {
-      @apply my-2.5;
-    }
-  }
-
-  ul {
-    @apply list-disc;
-  }
-
-  ol {
-    @apply list-decimal;
-  }
-
-  dl {
-    dt {
-      @apply font-bold italic my-2;
-    }
-
-    dd {
-      @apply pl-4;
-    }
-  }
-
-  p,
-  blockquote,
-  dl {
-    @apply my-4;
-  }
-
-  table {
-    @apply my-0.5;
-  }
-
-  table {
-    @apply mx-auto table-auto;
-
-    thead tr,
-    tr:nth-child(2n) {
-      @apply bg-gray-100;
-    }
-
-    th,
-    td {
-      @apply px-4 py-2 border border-gray-200 text-center;
-    }
-  }
-
-  hr {
-    @apply text-gray-400;
-  }
-
-  a {
-    @apply text-blue-500 underline decoration-2 decoration-blue-400 hover:decoration-blue-500 visited:decoration-blue-100 hover:visited:decoration-blue-200 transition-colors duration-300;
-  }
-
-  code {
-    @apply px-1 py-0.5 mx-0.5 text-sm bg-gray-100 border rounded break-words;
-  }
-
-  .math {
-    @apply px-2 py-1 overflow-x-auto border-2 border-transparent rounded-md select-none transition-colors duration-300;
-  }
-
 }
 </style>

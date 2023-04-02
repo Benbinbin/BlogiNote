@@ -591,7 +591,7 @@ provide('changeToggleAllCatalogState', changeToggleAllCatalogState)
             :style="sidebarFloatForBlog && floatBlogCatalogType === 'tree' ? `transform: translate(${catalogListTranslateX}px, ${catalogListTranslateY}px) scale(${catalogListScale})` : ''"
             @wheel="scrollToZoomCatalogHandler"
           >
-            <CatalogItemForBlog
+            <CatalogItem
               v-for="catalog in props.catalogs"
               :key="catalog.id"
               :item="catalog"

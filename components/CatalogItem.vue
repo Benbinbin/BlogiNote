@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 
-interface CatalogItem {
+interface CatalogItemType {
   id: string;
-  depth?: number;
+  depth: number;
   text: string;
-  children?: CatalogItem[]
+  children?: CatalogItemType[]
 }
 
 const props = defineProps<{
-  item: CatalogItem,
+  item: CatalogItemType,
   depth: number
 }>()
 
@@ -118,8 +118,7 @@ watch([sidebarFloatForBlog, toggleBlogSidebarFloat, floatBlogCatalogType], () =>
 })
 
 // active heading
-const initActiveHeadings = ref(new Set<string>())
-const activeHeadings = inject('activeHeadings', initActiveHeadings)
+const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`)
 </script>
 
 <template>
@@ -134,9 +133,12 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
     >
       <div
         class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeadings.has(props.item.id) ? `pr-4 ${borderColorMap[props.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.depth].expand} border-dashed`)"
+        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeading === props.item.id ? `pr-4 ${borderColorMap[props.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.depth].expand} border-dashed`)"
       >
-        <p class="text-xs font-thin" :class="`${textColorMap[props.depth]}`">
+        <p
+          class="text-xs font-thin"
+          :class="`${textColorMap[props.depth]}`"
+        >
           H{{ props.depth }}
         </p>
       </div>
@@ -153,14 +155,17 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
           class="w-3.5 h-3.5 text-white transition-transform duration-500 delay-300"
           :class="expand ? 'rotate-45' : 'rotate-0'"
         />
-        <div v-else class="w-3.5 h-3.5" />
+        <div
+          v-else
+          class="w-3.5 h-3.5"
+        />
       </button>
 
       <a
         :href="`#${props.item.id}`"
-        class="py-2 px-2 text-sm text-left text-gray-800 hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
+        class="py-2 px-2 text-sm text-left underline hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
         :class="textClass"
-        :style="activeHeadings.has(props.item.id) ? 'font-weight: bold' : ''"
+        :style="activeHeading === props.item.id ? 'color: rgb(168 85 247); text-decoration-color: #a855f7;' : 'color: rgb(31 41 55); text-decoration-color: transparent;'"
       >{{
         props.item.text }}</a>
     </div>
@@ -177,9 +182,10 @@ const activeHeadings = inject('activeHeadings', initActiveHeadings)
         v-if="props.item.children"
         v-show="expand"
         :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) ?
-        (floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : 'ml-6') : ''"
+          (floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : 'ml-6') : ''"
       >
-        <CatalogItemForBlog
+        <!-- recursive components to show the tree structure -->
+        <CatalogItem
           v-for="subItem in props.item.children"
           :key="subItem.id"
           :item="subItem"

@@ -21,7 +21,7 @@ const showMoreOptions = ref(false)
 
 /**
  *
- *  toggle category options
+ * toggle category options
  *
  */
 const showCategoryOptions = ref(false)
