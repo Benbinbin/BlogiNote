@@ -1,4 +1,4 @@
-[![BlogiNote](./public/cover.jpg)](https://github.com/Benbinbin/BlogiNote)
+[![BlogiNote](./public/cover.jpg)](https://bloginote.benbinbin.com/)
 
 # BlogiNote
 BlogiNote is a [Nuxt Theme](https://nuxt.com/docs/guide/going-further/layers) based on [Nuxt Content module](https://content.nuxtjs.org/), it can generate static website to show your blog posts and notes with flexible layouts and multiple optimizations.
