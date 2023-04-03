@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 
+
+const props = defineProps<{
+  item: CatalogItemType,
+  depth: number
+}>()
+
 interface CatalogItemType {
   id: string;
   depth: number;
   text: string;
   children?: CatalogItemType[]
 }
-
-const props = defineProps<{
-  item: CatalogItemType,
-  depth: number
-}>()
 
 const toggleAllCatalogState = inject('toggleAllCatalogState') as Ref<'expand' | 'collapse' | ''>
 const changeToggleAllCatalogState = inject('changeToggleAllCatalogState') as (value: 'expand' | 'collapse' | '') => void
@@ -31,121 +32,152 @@ const toggleCatalogHandler = () => {
   changeToggleAllCatalogState('')
 }
 
-// 🚨 maybe should fix this "any" type
-const bgColorMap:any = {
+interface BtnBgColorItemType {
+  withChildren: string;
+  withoutChildren: string;
+}
+
+interface BtnBgColorMapType {
+  [key: number]: BtnBgColorItemType,
+}
+
+const btnBgColorMap: BtnBgColorMapType = {
   2: {
-    expand: 'bg-purple-500',
-    collapse: 'bg-purple-200',
-    collapseWithChildren: 'bg-purple-400'
+    withChildren: 'bg-purple-500',
+    withoutChildren: 'bg-purple-200',
   },
   3: {
-    expand: 'bg-red-500',
-    collapse: 'bg-red-200',
-    collapseWithChildren: 'bg-red-400'
+    withChildren: 'bg-red-500',
+    withoutChildren: 'bg-red-200',
   },
   4: {
-    expand: 'bg-green-500',
-    collapse: 'bg-green-200',
-    collapseWithChildren: 'bg-green-400'
+    withChildren: 'bg-green-500',
+    withoutChildren: 'bg-green-200',
   },
   5: {
-    expand: 'bg-blue-500',
-    collapse: 'bg-blue-200',
-    collapseWithChildren: 'bg-blue-400'
+    withChildren: 'bg-blue-500',
+    withoutChildren: 'bg-blue-200',
   },
   6: {
-    expand: 'bg-gray-500',
-    collapse: 'bg-gray-200',
-    collapseWithChildren: 'bg-gray-400'
+    withChildren: 'bg-gray-500',
+    withoutChildren: 'bg-gray-200',
   }
 }
 
-// 🚨 maybe should fix this "any" type
-const textColorMap:any = {
-  2: 'text-purple-400',
-  3: 'text-red-400',
-  4: 'text-green-400',
-  5: 'text-blue-400',
-  6: 'text-gray-400'
+interface TextColorItemType {
+  normal: string;
+  hover: string;
 }
 
-// 🚨 maybe should fix this "any" type
-const borderColorMap:any = {
-  2: { active: 'border-purple-500', expand: 'border-purple-300', collapse: 'border-purple-100' },
-  3: { active: 'border-red-500', expand: 'border-red-300', collapse: 'border-red-100' },
-  4: { active: 'border-green-500', expand: 'border-green-300', collapse: 'border-green-100' },
-  5: { active: 'border-blue-500', expand: 'border-blue-300', collapse: 'border-blue-100' },
-  6: { active: 'border-gray-500', expand: 'border-gray-300', collapse: 'border-gray-100' }
+interface TextColorMapType {
+  [key: number]: TextColorItemType
 }
 
-// sidebar state float or not
-const sidebarFloatForBlog = useBlogSidebarFloat()
-const toggleBlogSidebarFloat = useToggleBlogSidebarFloat()
-// float catalog type
-const floatBlogCatalogType = useFloatBlogCatalogType()
-
-const buttonClass = ref('')
-const textClass = ref('')
-
-watch([sidebarFloatForBlog, toggleBlogSidebarFloat, floatBlogCatalogType], () => {
-  const buttonClassArr = []
-  const textClassArr = []
-
-  if ((sidebarFloatForBlog.value || toggleBlogSidebarFloat.value) && floatBlogCatalogType.value === 'tree') {
-    buttonClassArr.push('order-3 translate-x-[10px]')
-    textClassArr.push('grow order-2')
-  } else {
-    buttonClassArr.push('order-2 -translate-x-2.5')
-    textClassArr.push('order-3')
+const textColorMap: TextColorMapType = {
+  2: {
+    normal: 'text-purple-500',
+    hover: 'hover:text-purple-500'
+  },
+  3: {
+    normal: 'text-red-500',
+    hover: 'hover:text-red-500'
+  },
+  4: {
+    normal: 'text-green-500',
+    hover: 'hover:text-green-500'
+  },
+  5: {
+    normal: 'text-blue-500',
+    hover: 'hover:text-blue-500'
+  },
+  6: {
+    normal: 'text-gray-500',
+    hover: 'hover:text-gray-500'
   }
+}
 
-  if (props.item.children) {
-    if (expand.value) {
-      buttonClassArr.push(`${borderColorMap[props.depth].expand} ${bgColorMap[props.depth].expand}`)
-    } else {
-      buttonClassArr.push(`${borderColorMap[props.depth].collapse} ${bgColorMap[props.depth].collapseWithChildren}`)
-    }
-  } else if ((sidebarFloatForBlog.value || toggleBlogSidebarFloat.value) && floatBlogCatalogType.value === 'tree') {
-    buttonClassArr.push('border-transparent')
-  } else {
-    buttonClassArr.push(`${borderColorMap[props.depth].collapse} ${bgColorMap[props.depth].collapse}`)
+interface textDecorationOrBgColorMapType {
+  [key: number]: string,
+}
+
+const textDecorationColorMap: textDecorationOrBgColorMapType = {
+  2: 'decoration-purple-500',
+  3: 'decoration-red-500',
+  4: 'decoration-green-500',
+  5: 'decoration-blue-500',
+  6: 'decoration-gray-500',
+}
+
+const textHoverBgColorMap: textDecorationOrBgColorMapType = {
+  2: 'hover:bg-purple-100',
+  3: 'hover:bg-red-100',
+  4: 'hover:bg-green-100',
+  5: 'hover:bg-blue-100',
+  6: 'hover:bg-gray-100',
+}
+
+interface BorderColorItemType {
+  active: string;
+  expand: string;
+  collapse: string;
+}
+
+interface BorderColorMapType {
+  [key: number]: BorderColorItemType
+}
+
+const borderColorMap: BorderColorMapType = {
+  2: {
+    active: 'border-purple-500',
+    expand: 'border-purple-300',
+    collapse: 'border-purple-100'
+  },
+  3: {
+    active: 'border-red-500',
+    expand: 'border-red-300',
+    collapse: 'border-red-100'
+  },
+  4: {
+    active: 'border-green-500',
+    expand: 'border-green-300',
+    collapse: 'border-green-100'
+  },
+  5: {
+    active: 'border-blue-500',
+    expand: 'border-blue-300',
+    collapse: 'border-blue-100'
+  },
+  6: {
+    active: 'border-gray-500',
+    expand: 'border-gray-300',
+    collapse: 'border-gray-100'
   }
-
-  buttonClass.value = buttonClassArr.join(' ')
-  textClass.value = textClassArr.join(' ')
-}, {
-  immediate: true
-})
+}
 
 // active heading
 const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`)
 </script>
 
 <template>
-  <li
-    draggable="false"
-    class="flex"
-    :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'flex-row justify-start items-center' : 'flex-col'"
-  >
+  <li>
     <div
-      class="shrink-0 flex items-center"
-      :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'pl-4 w-40 justify-between' : 'px-2'"
+      class="shrink-0 px-2 flex items-center"
     >
       <div
-        class="shrink-0 self-stretch order-1 py-2 flex justify-center items-center border-r"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) && floatBlogCatalogType === 'tree' ? 'border-transparent' : (activeHeading === props.item.id ? `pr-4 ${borderColorMap[props.depth].active} border-solid ` : `pr-4 ${borderColorMap[props.depth].expand} border-dashed`)"
+        class="shrink-0 self-stretch pr-4 py-2 flex justify-center items-center border-r"
+        :class="activeHeading === props.item.id ? ` ${borderColorMap[props.depth].active} border-solid` : `${borderColorMap[props.depth].expand} border-dashed`"
       >
         <p
           class="text-xs font-thin"
-          :class="`${textColorMap[props.depth]}`"
+          :class="`${textColorMap[props.depth].normal}`"
         >
           H{{ props.depth }}
         </p>
       </div>
 
       <button
-        class="shrink-0 flex justify-center items-center rounded-full border-[3px]"
-        :class="buttonClass"
+        class="shrink-0 flex justify-center items-center border-[3px] rounded-full -translate-x-2.5"
+        :class="props.item.children ? `${borderColorMap[props.depth].expand} ${btnBgColorMap[props.depth].withChildren}` : `${borderColorMap[props.depth].collapse} ${btnBgColorMap[props.depth].withoutChildren}`"
         :disabled="!props.item.children"
         @click="toggleCatalogHandler"
       >
@@ -163,9 +195,8 @@ const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`
 
       <a
         :href="`#${props.item.id}`"
-        class="py-2 px-2 text-sm text-left underline hover:text-blue-500 hover:bg-blue-100 transition-colors duration-300 rounded"
-        :class="textClass"
-        :style="activeHeading === props.item.id ? 'color: rgb(168 85 247); text-decoration-color: #a855f7;' : 'color: rgb(31 41 55); text-decoration-color: transparent;'"
+        class="py-2 px-2 text-sm text-left underline transition-colors duration-300 rounded"
+        :class="activeHeading === props.item.id ? `${textColorMap[props.depth].normal} ${textColorMap[props.depth].hover} ${textHoverBgColorMap[props.depth]} ${textDecorationColorMap[props.depth]}` : `text-gray-500 ${textColorMap[props.depth].hover} ${textHoverBgColorMap[props.depth]} decoration-transparent`"
       >{{
         props.item.text }}</a>
     </div>
@@ -181,8 +212,6 @@ const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`
       <ul
         v-if="props.item.children"
         v-show="expand"
-        :class="(sidebarFloatForBlog || toggleBlogSidebarFloat) ?
-          (floatBlogCatalogType === 'tree' ? `border-l ${borderColorMap[props.depth].expand} space-y-2 rounded-md` : 'ml-6') : ''"
       >
         <!-- recursive components to show the tree structure -->
         <CatalogItem

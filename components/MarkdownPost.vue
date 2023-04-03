@@ -8,17 +8,17 @@ const route = useRoute()
 
 /**
  *
- * category (it's like the theme for the article)
+ * theme (it's like the theme for the article)
  * it's (direct) sub-directory under the `content/article`
  * which containers the markdown file
  *
  */
-const category = ref('')
+const theme = ref('')
 if (props.data._path) {
   const pathArr = props.data._path.split('/')
 
   if (pathArr.length > 3 && pathArr[1] === 'article') {
-    category.value = pathArr[2]
+    theme.value = pathArr[2]
   }
 }
 
@@ -65,12 +65,12 @@ const nextArticleName = ref('')
 const seriesList: any = ref([])
 // show or hide series modal
 const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
-if (props.data.value?.series) {
+if (props.data?.series) {
   // if this post belong to a series
   // fetch articles list based on series
-  const { data: seriesResult } = await useAsyncData(`${props.data.value.series}-series`, () => {
+  const { data: seriesResult } = await useAsyncData(`${props.data.series}-series`, () => {
     return queryContent('article')
-      .where({ series: props.data.value?.series })
+      .where({ series: props.data.series })
       .only(['title', 'description', '_path', '_type', 'seriesOrder'])
       .sort({ seriesOrder: 1, $numeric: true })
       .find()
@@ -219,12 +219,8 @@ onMounted(() => {
  *
  */
 // #region catalog
-const showCatalog = useState<Boolean>('showBlogCatalog', () => {
-  return appConfig.bloginote.articlePage.showBlogCatalog
-})
-
-const articleDOM = ref<HTMLElement | null>(null) // get the article DOM
-
+const pageScrollTop = usePageScrollTop()
+const showCatalog = useState('showCatalog')
 // active headings
 // the active headings is the heading shown in the viewport
 const activeH2Headings = ref<string | undefined>()
@@ -255,6 +251,7 @@ function setActiveHeading(heading: HTMLElement) {
 
 // observer the active headings
 let observer:IntersectionObserver
+const articleDOM = ref<HTMLElement | null>(null) // get the article DOM
 
 // limited the observer just work on the client side
 // and only observer when the article has toc
@@ -328,8 +325,8 @@ if(process.client && props.data?.body?.toc && props.data.body.toc.links.length >
       </h1>
       <div class="py-2 flex flex-wrap justify-center items-center gap-2 sm:gap-4">
         <NuxtLink
-          v-if="category"
-          :to="{ path: '/list', query: { category: category } }"
+          v-if="theme"
+          :to="{ path: '/list', query: { theme: theme } }"
           target="_blank"
           class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
         >
@@ -337,7 +334,7 @@ if(process.client && props.data?.body?.toc && props.data.body.toc.links.length >
             name="material-symbols:category-rounded"
             class="shrink-0 w-4 h-4"
           />
-          <span class="text-xs">{{ category }}</span>
+          <span class="text-xs">{{ theme }}</span>
         </NuxtLink>
         <div
           v-if="showTime"
@@ -500,22 +497,33 @@ if(process.client && props.data?.body?.toc && props.data.body.toc.links.length >
       </NuxtLink>
     </div>
 
-    <CatalogSidebar
+    <MarkdownPostCatalog
       v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
+      v-show="showCatalog"
       :catalogs="props.data.body.toc.links"
     />
 
-    <button
-      v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
-      class="p-2 hidden sm:flex justify-center items-center fixed bottom-16 right-4 z-40 border transition-colors duration-300 rounded-lg"
-      :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
-      @click="showCatalog = !showCatalog"
+    <Transition
+      enter-from-class="translate-x-10"
+      enter-active-class="transition-transform duration-500 ease"
+      enter-to-class="translate-x-0"
+      leave-from-class="translate-x-0"
+      leave-active-class="transition-transform duration-75 ease"
+      leave-to-class="translate-x-10"
     >
-      <IconCustom
-        name="entypo:list"
-        class="w-5 h-5"
-      />
-    </button>
+      <button
+        v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
+        v-show="pageScrollTop > 100"
+        class="p-2 hidden sm:flex justify-center items-center fixed bottom-16 right-4 z-40 border transition-colors duration-300 rounded-lg"
+        :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
+        @click="showCatalog = !showCatalog"
+      >
+        <IconCustom
+          name="entypo:list"
+          class="w-5 h-5"
+        />
+      </button>
+    </Transition>
 
     <Teleport to="body">
       <SeriesModal

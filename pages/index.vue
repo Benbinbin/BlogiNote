@@ -7,6 +7,8 @@ import type { NavItem } from '@nuxt/content/dist/runtime/types'
  * switch the homepage layout mode
  *
  */
+const showFooterNavMoreOptions = useState('showFooterNavMoreOptions')
+const showFooterNavThemeOptions = useState('showFooterNavThemeOptions')
 const homepageLayoutMode = useHomepageLayoutMode()
 const changeHomepageLayoutMode = () => {
   if (homepageLayoutMode.value === 'post') {
@@ -59,27 +61,27 @@ if (showBlogPosts && Array.isArray(navTree.value)) {
   }
 }
 
-const getCategory = (path = '') => {
-  let category = ''
+const getTheme = (path = '') => {
+  let theme = ''
   const pathArr = path.split('/')
 
   if (pathArr.length === 3 && pathArr[1] === 'article') {
-    category = pathArr[2]
+    theme = pathArr[2]
   }
 
-  return category
+  return theme
 }
 
 // show posts
 // const showRecentPosts = ref(true)
 
 // hide post section
-const hidePostCategorySections = ref(new Set())
-const togglePostCategorySectionsHandler = (category:string) => {
-  if (hidePostCategorySections.value.has(category)) {
-    hidePostCategorySections.value.delete(category)
+const hidePostThemeSections = ref(new Set())
+const togglePostThemeSectionsHandler = (theme:string) => {
+  if (hidePostThemeSections.value.has(theme)) {
+    hidePostThemeSections.value.delete(theme)
   } else {
-    hidePostCategorySections.value.add(category)
+    hidePostThemeSections.value.add(theme)
   }
 }
 
@@ -159,10 +161,10 @@ const getFileTypeIcon = (type:string) => {
     <NuxtLayout
       name="base"
     >
-      <template #header-right>
+      <template #header-nav-right>
         <button
           title="toggle homepage layout mode"
-          class="hidden w-10 h-10 sm:flex justify-center items-center gap-1
+          class="w-10 h-10 flex justify-center items-center gap-1
           border-2 transition-colors duration-300 rounded-lg"
           :class="homepageLayoutMode === 'post' ? 'bg-purple-100 hover:bg-purple-200 border-purple-300' : 'bg-purple-500 hover:bg-purple-400 border-purple-500'"
           @click="changeHomepageLayoutMode"
@@ -251,36 +253,36 @@ const getFileTypeIcon = (type:string) => {
               </div>
             </section>
 
-            <template v-for="category in articleFolder.children">
+            <template v-for="theme in articleFolder.children">
               <section
-                v-if="'children' in category"
-                :key="category._path"
+                v-if="'children' in theme"
+                :key="theme._path"
                 class="w-full sm:w-4/5 mx-auto space-y-4"
               >
                 <div class="flex justify-between items-start">
                   <h2 class="border-l-8 border-purple-500 rounded-l-sm">
                     <button
                       class="p-1 font-bold text-lg text-purple-500 hover:bg-purple-100 border rounded-r-sm transition-colors duration-300 "
-                      :class="hidePostCategorySections.has(category._path) ? 'border-purple-500' : 'border-transparent'"
-                      @click="togglePostCategorySectionsHandler(category._path)"
+                      :class="hidePostThemeSections.has(theme._path) ? 'border-purple-500' : 'border-transparent'"
+                      @click="togglePostThemeSectionsHandler(theme._path)"
                     >
-                      {{ category.title }}
+                      {{ theme.title }}
                     </button>
                   </h2>
                   <NuxtLink
-                    :to="{ path: '/list', query: { category: getCategory(category._path) } }"
+                    :to="{ path: '/list', query: { theme: getTheme(theme._path) } }"
                     class="p-2 text-xs font-bold transition-colors duration-300 rounded-lg text-purple-500 bg-purple-100 hover:bg-purple-50"
                   >
                     More
                   </NuxtLink>
                 </div>
                 <div
-                  v-show="!hidePostCategorySections.has(category._path)"
+                  v-show="!hidePostThemeSections.has(theme._path)"
                   class="scroll-container sm:px-4 flex flex-row sm:flex-col gap-2 overflow-x-auto sm:divide-y
                 sm:divide-gray-200"
                 >
                   <ContentQuery
-                    :path="category._path"
+                    :path="theme._path"
                     :where="queryPostsWhere"
                     :limit="queryPostsLimit"
                     :only="queryPostsOnly"
@@ -372,8 +374,9 @@ const getFileTypeIcon = (type:string) => {
           </template>
         </div>
       </div>
-      <template #footer-right>
+      <template #footer-nav-right>
         <button
+          v-show="!showFooterNavMoreOptions && !showFooterNavThemeOptions"
           title="toggle homepage layout mode"
           class="grow flex justify-center items-center"
           @click="changeHomepageLayoutMode"

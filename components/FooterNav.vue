@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
-const props = defineProps({
-  footerCatalog: {
-    type: Boolean,
-    default: false
-  },
-})
-
-// const route = useRoute()
+// const props = defineProps({
+//   footerCatalog: {
+//     type: Boolean,
+//     default: false
+//   },
+// })
 
 const appConfig = useAppConfig()
 
@@ -17,22 +15,24 @@ const appConfig = useAppConfig()
  * toggle more options
  *
  */
-const showMoreOptions = ref(false)
+const showFooterNavMoreOptions = useState<Boolean>('showFooterNavMoreOptions', () => false)
 
 /**
  *
- * toggle category options
+ * toggle theme options
  *
  */
-const showCategoryOptions = ref(false)
+const showFooterNavThemeOptions = useState<Boolean>('showFooterNavThemeOptions', () => false)
 
 /**
+ *
  * set sub nav panel
+ *
  */
 const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNavigation())
 
 let articleFolder
-const categoryArr: NavItem[] = []
+const themeArr: NavItem[] = []
 
 if (Array.isArray(navTree.value)) {
   articleFolder = navTree.value.find(item => item._path === '/article')
@@ -40,31 +40,21 @@ if (Array.isArray(navTree.value)) {
   if (articleFolder?.children && articleFolder.children.length > 0) {
     articleFolder.children.forEach((item) => {
       if ('children' in item) {
-        categoryArr.push(item)
+        themeArr.push(item)
       }
     })
   }
 }
 
-const getCategory = (path = '') => {
-  let category = ''
+const getTheme = (path = '') => {
+  let theme = ''
   const pathArr = path.split('/')
 
   if (pathArr.length === 3 && pathArr[1] === 'article') {
-    category = pathArr[2]
+    theme = pathArr[2]
   }
 
-  return category
-}
-
-/**
- *
- * toggle catalog
- *
- */
-const showBlogCatalog = useState('showBlogCatalog')
-const toggleCatalogHandler = () => {
-    showBlogCatalog.value = !showBlogCatalog.value
+  return theme
 }
 
 /**
@@ -81,11 +71,11 @@ const showSearchModal = useShowSearchModal()
       class="py-0.5 sm:hidden sticky bottom-0 inset-x-0 flex justify-between items-center bg-gray-50 border-t border-gray-50 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.1),0_-2px_4px_-2px_rgb(0,0,0,0.1)] shadow-gray-200"
     >
       <button
-        v-show="!showCategoryOptions"
+        v-show="!showFooterNavThemeOptions"
         class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center bg-gray-50"
-        :class="showMoreOptions ? 'shrink-0' : 'grow'"
-        :style="showMoreOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1),2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
-        @click="showMoreOptions = !showMoreOptions"
+        :class="showFooterNavMoreOptions ? 'shrink-0' : 'grow'"
+        :style="showFooterNavMoreOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1),2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
+        @click="showFooterNavMoreOptions = !showFooterNavMoreOptions"
       >
         <div class="flex flex-col justify-center items-center gap-1">
           <img
@@ -95,7 +85,7 @@ const showSearchModal = useShowSearchModal()
           >
           <p
             class="text-xs"
-            :class="showMoreOptions ? 'text-purple-500' : 'text-gray-500'"
+            :class="showFooterNavMoreOptions ? 'text-purple-500' : 'text-gray-500'"
           >
             More
           </p>
@@ -108,20 +98,20 @@ const showSearchModal = useShowSearchModal()
         enter-to-class="translate-x-0 opacity-100"
       >
         <div
-          v-show="showMoreOptions"
+          v-show="showFooterNavMoreOptions"
           class="options-container px-4 relative -z-10 grow flex items-center gap-4 text-sm overflow-x-auto"
         >
           <NuxtLink
             to="/"
             class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
-            @click="showMoreOptions = false"
+            @click="showFooterNavMoreOptions = false"
           >
             Home
           </NuxtLink>
           <NuxtLink
             to="/about"
             class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
-            @click="showMoreOptions = false"
+            @click="showFooterNavMoreOptions = false"
           >
             About
           </NuxtLink>
@@ -129,7 +119,7 @@ const showSearchModal = useShowSearchModal()
             v-if="appConfig.bloginote.subscribePage"
             to="/subscribe"
             class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
-            @click="showMoreOptions = false"
+            @click="showFooterNavMoreOptions = false"
           >
             Subscribe
           </NuxtLink>
@@ -137,11 +127,11 @@ const showSearchModal = useShowSearchModal()
       </Transition>
 
       <button
-        v-show="!showMoreOptions"
+        v-show="!showFooterNavMoreOptions"
         class="min-w-[60px] px-2 py-3 relative z-10 flex justify-center items-center space-y-1 bg-gray-50"
-        :class="showCategoryOptions ? 'shrink-0 text-purple-500' : 'grow text-gray-500'"
-        :style="showCategoryOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1), 2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
-        @click="showCategoryOptions = !showCategoryOptions"
+        :class="showFooterNavThemeOptions ? 'shrink-0 text-purple-500' : 'grow text-gray-500'"
+        :style="showFooterNavThemeOptions ? 'box-shadow: 4px 0 4px -4px rgb(0,0,0,0.1), 2px 0 2px -2px rgb(0,0,0,0.1)' : ''"
+        @click="showFooterNavThemeOptions = !showFooterNavThemeOptions"
       >
         <div class="flex flex-col justify-center items-center gap-1">
           <IconCustom
@@ -151,7 +141,7 @@ const showSearchModal = useShowSearchModal()
           <p
             class="text-xs"
           >
-            Category
+            Theme
           </p>
         </div>
       </button>
@@ -162,48 +152,30 @@ const showSearchModal = useShowSearchModal()
         enter-to-class="translate-x-0 opacity-100"
       >
         <div
-          v-show="showCategoryOptions"
+          v-show="showFooterNavThemeOptions"
           class="options-container px-4 relative -z-10 grow flex items-center gap-4 text-sm overflow-x-auto"
         >
           <NuxtLink
             to="/list"
             class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
-            @click="showCategoryOptions = false"
+            @click="showFooterNavThemeOptions = false"
           >
             all
           </NuxtLink>
           <NuxtLink
-            v-for="category in categoryArr"
-            :key="category._path"
-            :to="{ path: '/list', query: { category: getCategory(category._path) } }"
+            v-for="theme in themeArr"
+            :key="theme._path"
+            :to="{ path: '/list', query: { theme: getTheme(theme._path) } }"
             class="option-item text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-500"
-            @click="showCategoryOptions = false"
+            @click="showFooterNavThemeOptions = false"
           >
-            {{ category.title }}
+            {{ theme.title }}
           </NuxtLink>
         </div>
       </Transition>
 
       <button
-        v-if="props.footerCatalog"
-        v-show="!showMoreOptions && !showCategoryOptions"
-        class="grow px-2 py-3 flex justify-center items-center space-y-1 bg-gray-50"
-        :class="showBlogCatalog ? 'text-purple-500' : 'text-gray-500'"
-        @click="toggleCatalogHandler"
-      >
-        <div class="flex flex-col justify-center items-center gap-1">
-          <IconCustom
-            name="entypo:list"
-            class="w-6 h-6"
-          />
-          <p class="text-xs">
-            Catalog
-          </p>
-        </div>
-      </button>
-
-      <button
-        v-show="!showMoreOptions && !showCategoryOptions"
+        v-show="!showFooterNavMoreOptions && !showFooterNavThemeOptions"
         class="grow px-2 py-3 flex justify-center items-center space-y-1 text-gray-500 bg-gray-50"
         @click="showSearchModal=true"
       >

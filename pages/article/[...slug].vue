@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const appConfig = useAppConfig()
 const route = useRoute()
 
 /**
@@ -8,9 +9,19 @@ const route = useRoute()
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-console.log(data);
+// console.log(data);
 
+/**
+ *
+ * catalog (it's the toc for markdown article)
+ *
+ */
+const showCatalog = useState<Boolean>('showCatalog', () => {
+  return appConfig.bloginote.articlePage.showCatalog
+})
 
+const showFooterNavMoreOptions = useState('showFooterNavMoreOptions')
+const showFooterNavThemeOptions = useState('showFooterNavThemeOptions')
 </script>
 
 <template>
@@ -22,11 +33,28 @@ console.log(data);
       name="base"
       :footer-catalog="data?.body?.toc && data.body.toc.links.length > 0"
     >
+      <template
+        v-if="!pending && data?._type === 'markdown' && data?.body?.toc && data.body.toc.links.length > 0"
+        #header-nav-right
+      >
+        <button
+          title="toggle catalog show or hide"
+          class="w-10 h-10 flex justify-center items-center border rounded-md transition-colors duration-300"
+          :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
+          @click="showCatalog = !showCatalog"
+        >
+          <IconCustom
+            name="entypo:list"
+            class="w-5 h-5"
+          />
+        </button>
+      </template>
       <MarkdownPost
-        v-if="!pending && data && data._type === 'markdown'"
+        v-if="!pending && data?._type === 'markdown'"
         :data="data"
         class="container mx-auto px-6 md:px-12 py-12 lg:max-w-4xl"
       />
+
       <div
         v-else-if="!pending && data && (data._type === 'json' || data._type==='csv')"
         class="container mx-auto"
@@ -37,6 +65,28 @@ console.log(data);
           <pre>{{ data }}</pre>
         </div>
       </div>
+
+      <template
+        v-if="!pending && data?._type === 'markdown' && data?.body?.toc && data.body.toc.links.length > 0"
+        #footer-nav-right
+      >
+        <button
+          v-show="!showFooterNavMoreOptions && !showFooterNavThemeOptions"
+          class="grow px-2 py-3 flex justify-center items-center space-y-1 bg-gray-50"
+          :class="showCatalog ? 'text-purple-500' : 'text-gray-500'"
+          @click="showCatalog = !showCatalog"
+        >
+          <div class="flex flex-col justify-center items-center gap-1">
+            <IconCustom
+              name="entypo:list"
+              class="w-6 h-6"
+            />
+            <p class="text-xs">
+              Catalog
+            </p>
+          </div>
+        </button>
+      </template>
     </NuxtLayout>
   </div>
 </template>

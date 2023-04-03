@@ -47,15 +47,15 @@ if ('showOutdatedWarning' in props.data) {
 
 /**
  *
- * get article category
+ * get article theme
  *
  */
-const category = ref('')
+const theme = ref('')
 if (props.data._path) {
   const pathArr = props.data._path.split('/')
 
   if (pathArr.length > 3 && pathArr[1] === 'article') {
-    category.value = pathArr[2]
+    theme.value = pathArr[2]
   }
 }
 
@@ -311,16 +311,16 @@ provide('setActiveHeadingId', setActiveHeadingId)
       </h1>
       <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
         <NuxtLink
-          v-if="category"
-          :to="{ path: '/list', query: { category: category } }"
+          v-if="theme"
+          :to="{ path: '/list', query: { theme: theme } }"
           target="_blank"
           class="p-2 flex items-center gap-1 text-gray-300 hover:text-white hover:bg-purple-500 focus:outline-purple-500 focus:outline-none rounded transition-colors duration-300"
         >
           <IconCustom
-            name="material-symbols:category-rounded"
+            name="material-symbols:theme-rounded"
             class="shrink-0 w-4 h-4"
           />
-          <span class="text-xs">{{ category }}</span>
+          <span class="text-xs">{{ theme }}</span>
         </NuxtLink>
         <div
           v-if="showTime"

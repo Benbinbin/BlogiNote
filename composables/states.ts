@@ -17,6 +17,14 @@ export const useWindowSize = () => useState<WindowSize>('windowSize', () => {
 
 /**
  *
+ * page scroll distance
+ * change when page scroll in /layout/base.vue component
+ *
+ */
+export const usePageScrollTop = () => useState<number>('pageScrollTop', () => 0)
+
+/**
+ *
  * home page layout mode
  *
  */
@@ -27,27 +35,12 @@ export const useHomepageLayoutMode = () => useState<'post' | 'folder'>('homepage
  * article catalog
  *
  */
-// move this share state to MarkdownPost component
-// export const useShowBlogCatalog = () => useState<Boolean>('showBlogCatalog', () => {
-//   return false
-// })
-
-// move this share state to MarkdownNote component
-// export const useShowNoteCatalog = () => useState<Boolean>('showNoteCatalog', () => {
-//   return false
-// })
-
 export const useBlogSidebarFloat = () => useState<Boolean>('blogSidebarFloat', () => false)
 export const useNoteSidebarFloat = () => useState<Boolean>('noteSidebarFloat', () => true)
 export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSidebarFloat', () => false)
 export const useToggleNoteSidebarFloat = () => useState<Boolean>('toggleNoteSidebarFloat', () => true)
 export const useFloatBlogCatalogType = () => useState<'list' | 'tree'>('floatBlogCatalogType', () => 'list')
 export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNoteCatalogType', () => 'tree')
-
-// series modal
-// move this share state to page/article/[...slug] component
-// export const useShowSeriesModal = () => useState<Boolean>('showSeriesModal', () => false)
-
 
 /**
  *

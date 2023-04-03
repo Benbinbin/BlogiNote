@@ -10,7 +10,7 @@ const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNav
 // const articleFolder = data.value[0]
 
 let articleFolder
-const categoryArr:NavItem[] = []
+const themeArr:NavItem[] = []
 
 if (Array.isArray(navTree.value)) {
   articleFolder = navTree.value.find(item => item._path === '/article')
@@ -18,21 +18,21 @@ if (Array.isArray(navTree.value)) {
   if (articleFolder?.children && articleFolder.children.length > 0) {
     articleFolder.children.forEach((item) => {
       if ('children' in item) {
-        categoryArr.push(item)
+        themeArr.push(item)
       }
     })
   }
 }
 
-const getCategory = (path = '') => {
-  let category = ''
+const getTheme = (path = '') => {
+  let theme = ''
   const pathArr = path.split('/')
 
   if (pathArr.length === 3 && pathArr[1] === 'article') {
-    category = pathArr[2]
+    theme = pathArr[2]
   }
 
-  return category
+  return theme
 }
 
 const showSubNav = ref(false)
@@ -107,7 +107,7 @@ const showSearchModal = useShowSearchModal()
           @mouseleave="setSubNav(false)"
           @click="showSubNav=!showSubNav"
         >
-          Category
+          Theme
         </button>
         <NuxtLink
           to="/about"
@@ -175,9 +175,9 @@ const showSearchModal = useShowSearchModal()
             </p>
           </NuxtLink>
           <NuxtLink
-            v-for="category in categoryArr"
-            :key="category._path"
-            :to="{ path: '/list', query: { category: getCategory(category._path) } }"
+            v-for="theme in themeArr"
+            :key="theme._path"
+            :to="{ path: '/list', query: { theme: getTheme(theme._path) } }"
             class="sub-nav-item-card text-purple-500 bg-purple-50 hover:bg-purple-100 border-purple-100"
             @click="showSubNav=false"
           >
@@ -186,7 +186,7 @@ const showSearchModal = useShowSearchModal()
               class="w-8 h-8"
             />
             <p class="py-2 font-bold text-center">
-              {{ category.title }}
+              {{ theme.title }}
             </p>
           </NuxtLink>
         </div>

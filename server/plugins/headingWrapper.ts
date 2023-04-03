@@ -37,6 +37,7 @@
  //   </summary>
  //   <p>content 4</p>
  // </details>
+
 // eslint-disable-next-line no-inner-declarations
 const headingArr = ['h2', 'h3', 'h4', 'h5', 'h6']
 const headingLevelMap = {

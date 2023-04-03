@@ -9,7 +9,7 @@ const route = useRoute()
 
 /**
  *
- * build the category filter options
+ * build the theme filter options
  *
  */
 // the fetchContentNavigation() composable seems not work with queryBuilder argument at latest @nuxt/content version
@@ -23,7 +23,7 @@ const { data: navTree } = await useAsyncData('rootFolder', () => fetchContentNav
 // const articleFolder = articleArr.value[0]
 
 let articleFolder
-const categoryArr = []
+const themeArr = []
 
 if (Array.isArray(navTree.value)) {
   articleFolder = navTree.value.find(item => item._path === '/article')
@@ -31,31 +31,31 @@ if (Array.isArray(navTree.value)) {
   if (articleFolder?.children && articleFolder.children.length > 0) {
     articleFolder.children.forEach((item) => {
       if ('children' in item) {
-        categoryArr.push(item)
+        themeArr.push(item)
       }
     })
   }
 }
 
-const getCategory = (path = '') => {
-  let category = ''
+const getTheme = (path = '') => {
+  let theme = ''
   const pathArr = path.split('/')
 
   if (pathArr.length === 3 && pathArr[1] === 'article') {
-    category = pathArr[2]
+    theme = pathArr[2]
   }
 
-  return category
+  return theme
 }
 
-const currentCategory = ref('all')
-const showMoreCategory = ref(false)
+const currentTheme = ref('all')
+const showMoreTheme = ref(false)
 
-const toggleCategory = (category) => {
-  if (currentCategory.value === category) {
-    currentCategory.value = 'all'
+const toggleTheme = (theme) => {
+  if (currentTheme.value === theme) {
+    currentTheme.value = 'all'
   } else {
-    currentCategory.value = category
+    currentTheme.value = theme
   }
   currentTags.value = []
   currentSeries.value = 'all'
@@ -79,35 +79,35 @@ interface ArrayObject {
   [key: string]: string[]
 }
 
-const categoryTags: ArrayObject = {}
-const categorySeries: ArrayObject = {}
+const themeTags: ArrayObject = {}
+const themeSeries: ArrayObject = {}
 
 // get article's tags and series in different catalog
 if (articleFolder && articleFolder.children.length > 0) {
   for (const item of articleFolder.children) {
     if ('children' in item) {
-      const categoryTagsArr = []
-      const categorySeriesArr = []
+      const themeTagsArr = []
+      const themeSeriesArr = []
 
       const { data } = await useAsyncData(`${item._path}-filter`, () => queryContent<MyCustomParsedContent>(`${item._path}`).where({ _type: 'markdown' }).only(['tags', 'series']).find())
 
       data.value.forEach((article) => {
         if (article.tags) {
-          categoryTagsArr.push(...article.tags)
+          themeTagsArr.push(...article.tags)
           tagArr.push(...article.tags)
         }
         if (article.series) {
-          categorySeriesArr.push(article.series)
+          themeSeriesArr.push(article.series)
           seriesArr.push(article.series)
         }
       })
 
-      // get category
-      const category = getCategory(item._path)
+      // get theme
+      const theme = getTheme(item._path)
 
-      if (category) {
-        categoryTags[category] = [...new Set(categoryTagsArr)]
-        categorySeries[category] = [...new Set(categorySeriesArr)]
+      if (theme) {
+        themeTags[theme] = [...new Set(themeTagsArr)]
+        themeSeries[theme] = [...new Set(themeSeriesArr)]
       }
     } else if (item._type && item._type === 'markdown') {
       if (item.tags) {
@@ -166,7 +166,7 @@ const changeURLHash = () => {
   navigateTo({
     path: '/list',
     query: {
-      category: currentCategory.value,
+      theme: currentTheme.value,
       tags: currentTags.value,
       series: currentSeries.value
     }
@@ -175,8 +175,8 @@ const changeURLHash = () => {
 
 // get the init current value after Mounted
 onMounted(() => {
-  const category = route.query?.category as string || 'all'
-  currentCategory.value = category
+  const theme = route.query?.theme as string || 'all'
+  currentTheme.value = theme
 
   let tags = []
   if (typeof route.query?.tags === 'string') {
@@ -210,12 +210,12 @@ watch(() => route.fullPath, () => {
   if (route.path !== '/list' || articleList.value.length === 0) { return }
   let currentArticleList = articleList.value
 
-  if (route.query?.category && route.query.category !== 'all') {
+  if (route.query?.theme && route.query.theme !== 'all') {
     currentArticleList = currentArticleList.filter((item) => {
       const pathArr = item._path.split('/')
       if (pathArr.length >= 3) {
-        const category = pathArr[2]
-        return category === route.query.category
+        const theme = pathArr[2]
+        return theme === route.query.theme
       } else {
         return false
       }
@@ -299,53 +299,53 @@ const getFileTypeIcon = (type) => {
             <div class="p-2 flex items-start text-sm bg-gray-100 sm:space-x-4">
               <button
                 class="shrink-0 px-2 py-1 hidden sm:flex items-center text-gray-500 hover:bg-gray-200 rounded"
-                @click="showMoreCategory = !showMoreCategory"
+                @click="showMoreTheme = !showMoreTheme"
               >
                 <IconCustom
                   name="ic:round-keyboard-arrow-right"
                   class="w-5 h-5 transition-transform duration-300"
-                  :class="showMoreCategory ? 'rotate-90' : 'rotate-0'"
+                  :class="showMoreTheme ? 'rotate-90' : 'rotate-0'"
                 />
                 <p>
-                  Category
+                  Theme
                 </p>
               </button>
               <p class="px-2 py-1 sm:hidden">
-                Category
+                Theme
               </p>
               <ul
                 class="filter-list-container"
-                :class="showMoreCategory ? 'max-h-96' : 'max-h-8'"
+                :class="showMoreTheme ? 'max-h-96' : 'max-h-8'"
               >
                 <li class="shrink-0">
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
-                    :class="currentCategory === 'all' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                    @click="toggleCategory('all')"
+                    :class="currentTheme === 'all' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
+                    @click="toggleTheme('all')"
                   >
                     <IconCustom
-                      name="material-symbols:category-rounded"
+                      name="material-symbols:theme-rounded"
                       class="w-5 h-5"
                     />
                     <p>all</p>
                   </button>
                 </li>
                 <li
-                  v-for="item in categoryArr"
+                  v-for="item in themeArr"
                   :key="item._path"
                   class="shrink-0"
                 >
                   <button
                     class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded"
-                    :class="currentCategory === getCategory(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                    @click="toggleCategory(getCategory(item._path))"
+                    :class="currentTheme === getTheme(item._path) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
+                    @click="toggleTheme(getTheme(item._path))"
                   >
                     <IconCustom
-                      name="material-symbols:category-rounded"
+                      name="material-symbols:theme-rounded"
                       class="shrink-0 w-5 h-5"
                     />
                     <p>
-                      {{ getCategory(item._path) }}
+                      {{ getTheme(item._path) }}
                     </p>
                   </button>
                 </li>
@@ -394,7 +394,7 @@ const getFileTypeIcon = (type) => {
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="(currentTags.length === 0 && tag === 'all') || currentTags.includes(tag) ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                        :disabled="(tag === 'all' || currentCategory === 'all' || categoryTags[currentCategory]?.includes(tag)) ? false : true"
+                        :disabled="(tag === 'all' || currentTheme === 'all' || themeTags[currentTheme]?.includes(tag)) ? false : true"
                         @click="toggleTag(tag)"
                       >
                         <p>#{{ tag }}</p>
@@ -432,7 +432,7 @@ const getFileTypeIcon = (type) => {
                       <button
                         class="px-2 py-1 flex items-center space-x-1 transition-colors duration-300 rounded disabled:opacity-30"
                         :class="currentSeries === series ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-400 hover:text-purple-500 bg-purple-100'"
-                        :disabled="(series === 'all' || currentCategory === 'all' || categorySeries[currentCategory]?.includes(series)) ? false : true"
+                        :disabled="(series === 'all' || currentTheme === 'all' || themeSeries[currentTheme]?.includes(series)) ? false : true"
                         @click="toggleSeries(series)"
                       >
                         <IconCustom
@@ -450,7 +450,7 @@ const getFileTypeIcon = (type) => {
             <div class="flex items-center space-x-2">
               <button
                 class="px-4 py-1 sm:hidden text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
-                @click="toggleCategory('all')"
+                @click="toggleTheme('all')"
               >
                 <IconCustom
                   name="ant-design:clear-outlined"
@@ -497,7 +497,7 @@ const getFileTypeIcon = (type) => {
       <div class="shrink-0 mx-4 sm:mx-8 hidden sm:flex justify-between items-center text-sm">
         <button
           class="p-2 flex items-center text-red-400 hover:text-red-500 bg-red-50 hover:bg-red-100 transition-colors duration-300 rounded"
-          @click="toggleCategory('all')"
+          @click="toggleTheme('all')"
         >
           <IconCustom
             name="ant-design:clear-outlined"

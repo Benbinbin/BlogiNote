@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: any;
-  // prevArticleUrl: string;
-  // nextArticleUrl: string;
 }>()
 </script>
 

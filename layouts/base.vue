@@ -66,24 +66,21 @@ onMounted(() => {
 /**
  * listen page scroll
  */
-const isShowBackBtn = ref(false)
+const pageScrollTop = usePageScrollTop()
 let scrollTimer:(null | ReturnType<typeof setTimeout>)
 onMounted(() => {
   if (document) {
-    const scrollDistanceInit = document.body.scrollTop || document.documentElement.scrollTop
-    if (scrollDistanceInit > 600) { isShowBackBtn.value = true }
+    // get the init page scroll top value
+    pageScrollTop.value = document.body.scrollTop || document.documentElement.scrollTop
+
     document.addEventListener('scroll', () => {
       if (scrollTimer) {
         clearTimeout(scrollTimer)
         scrollTimer = null
       }
       scrollTimer = setTimeout(() => {
-        const scrollDistance = document.body.scrollTop || document.documentElement.scrollTop
-        if (scrollDistance > 600) {
-          isShowBackBtn.value = true
-        } else {
-          isShowBackBtn.value = false
-        }
+        pageScrollTop.value = document.body.scrollTop || document.documentElement.scrollTop
+
         scrollTimer = null
       }, 100)
     })
@@ -137,7 +134,7 @@ onUnmounted(() => {
     >
       <HeaderNav>
         <template #header-nav-right>
-          <slot name="header-right" />
+          <slot name="header-nav-right" />
         </template>
       </HeaderNav>
     </header>
@@ -148,14 +145,14 @@ onUnmounted(() => {
     <FooterContent />
 
     <Transition
-      enter-from-class="translate-y-36 md:translate-y-10 opacity-0"
-      enter-active-class="transition-all duration-300 ease"
-      enter-to-class="translate-y-0 opacity-100"
-      leave-from-class="translate-y-0 opacity-100"
-      leave-active-class="transition-all duration-75 ease"
-      leave-to-class="translate-y-36 md:translate-y-10 opacity-0"
+      enter-from-class="translate-y-36 md:translate-y-10"
+      enter-active-class="transition-transform duration-500 ease"
+      enter-to-class="translate-y-0"
+      leave-from-class="translate-y-0"
+      leave-active-class="transition-transform duration-75 ease"
+      leave-to-class="translate-y-36 md:translate-y-10"
     >
-      <BackToTop v-show="isShowBackBtn" />
+      <BackToTop v-show="pageScrollTop > 600" />
     </Transition>
 
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50">
@@ -163,7 +160,7 @@ onUnmounted(() => {
         :footer-catalog="props.footerCatalog"
       >
         <template #footer-nav-right>
-          <slot name="footer-right" />
+          <slot name="footer-nav-right" />
         </template>
       </FooterNav>
     </nav>
