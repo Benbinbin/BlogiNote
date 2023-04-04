@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 
-
 const props = defineProps<{
   item: CatalogItemType,
   depth: number
@@ -14,7 +13,9 @@ interface CatalogItemType {
   children?: CatalogItemType[]
 }
 
-const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref<'expand' | 'collapse' | ''>
+const catalogType = useState('catalogType')
+
+const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref
 const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
 
 const expand = ref(true)
@@ -212,6 +213,7 @@ const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`
       <ul
         v-if="props.item.children"
         v-show="expand"
+        :class="catalogType === 'floatList' ? 'ml-5' : ''"
       >
         <!-- recursive components to show the tree structure -->
         <CatalogItem

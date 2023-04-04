@@ -17,8 +17,12 @@ interface CatalogItem {
  */
 const catalogType = useState('catalogType')
 const toggleCatalogFloat = useState('toggleCatalogFloat')
+
 const changeCatalogType = (value: 'floatList' | 'floatTree' | 'sidebarList') => {
-  if(value === 'floatList') {
+
+  console.log(value);
+
+  if(value === 'sidebarList') {
     toggleCatalogFloat.value = false
   } else {
     toggleCatalogFloat.value = true
@@ -26,7 +30,15 @@ const changeCatalogType = (value: 'floatList' | 'floatTree' | 'sidebarList') => 
   catalogType.value = value
 }
 
-const toggleCatalogFlat = () => {
+const toggleFloatCatalogTypeHandler = () => {
+  if(catalogType.value === 'floatTree') {
+    changeCatalogType('floatList')
+  } else {
+    changeCatalogType('floatTree')
+  }
+}
+
+const toggleCatalogFloatHandler = () => {
   if(catalogType.value === 'sidebarList') {
     changeCatalogType('floatList')
   } else {
@@ -45,39 +57,40 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
 </script>
 
 <template>
-  <div>
+  <div class="group">
     <!-- control buttons container -->
     <div
-      class="sidebar-btn-container py-2 flex justify-start items-center gap-x-8 overflow-x-auto"
+      class="sidebar-btn-container shrink-0 py-2 flex items-center gap-x-8 overflow-x-auto transition-opacity duration-500"
+      :class="catalogType === 'sidebarList' ? 'justify-start opacity-100 xl:opacity-10 group-hover:xl:opacity-100' : 'justify-between'"
     >
       <div class="flex items-center gap-2">
         <button
-          class="sidebar-btn border-purple-400"
+          class="sidebar-btn flex border-purple-400"
           :class="syncCatalogItemExpandOrCollapseState ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
           @click="syncCatalogItemExpandOrCollapseState = !syncCatalogItemExpandOrCollapseState"
         >
           <IconCustom
-            name="ic:round-link"
+            name="ic:outline-link"
             class="w-4 h-4"
           />
         </button>
 
         <button
-          class="sidebar-btn text-green-400 hover:text-green-500 active:text-white bg-green-100 active:bg-green-500 border-green-400"
+          class="sidebar-btn flex text-green-400 hover:text-green-500 active:text-white bg-green-100 active:bg-green-500 border-green-400"
           @click="changeToggleAllCatalogItemState('expand')"
         >
           <IconCustom
-            name="ic:round-unfold-more"
+            name="ic:outline-unfold-more"
             class="w-4 h-4"
           />
         </button>
 
         <button
-          class="sidebar-btn text-red-400 hover:text-red-500 bg-red-100 active:text-white active:bg-red-500 border-red-400"
+          class="sidebar-btn flex text-red-400 hover:text-red-500 bg-red-100 active:text-white active:bg-red-500 border-red-400"
           @click="changeToggleAllCatalogItemState('collapse')"
         >
           <IconCustom
-            name="ic:round-unfold-less"
+            name="ic:outline-unfold-less"
             class="w-4 h-4"
           />
         </button>
@@ -85,22 +98,22 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
 
       <div class="flex items-center gap-2">
         <button
-          class="sidebar-btn border-purple-400"
+          class="sidebar-btn flex border-purple-400"
           :class="catalogType === 'floatTree' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
-          @click="changeCatalogType('floatTree')"
+          @click="toggleFloatCatalogTypeHandler"
         >
           <IconCustom
-            name="icon-park-outline:tree-diagram"
+            name="ic:outline-account-tree"
             class="w-4 h-4"
           />
         </button>
         <button
-          class="sidebar-btn border-purple-400"
-          :class="catalogType === 'floatTree' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
-          @click="toggleCatalogFlat"
+          class="sidebar-btn hidden xl:flex border-purple-400"
+          :class="(catalogType === 'floatTree' || catalogType === 'floatList') ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
+          @click="toggleCatalogFloatHandler"
         >
           <IconCustom
-            name="clarity:window-restore-line"
+            :name="catalogType === 'sidebarList' ? 'mingcute:miniplayer-line' : 'mingcute:expand-player-line'"
             class="w-4 h-4"
           />
         </button>
@@ -137,6 +150,6 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
   }
 }
 .sidebar-btn {
-  @apply shrink-0 p-2 sm:p-1 flex justify-center items-center border transition-colors duration-300 rounded
+  @apply shrink-0 p-2 sm:p-1 justify-center items-center border transition-colors duration-300 rounded
 }
 </style>

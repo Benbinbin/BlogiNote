@@ -503,27 +503,29 @@ if(process.client && props.data?.body?.toc && props.data.body.toc.links.length >
       :catalogs="props.data.body.toc.links"
     />
 
-    <Transition
-      enter-from-class="translate-x-10"
-      enter-active-class="transition-transform duration-500 ease"
-      enter-to-class="translate-x-0"
-      leave-from-class="translate-x-0"
-      leave-active-class="transition-transform duration-75 ease"
-      leave-to-class="translate-x-10"
-    >
-      <button
-        v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
-        v-show="pageScrollTop > 100"
-        class="p-2 hidden sm:flex justify-center items-center fixed bottom-16 right-4 z-40 border transition-colors duration-300 rounded-lg"
-        :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
-        @click="showCatalog = !showCatalog"
+    <Teleport to="body">
+      <Transition
+        enter-from-class="translate-x-10"
+        enter-active-class="transition-transform duration-500 ease"
+        enter-to-class="translate-x-0"
+        leave-from-class="translate-x-0"
+        leave-active-class="transition-transform duration-75 ease"
+        leave-to-class="translate-x-10"
       >
-        <IconCustom
-          name="entypo:list"
-          class="w-5 h-5"
-        />
-      </button>
-    </Transition>
+        <button
+          v-if="props.data?.body?.toc && props.data.body.toc.links.length > 0"
+          v-show="pageScrollTop > 100"
+          class="p-2 hidden sm:flex justify-center items-center fixed bottom-16 right-4 z-40 border transition-colors duration-300 rounded-lg"
+          :class="showCatalog ? 'text-purple-500 bg-purple-100 hover:bg-purple-50 border-purple-200' : 'text-gray-500 bg-white hover:bg-gray-100 border-gray-200'"
+          @click="showCatalog = !showCatalog"
+        >
+          <IconCustom
+            name="entypo:list"
+            class="w-5 h-5"
+          />
+        </button>
+      </Transition>
+    </Teleport>
 
     <Teleport to="body">
       <SeriesModal

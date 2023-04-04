@@ -34,8 +34,6 @@ const windowSize = useWindowSize()
 
 onMounted(() => {
   // base on the page init state to set the catalog init state
-  // use the document.documentElement.clientWidth to access the page width ❓
-  // the windowSize won't get the right page width at the first time ❓
   sidebarWidth.value = (windowSize.value.width - 896) / 2
 
   if (!toggleCatalogFloat.value) {
@@ -55,20 +53,18 @@ onMounted(() => {
 
   // watch the window size and adjust the catalog state automatically
   watch(() => windowSize.value.width, () => {
+    console.log(windowSize.value.width);
+    console.log(toggleCatalogFloat.value);
+
     // set the fixed sidebar width when window resize
     sidebarWidth.value = (windowSize.value.width - 896) / 2
+
     if (windowSize.value.width < 1280 && catalogType.value !== 'floatList' && catalogType.value !== 'floatTree') {
       // when the window resize smaller than 1280px
       // and if the catalog type is not float
-
-      // reset the size and position of the float catalog
-      // resetFloatSidebarHandler()
-      // resetCatalogListScaleHandler()
-
       // auto float the catalog
-      // sidebarFloatForBlog.value = true
       catalogType.value = 'floatList'
-    } else if (document.documentElement.clientWidth >= 1280 && !toggleCatalogFloat.value) {
+    } else if (windowSize.value.width >= 1280 && !toggleCatalogFloat.value) {
       // when the window resize bigger again
       // and if the sidebar not toggle to float manually
       // change the float state to fixed sidebar
@@ -76,36 +72,6 @@ onMounted(() => {
     }
   })
 })
-
-/**
- *
- * tree catalog type interaction
- *
- */
-// const catalogList = ref<HTMLElement | null>(null) // get the catalog DOM
-// const catalogListScale = ref(1)
-// const catalogListTranslateX = ref(0)
-// const catalogListTranslateY = ref(0)
-
-// const resetCatalogListScaleHandler = () => {
-//   catalogListScale.value = 1
-//   catalogListTranslateX.value = 0
-//   catalogListTranslateY.value = 0
-// }
-
-// toggle catalog type between "tree" and "list"
-// const floatBlogCatalogType = useFloatBlogCatalogType()
-// const catalogContainer = ref<HTMLElement | null>(null) // get the catalog container DOM
-
-// const toggleFloatCatalogTypeHandler = () => {
-//   if (floatBlogCatalogType.value === 'tree') {
-//     floatBlogCatalogType.value = 'list'
-//   } else if (floatBlogCatalogType.value === 'list') {
-//     floatBlogCatalogType.value = 'tree'
-//   }
-// }
-
-
 
 /**
  *
@@ -127,7 +93,7 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
 <template>
   <div>
     <aside
-      v-show="catalogType === 'sidebarList'"
+      v-if="catalogType === 'sidebarList'"
       id="sidebar"
       class="flex flex-col justify-center fixed z-30 top-1/2 right-0 -translate-y-1/2 select-none"
     >
@@ -138,7 +104,7 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
       />
     </aside>
     <ResizableFloatCard
-      v-show="catalogType === 'floatList' || catalogType === 'floatTree'"
+      v-if="catalogType === 'floatList' || catalogType === 'floatTree'"
       :start-width="floatCardWidth"
       :start-height="floatCardHeight"
       :position-point="'leftBottom'"
@@ -146,8 +112,9 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
       :start-y="floatCardBottom"
     >
       <ListCatalog
+        v-show="catalogType==='floatList'"
         :catalogs="props.catalogs"
-        class="max-h-full flex flex-col-reverse gap-y-2 justify-start items-stretch"
+        class="grow flex flex-col-reverse gap-y-2 justify-between items-stretch overflow-hidden"
       />
     </ResizableFloatCard>
   </div>

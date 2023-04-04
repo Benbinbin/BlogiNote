@@ -23,7 +23,7 @@ export default defineAppConfig({
         show: true,
         threshold: 30
       },
-      showCatalog: false,
+      showCatalog: true,
     },
     search: {
       exclude: [
