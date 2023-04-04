@@ -35,12 +35,12 @@ export const useHomepageLayoutMode = () => useState<'post' | 'folder'>('homepage
  * article catalog
  *
  */
-export const useBlogSidebarFloat = () => useState<Boolean>('blogSidebarFloat', () => false)
-export const useNoteSidebarFloat = () => useState<Boolean>('noteSidebarFloat', () => true)
-export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSidebarFloat', () => false)
-export const useToggleNoteSidebarFloat = () => useState<Boolean>('toggleNoteSidebarFloat', () => true)
-export const useFloatBlogCatalogType = () => useState<'list' | 'tree'>('floatBlogCatalogType', () => 'list')
-export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNoteCatalogType', () => 'tree')
+// export const useBlogSidebarFloat = () => useState<Boolean>('blogSidebarFloat', () => false)
+// export const useNoteSidebarFloat = () => useState<Boolean>('noteSidebarFloat', () => true)
+// export const useToggleBlogSidebarFloat = () => useState<Boolean>('toggleBlogSidebarFloat', () => false)
+// export const useToggleNoteSidebarFloat = () => useState<Boolean>('toggleNoteSidebarFloat', () => true)
+// export const useFloatBlogCatalogType = () => useState<'list' | 'tree'>('floatBlogCatalogType', () => 'list')
+// export const useFloatNoteCatalogType = () => useState<'list' | 'tree'>('floatNoteCatalogType', () => 'tree')
 
 /**
  *

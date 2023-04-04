@@ -14,22 +14,22 @@ interface CatalogItemType {
   children?: CatalogItemType[]
 }
 
-const toggleAllCatalogState = inject('toggleAllCatalogState') as Ref<'expand' | 'collapse' | ''>
-const changeToggleAllCatalogState = inject('changeToggleAllCatalogState') as (value: 'expand' | 'collapse' | '') => void
+const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref<'expand' | 'collapse' | ''>
+const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
 
 const expand = ref(true)
 
-watch(toggleAllCatalogState, () => {
-  if (toggleAllCatalogState.value === 'expand') {
+watch(toggleAllCatalogItemState, () => {
+  if (toggleAllCatalogItemState.value === 'expand') {
     expand.value = true
-  } else if (toggleAllCatalogState.value === 'collapse') {
+  } else if (toggleAllCatalogItemState.value === 'collapse') {
     expand.value = false
   }
 })
 
 const toggleCatalogHandler = () => {
   expand.value = !expand.value
-  changeToggleAllCatalogState('')
+  changeToggleAllCatalogItemState('')
 }
 
 interface BtnBgColorItemType {
