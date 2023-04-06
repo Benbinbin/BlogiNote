@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+  showResetButton: boolean;
   startWidth: number;
   startHeight: number;
   positionPoint: 'leftTop' | 'rightTop' | 'leftBottom' | 'rightBottom';
@@ -393,6 +394,8 @@ const resetFloatCardHandler = () => {
         leave-to-class="translate-x-10"
       >
         <button
+          v-show="props.showResetButton"
+          :data-show="props.showResetButton"
           class="p-3 sm:p-2 flex justify-center items-center fixed bottom-[8.5rem] sm:bottom-28 right-2 sm:right-4 z-40 active:text-white rounded-lg text-purple-400 hover:text-purple-500 bg-purple-100 active:bg-purple-500 border border-purple-200"
           @click="resetFloatCardHandler"
         >

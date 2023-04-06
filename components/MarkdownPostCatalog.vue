@@ -10,6 +10,8 @@ interface CatalogItem {
   children?: CatalogItem[]
 }
 
+const showCatalog = useState<boolean>('showCatalog')
+
 type CatalogType = '' | 'floatList' | 'floatTree' | 'sidebarList'
 const catalogType = useState<CatalogType>('catalogType', () => '')
 // manual toggle catalog float state
@@ -19,8 +21,8 @@ const toggleCatalogFloat = useState<Boolean>('toggleCatalogFloat', () => false)
 const sidebarWidth = ref(0)
 
 // float catalog size and position init state
-const floatCardWidth = ref(800)
-const floatCardHeight = ref(800)
+const floatCardWidth = ref(300)
+const floatCardHeight = ref(300)
 const floatCardLeft = ref(16)
 const floatCardBottom = ref(80)
 
@@ -106,6 +108,7 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
     <ResizableFloatCard
       v-if="catalogType === 'floatList' || catalogType === 'floatTree'"
       v-slot="{contentWidth, contentHeight}"
+      :show-reset-button="showCatalog && (catalogType=== 'floatList' || catalogType === 'floatTree')"
       :start-width="floatCardWidth"
       :start-height="floatCardHeight"
       :position-point="'leftBottom'"
