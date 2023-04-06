@@ -9,7 +9,7 @@ const route = useRoute()
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-// console.log(data);
+console.log(data);
 
 /**
  *

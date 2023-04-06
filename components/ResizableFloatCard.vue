@@ -40,7 +40,7 @@ const locationCoordinate = computed(() => {
 
 /**
  *
- * resize
+ * resize content size
  *
  */
 let currentResizePointer = null
@@ -143,7 +143,7 @@ const resizePointerCancelHandler = () => {
 
 /**
  *
- * move
+ * drag to move container
  *
  */
 let currentDragPointer = null
@@ -303,7 +303,10 @@ const resetFloatCardHandler = () => {
         </button>
 
         <!-- content -->
-        <slot>
+        <slot
+          :content-width="contentWidth"
+          :content-height="contentHeight"
+        >
           Hello
         </slot>
       </div>

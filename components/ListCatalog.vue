@@ -19,9 +19,6 @@ const catalogType = useState('catalogType')
 const toggleCatalogFloat = useState('toggleCatalogFloat')
 
 const changeCatalogType = (value: 'floatList' | 'floatTree' | 'sidebarList') => {
-
-  console.log(value);
-
   if(value === 'sidebarList') {
     toggleCatalogFloat.value = false
   } else {
@@ -129,7 +126,7 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
         ref="catalogList"
         class="shrink-0 overscroll-none"
       >
-        <CatalogItem
+        <ListCatalogItem
           v-for="catalog in props.catalogs"
           :key="catalog.id"
           :item="catalog"

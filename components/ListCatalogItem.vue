@@ -216,7 +216,7 @@ const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`
         :class="catalogType === 'floatList' ? 'ml-5' : ''"
       >
         <!-- recursive components to show the tree structure -->
-        <CatalogItem
+        <ListCatalogItem
           v-for="subItem in props.item.children"
           :key="subItem.id"
           :item="subItem"

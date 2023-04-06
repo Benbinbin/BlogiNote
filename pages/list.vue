@@ -324,7 +324,7 @@ const getFileTypeIcon = (type) => {
                     @click="toggleTheme('all')"
                   >
                     <IconCustom
-                      name="material-symbols:theme-rounded"
+                      name="material-symbols:category-rounded"
                       class="w-5 h-5"
                     />
                     <p>all</p>
@@ -341,7 +341,7 @@ const getFileTypeIcon = (type) => {
                     @click="toggleTheme(getTheme(item._path))"
                   >
                     <IconCustom
-                      name="material-symbols:theme-rounded"
+                      name="material-symbols:category-rounded"
                       class="shrink-0 w-5 h-5"
                     />
                     <p>
