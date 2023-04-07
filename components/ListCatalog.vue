@@ -50,7 +50,9 @@ const toggleCatalogFloatHandler = () => {
  */
 const syncCatalogToggleState = useState('syncCatalogToggleState')
 
-const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '') => void>('changeToggleAllCatalogItemState') as Function
+// const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '') => void>('changeToggleAllCatalogItemState') as Function
+const collapseAllHeadingsHandler = inject('collapseAllHeadingsHandler') as () => void
+const expandAllHeadingsHandler = inject('expandAllHeadingsHandler') as () => void
 </script>
 
 <template>
@@ -74,7 +76,7 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
 
         <button
           class="catalog-btn flex text-green-400 hover:text-green-500 active:text-white bg-green-100 active:bg-green-500 border-green-400"
-          @click="changeToggleAllCatalogItemState('expand')"
+          @click="expandAllHeadingsHandler"
         >
           <IconCustom
             name="ic:outline-unfold-more"
@@ -84,7 +86,7 @@ const changeToggleAllCatalogItemState = inject<(value: 'expand' | 'collapse' | '
 
         <button
           class="catalog-btn flex text-red-400 hover:text-red-500 bg-red-100 active:text-white active:bg-red-500 border-red-400"
-          @click="changeToggleAllCatalogItemState('collapse')"
+          @click="collapseAllHeadingsHandler"
         >
           <IconCustom
             name="ic:outline-unfold-less"

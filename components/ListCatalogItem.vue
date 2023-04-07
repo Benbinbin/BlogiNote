@@ -15,25 +15,12 @@ interface CatalogItemType {
 
 const catalogType = useState('catalogType')
 
-// toggle (collapse or expand) heading
-const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref
-const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
-
-const expand = ref(true)
-
-watch(toggleAllCatalogItemState, () => {
-  if (toggleAllCatalogItemState.value === 'expand') {
-    expand.value = true
-  } else if (toggleAllCatalogItemState.value === 'collapse') {
-    expand.value = false
-  }
-})
-
-const toggleCatalogHandler = () => {
-  expand.value = !expand.value
-  changeToggleAllCatalogItemState('')
-}
-
+/**
+ *
+ * color style
+ *
+ */
+// #region color
 interface BtnBgColorItemType {
   withChildren: string;
   withoutChildren: string;
@@ -155,9 +142,51 @@ const borderColorMap: BorderColorMapType = {
     collapse: 'border-gray-100'
   }
 }
+// #endregion
 
-// active heading
+/**
+ *
+ * active heading
+ *
+ */
 const activeHeading = inject<string | undefined>(`activeH${props.depth}Heading`)
+
+/**
+ *
+ * toggle heading
+ * (collapse or expand)
+ *
+ */
+// record and sync collapse headings
+const collapsedHeadingsSet = inject('collapsedHeadingsSet') as Ref<Set<string>>
+
+const expand = computed(() => !collapsedHeadingsSet.value.has(props.item.id) )
+
+const collapseHeadingHandler = inject('collapseHeadingHandler') as (headingId: string) => void
+const expandHeadingHandler = inject('expandHeadingHandler') as (headingId: string) => void
+
+// toggle all headings
+// const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref
+// const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
+
+// watch(() => toggleAllCatalogItemState, () => {
+//   if (toggleAllCatalogItemState.value === 'expand') {
+//     expand.value = true
+//   } else if (toggleAllCatalogItemState.value === 'collapse') {
+//     expand.value = false
+//   }
+// })
+
+const toggleCatalogHandler = () => {
+  // expand.value = !expand.value
+  // changeToggleAllCatalogItemState('')
+
+  if(collapsedHeadingsSet.value.has(props.item.id)) {
+    expandHeadingHandler(props.item.id)
+  } else {
+    collapseHeadingHandler(props.item.id)
+  }
+}
 </script>
 
 <template>

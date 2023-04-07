@@ -108,8 +108,6 @@ if (props.data?.series) {
   }
 }
 
-
-
 // if the page metadata has the information about previous or next article
 // rewrite the default value
 if (props.data.value?.prevArticleUrl) {
@@ -141,87 +139,15 @@ const showTags = ref(true)
 
 /**
  *
- * math formula
- *
- */
-// #region math
-const clipboard = ref<null | Clipboard>(null)
-
-// add click event listener for a list of DOM
-// make them support the feature about double click to copy the formula
-const addClickListener = (list: NodeListOf<Element>, prefix: string, suffix: string) => {
-  list.forEach((element) => {
-    // add event listener for double click
-    element.addEventListener('dblclick', (event) => {
-      const target = event.currentTarget as HTMLElement
-
-      // after click set the math element border color to 'border-purple-400'
-      target.style.borderColor = '#c084fc'
-
-      // get the LaTeX source code of math formula
-      // refer to https://github.com/KaTeX/KaTeX/issues/645
-      const formulaElem = target.querySelector('annotation')
-
-      if (formulaElem && formulaElem.textContent) {
-        // add '$' or '$$' prefix and suffix for inline math or block math
-        const formula = prefix + formulaElem.textContent + suffix
-
-        if (clipboard.value) {
-          // write the formula to clipboard and set the math element border color based on the promise resolve result
-          clipboard.value.writeText(formula).then(() => {
-            target.style.borderColor = '#4ade80'
-            const timer = setTimeout(() => {
-              target.style.borderColor = 'transparent'
-              clearTimeout(timer)
-            }, 800)
-          })
-            .catch(() => {
-              target.style.borderColor = '#f87171'
-
-              const timer = setTimeout(() => {
-                target.style.borderColor = 'transparent'
-                clearTimeout(timer)
-              }, 800)
-            })
-        }
-      } else {
-        target.style.borderColor = '#f87171'
-
-        const timer = setTimeout(() => {
-          target.style.borderColor = 'transparent'
-          clearTimeout(timer)
-        }, 800)
-      }
-    })
-  })
-}
-
-const articleContainerDOM = ref<null | HTMLElement>(null)
-onMounted(() => {
-  clipboard.value = navigator.clipboard
-
-  if (articleContainerDOM.value && clipboard.value) {
-    // get all the inline math <span> dom
-    const mathInlineList = articleContainerDOM.value.querySelectorAll('.math-inline')
-    // get all the block math <div> dom
-    const mathBlockList = articleContainerDOM.value.querySelectorAll('.math-display')
-
-    // add click event listener for each dom
-    if (mathInlineList.length > 0) { addClickListener(mathInlineList, '$', '$') }
-    if (mathBlockList.length > 0) { addClickListener(mathBlockList, '$$\n', '\n$$') }
-  }
-})
-// #endregion
-
-/**
- *
- * catalog (it's the toc for markdown article)
+ * catalog
+ * (catalog is the toc for markdown article)
  *
  */
 // #region catalog
 const pageScrollTop = usePageScrollTop()
 const showCatalog = useState('showCatalog')
-// active headings
+
+// set active headings for catalog
 // the active headings is the heading shown in the viewport
 const activeH2Heading = ref<string | undefined>()
 const activeH3Heading = ref<string | undefined>()
@@ -255,7 +181,7 @@ const articleDOM = ref<HTMLElement | null>(null) // get the article DOM
 
 // limited the observer just work on the client side
 // and only observer when the article has toc
-if(process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+// if(process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
   onMounted(() => {
     if (articleDOM.value) {
       // get the headings DOM of article
@@ -304,9 +230,104 @@ if(process.client && props.data?.body?.toc && props.data.body.toc.links.length >
       observer.disconnect()
     }
   })
-}
-// #endregion
+// }
 
+// sync the toggle headings
+const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
+
+const collapsedHeadingsSet = ref<Set<string>>(new Set())
+const collapseHeadingHandler = (headingId: string) => {
+  collapsedHeadingsSet.value.add(headingId)
+}
+
+const expandHeadingHandler = (headingId: string) => {
+  collapsedHeadingsSet.value.delete(headingId)
+}
+const expandAllHeadingsHandler = () => {
+  collapsedHeadingsSet.value.clear()
+}
+
+interface CatalogItem {
+  id: string;
+  depth: number;
+  text: string;
+  children?: CatalogItem[]
+}
+
+// const recursiveCollapseHeading = (link: CatalogItem) => {
+//   collapsedHeadingsSet.value.add(link.id)
+//   if (link.children) {
+//     link.children.forEach(subLink => {
+//       recursiveCollapseHeading(subLink)
+//     })
+//   }
+// }
+
+// get all heading id
+const headingArr: string[] = []
+const recursiveGetHeading = (heading: CatalogItem) => {
+  headingArr.push(heading.id)
+  if(heading.children) {
+    heading.children.forEach(subHeading => {
+      recursiveGetHeading(subHeading)
+    })
+  }
+}
+
+if(props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+  props.data.body.toc.links.forEach((heading: CatalogItem) => {
+    recursiveGetHeading(heading)
+  })
+}
+
+const collapseAllHeadingsHandler = () => {
+  collapsedHeadingsSet.value = new Set(headingArr)
+}
+
+// const toggleAllCatalogItemState = ref<'expand' | 'collapse' | ''>('')
+// const changeToggleAllCatalogItemState = (value: 'expand' | 'collapse' | '') => {
+//   toggleAllCatalogItemState.value = value
+// }
+
+provide('collapsedHeadingsSet', collapsedHeadingsSet)
+provide('collapseHeadingHandler', collapseHeadingHandler)
+provide('collapseAllHeadingsHandler', collapseAllHeadingsHandler)
+provide('expandHeadingHandler', expandHeadingHandler)
+provide('expandAllHeadingsHandler', expandAllHeadingsHandler)
+// provide('toggleAllCatalogItemState', toggleAllCatalogItemState)
+// provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
+
+const detailNodeArr = ref<null | NodeListOf<HTMLDetailsElement>>(null)
+
+// limited the watch just work on the client side
+// if (process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+onMounted(() => {
+  if (articleDOM.value) {
+    detailNodeArr.value = articleDOM.value.querySelectorAll('details')
+  }
+})
+
+watch([collapsedHeadingsSet, syncCatalogToggleState], () => {
+  console.log(collapsedHeadingsSet.value);
+
+  if(syncCatalogToggleState.value && detailNodeArr.value && detailNodeArr.value.length > 0) {
+
+    detailNodeArr.value.forEach(node => {
+      const headingId = node?.dataset?.headingId
+      console.log(headingId);
+
+      // programming toggle <details> open or collapse
+      // refer to https://web.dev/learn/html/details/
+      if(headingId && collapsedHeadingsSet.value.has(headingId)) {
+        node.removeAttribute('open')
+      } else {
+        node.setAttribute('open', 'true')
+      }
+    })
+  }
+}, { deep: true, immediate: true })
+// }
+// #endregion
 </script>
 
 <template>

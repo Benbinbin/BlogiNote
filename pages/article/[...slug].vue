@@ -25,7 +25,7 @@ const showFooterNavThemeOptions = useState('showFooterNavThemeOptions')
 </script>
 
 <template>
-  <div ref="articleContainerDOM">
+  <div>
     <Head>
       <Title>{{ data?.title || 'Article' }}</Title>
     </Head>

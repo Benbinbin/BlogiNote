@@ -2,19 +2,98 @@
 const props = defineProps<{
   data: any;
 }>()
+
+const articleContainerDOM = ref<null | HTMLElement>(null)
+
+/**
+ *
+ * math formula
+ *
+ */
+// #region math
+const clipboard = ref<null | Clipboard>(null)
+
+// add click event listener for a list of DOM
+// make them support the feature about double click to copy the formula
+const addClickListener = (list: NodeListOf<Element>, prefix: string, suffix: string) => {
+  list.forEach((element) => {
+    // add event listener for double click
+    element.addEventListener('dblclick', (event) => {
+      const target = event.currentTarget as HTMLElement
+
+      // after click set the math element border color to 'border-purple-400'
+      target.style.borderColor = '#c084fc'
+
+      // get the LaTeX source code of math formula
+      // refer to https://github.com/KaTeX/KaTeX/issues/645
+      const formulaElem = target.querySelector('annotation')
+
+      if (formulaElem && formulaElem.textContent) {
+        // add '$' or '$$' prefix and suffix for inline math or block math
+        const formula = prefix + formulaElem.textContent + suffix
+
+        if (clipboard.value) {
+          // write the formula to clipboard and set the math element border color based on the promise resolve result
+          clipboard.value.writeText(formula).then(() => {
+            target.style.borderColor = '#4ade80'
+            const timer = setTimeout(() => {
+              target.style.borderColor = 'transparent'
+              clearTimeout(timer)
+            }, 800)
+          })
+            .catch(() => {
+              target.style.borderColor = '#f87171'
+
+              const timer = setTimeout(() => {
+                target.style.borderColor = 'transparent'
+                clearTimeout(timer)
+              }, 800)
+            })
+        }
+      } else {
+        target.style.borderColor = '#f87171'
+
+        const timer = setTimeout(() => {
+          target.style.borderColor = 'transparent'
+          clearTimeout(timer)
+        }, 800)
+      }
+    })
+  })
+}
+
+if (process.client) {
+  onMounted(() => {
+    clipboard.value = navigator.clipboard
+
+    if (articleContainerDOM.value && clipboard.value) {
+      // get all the inline math <span> dom
+      const mathInlineList = articleContainerDOM.value.querySelectorAll('.math-inline')
+      // get all the block math <div> dom
+      const mathBlockList = articleContainerDOM.value.querySelectorAll('.math-display')
+
+      // add click event listener for each dom
+      if (mathInlineList.length > 0) { addClickListener(mathInlineList, '$', '$') }
+      if (mathBlockList.length > 0) { addClickListener(mathBlockList, '$$\n', '\n$$') }
+    }
+  })
+}
+// #endregion
 </script>
 
 <template>
-  <ContentRenderer
-    :value="props.data"
-    class="markdown-post-content-container selection:text-white selection:bg-purple-400"
-  >
-    <template #empty>
-      <div class="mx-auto font-bold">
-        <p>Article is empty</p>
-      </div>
-    </template>
-  </ContentRenderer>
+  <div ref="articleContainerDOM">
+    <ContentRenderer
+      :value="props.data"
+      class="markdown-post-content-container selection:text-white selection:bg-purple-400"
+    >
+      <template #empty>
+        <div class="mx-auto font-bold">
+          <p>Article is empty</p>
+        </div>
+      </template>
+    </ContentRenderer>
+  </div>
 </template>
 
 <style lang="scss">

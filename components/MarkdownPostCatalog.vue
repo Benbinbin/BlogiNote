@@ -71,22 +71,6 @@ onMounted(() => {
     }
   })
 })
-
-/**
- *
- * expand or collapse catalog items
- *
- */
-const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
-
-// set value to "expand" or "collapse" or ""
-const toggleAllCatalogItemState = ref<'expand' | 'collapse' | ''>('')
-const changeToggleAllCatalogItemState = (value: 'expand' | 'collapse' | '') => {
-  toggleAllCatalogItemState.value = value
-}
-
-provide('toggleAllCatalogItemState', toggleAllCatalogItemState)
-provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
 </script>
 
 <template>

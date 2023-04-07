@@ -68,7 +68,10 @@ function wrapInDetails(headingNode: any) {
   return {
     type: 'element',
     tag: 'details',
-    props: { open: true },
+    props: {
+      open: true,
+      dataHeadingId: headingNode?.props?.id
+    },
     children: [
       // the first element is summary (wrap the heading node)
       {

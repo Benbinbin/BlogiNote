@@ -82,6 +82,12 @@ const linkPathGenerator = (link) => {
   return linkGenerator(link);
 };
 
+/**
+ *
+ * color style
+ *
+ */
+// #region color
 const headingColorMap = {
   0: {
     text: 'text-gray-500',
@@ -142,6 +148,16 @@ const btnColorMap = {
   }
 }
 
+// active heading
+const activeHeadings = {
+  0: undefined,
+  2: inject('activeH2Heading'),
+  3: inject('activeH3Heading'),
+  4: inject('activeH4Heading'),
+  5: inject('activeH5Heading'),
+  6: inject('activeH6Heading')
+}
+
 const pathColorMap = {
   0: {
     normal:'stroke-gray-200',
@@ -168,16 +184,7 @@ const pathColorMap = {
     active:'stroke-gray-400'
   },
 }
-
-// active heading
-const activeHeadings = {
-  0: undefined,
-  2: inject('activeH2Heading'),
-  3: inject('activeH3Heading'),
-  4: inject('activeH4Heading'),
-  5: inject('activeH5Heading'),
-  6: inject('activeH6Heading')
-}
+// #endregion
 
 /**
  *
@@ -207,81 +214,139 @@ const resetTransform = () => {
     .call(zoomController.transform, zoomIdentity);
 };
 
-// adjust tree transform (translate) when toggle heading
-const adjustTransform = (node, isExpand) => {
-  // const scale = 1;
-  let targetX, targetY;
-  if (isExpand) {
-    // if expand heading, the target node is current heading node
-    targetX = node.y;
-    targetY = node.x;
-  } else {
-    // if collapse heading, the target node is the parent heading node
-    targetX = node.parent.y;
-    targetY = node.parent.x;
-  }
+// toggle heading
+const targetHeadingNode = ref(null)
+// record and sync collapse headings
+const collapsedHeadingsSet = inject('collapsedHeadingsSet')
+const collapseHeadingHandler = inject('collapseHeadingHandler')
+const expandHeadingHandler = inject('expandHeadingHandler')
 
-  // move the target heading node to center (with 'dy' offset in x axis to show the target heading node and the children heading nodes)
+const recursiveCheck = (node) => {
+  if (node._children) {
+    if (collapsedHeadingsSet.value.has(node.data.id)) {
+
+      node.children = null
+    } else {
+      node.children = node._children
+    }
+    node._children.forEach(subNode => {
+      recursiveCheck(subNode)
+    })
+  }
+}
+
+watch(collapsedHeadingsSet, () => {
+  // if (toggleAllCatalogItemState.value === 'expand') {
+  //   treeData.descendants().forEach((node) => {
+  //     recursiveExpandHeadingNode(node)
+  //   })
+  // } else if (toggleAllCatalogItemState.value === 'collapse') {
+  //   treeData.descendants().forEach((node) => {
+  //     if (node.data.depth !== 0 && node._children) {
+  //       node.children = null
+  //     }
+  //   })
+  // }
+
+  treeData.descendants().forEach((node) => {
+    // recursiveExpandHeadingNode(node)
+      recursiveCheck(node)
+  })
+
+  buildTree();
+  // resetTransform()
+  if(targetHeadingNode.value) {
+    adjustTransform(targetHeadingNode.value)
+    targetHeadingNode.value = null
+  }
+  // changeToggleAllCatalogItemState('')
+}, { deep: true, immediate: true })
+
+
+// adjust tree transform (translate) when manually toggle heading
+const adjustTransform = (node) => {
+  // const scale = 1;
+  // let targetX, targetY;
+  // if (isExpand) {
+  //   // if expand heading, the target node is current heading node
+  //   targetX = node.y;
+  //   targetY = node.x;
+  // } else {
+  //   // if collapse heading, the target node is the parent heading node
+  //   targetX = node.parent.y;
+  //   targetY = node.parent.x;
+  // }
+
+  // move the target heading node to center
+  // with 'dy' offset in x axis
+  // to show the target heading node and the children heading nodes
   select("#tree-catalog")
     .transition()
     .duration(200)
-    .call(zoomController.translateTo, targetX + dy, targetY);
+    .call(zoomController.translateTo, node.y + dy, node.x);
 };
 
-// toggle (collapse or expand) heading
+// manually toggle heading
 const currentClickNodeId = ref(null)
 const toggleHeadingHandler = (node) => {
   if (!node.parent) return;
   currentClickNodeId.value = node.id
   if (node.children) {
+    targetHeadingNode.value = node.parent
+    collapseHeadingHandler(node.data.id)
     // if the heading node has already show the children
     // collapse it
-    node.children = null;
+    // node.children = null;
     // then rebuild the tree to refresh all node coordinate
-    buildTree();
-    adjustTransform(node, false);
+    // buildTree();
+    // adjustTransform(node, false);
   } else {
     // if the heading node don't show the children
     // expand it
-    node.children = node._children;
+    // node.children = node._children;
     // then rebuild the tree to refresh all node coordinate
-    buildTree();
-    adjustTransform(node, true);
+    targetHeadingNode.value = node
+    expandHeadingHandler(node.data.id)
+    // buildTree();
+    // adjustTransform(node, true);
   }
 };
 
-const toggleAllCatalogItemState = inject('toggleAllCatalogItemState')
+// const toggleAllCatalogItemState = inject('toggleAllCatalogItemState')
 
-const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState')
+// const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState')
 
-const recursiveExpandHeadingNode = (node) => {
-  if(node._children) {
-    node.children = node._children
-    node.children.forEach(subNode => {
-      if(subNode._children) {
-        recursiveExpandHeadingNode(subNode)
-      }
-    })
-  }
-}
+const collapseAllHeadingsHandler = inject('collapseAllHeadingsHandler')
+const expandAllHeadingsHandler = inject('expandAllHeadingsHandler')
 
-watch(toggleAllCatalogItemState, () => {
-  if (toggleAllCatalogItemState.value === 'expand') {
-    treeData.descendants().forEach((node) => {
-      recursiveExpandHeadingNode(node)
-    })
-  } else if (toggleAllCatalogItemState.value === 'collapse') {
-    treeData.descendants().forEach((node) => {
-      if (node.data.depth !== 0 && node._children) {
-        node.children = null
-      }
-    })
-  }
+// const recursiveExpandHeadingNode = (node) => {
+//   if(node._children) {
+//     node.children = node._children
+//     node.children.forEach(subNode => {
+//       if(subNode._children) {
+//         recursiveExpandHeadingNode(subNode)
+//       }
+//     })
+//   }
+// }
 
-  buildTree();
-  resetTransform()
-  changeToggleAllCatalogItemState('')
-})
+// watch(toggleAllCatalogItemState, () => {
+//   if (toggleAllCatalogItemState.value === 'expand') {
+//     treeData.descendants().forEach((node) => {
+//       recursiveExpandHeadingNode(node)
+//     })
+//   } else if (toggleAllCatalogItemState.value === 'collapse') {
+//     treeData.descendants().forEach((node) => {
+//       if (node.data.depth !== 0 && node._children) {
+//         node.children = null
+//       }
+//     })
+//   }
+
+//   buildTree();
+//   resetTransform()
+//   changeToggleAllCatalogItemState('')
+// })
 
 const syncCatalogToggleState = useState('syncCatalogToggleState')
 
@@ -448,7 +513,7 @@ const toggleCatalogFloatHandler = () => {
 
         <button
           class="catalog-btn flex text-green-400 hover:text-green-500 active:text-white bg-green-100 active:bg-green-500 border-green-400"
-          @click="changeToggleAllCatalogItemState('expand')"
+          @click="expandAllHeadingsHandler"
         >
           <IconCustom
             name="ic:outline-unfold-more"
@@ -458,7 +523,7 @@ const toggleCatalogFloatHandler = () => {
 
         <button
           class="catalog-btn flex text-red-400 hover:text-red-500 bg-red-100 active:text-white active:bg-red-500 border-red-400"
-          @click="changeToggleAllCatalogItemState('collapse')"
+          @click="collapseAllHeadingsHandler"
         >
           <IconCustom
             name="ic:outline-unfold-less"
