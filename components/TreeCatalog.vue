@@ -68,8 +68,6 @@ const buildTree = () => {
     const tinyTree = tree().nodeSize([dx, dy])(treeData);
     nodesData.value = tinyTree.descendants();
     linksData.value = tinyTree.links();
-
-    console.log(linksData.value);
   }
 }
 
@@ -207,8 +205,6 @@ const resetTransform = () => {
     .transition()
     .duration(200)
     .call(zoomController.transform, zoomIdentity);
-
-    console.log(activeHeadings);
 };
 
 // adjust tree transform (translate) when toggle heading
@@ -225,11 +221,11 @@ const adjustTransform = (node, isExpand) => {
     targetY = node.parent.x;
   }
 
-  // move the target heading node to center
+  // move the target heading node to center (with 'dy' offset in x axis to show the target heading node and the children heading nodes)
   select("#tree-catalog")
     .transition()
     .duration(200)
-    .call(zoomController.translateTo, targetX, targetY);
+    .call(zoomController.translateTo, targetX + dy, targetY);
 };
 
 // toggle (collapse or expand) heading
@@ -252,7 +248,6 @@ const toggleHeadingHandler = (node) => {
     buildTree();
     adjustTransform(node, true);
   }
-  changeToggleAllCatalogItemState('')
 };
 
 const toggleAllCatalogItemState = inject('toggleAllCatalogItemState')
@@ -285,6 +280,7 @@ watch(toggleAllCatalogItemState, () => {
 
   buildTree();
   resetTransform()
+  changeToggleAllCatalogItemState('')
 })
 
 const syncCatalogToggleState = useState('syncCatalogToggleState')
