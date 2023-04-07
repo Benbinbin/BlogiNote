@@ -31,7 +31,12 @@ const props = defineProps({
         </p>
       </slot>
     </div>
-    <img v-if="props.avatar" :src="props.avatar" alt="avatar" class="hidden lg:block w-28 h-28 rounded-full">
+    <img
+      v-if="props.avatar"
+      :src="props.avatar"
+      alt="avatar"
+      class="hidden lg:block w-28 h-28 rounded-full"
+    >
   </div>
 </template>
 

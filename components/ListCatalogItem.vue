@@ -15,6 +15,7 @@ interface CatalogItemType {
 
 const catalogType = useState('catalogType')
 
+// toggle (collapse or expand) heading
 const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref
 const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
 

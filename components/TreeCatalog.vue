@@ -7,20 +7,6 @@ import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal } from 'd3-shape'
 import { select } from 'd3-selection'
 import { zoom, zoomIdentity } from 'd3-zoom'
-// import { HierarchyNode, HierarchyPointLink } from '@types/d3-hierarchy'
-// const props = defineProps<{
-//   width: number;
-//   height: number;
-//   catalogs: CatalogItem[]
-// }>()
-
-
-// interface CatalogItem {
-  //   id: string;
-  //   depth: number;
-  //   text: string;
-  //   children?: CatalogItem[]
-  // }
 
 const props = defineProps({
   width: {
@@ -42,23 +28,16 @@ const props = defineProps({
  * size
  *
  */
-// window size
-// const windowSize = useWindowSize()
-
 // node size base on float DOM content size
 // ⚠️ because the heading nodes tree is grow from left to right
 // so the 'dx' is the node height actually
 // and the 'dy' is the node width actually
 const dx = 48; // node height
-// node width
-// const dy = computed(() => {
-//   const nodeWidth = windowSize.value.width / 5; // each time show 3 node and 2 line
-//   return nodeWidth
-// });
-const dy = 128;
+const dy = 128; // node width
 
 const viewBox = computed(() => {
-  return `${-dy}, ${-props.height / 2}, ${props.width}, ${props.height}`;
+  // 41.33 is the height of control buttons container
+  return `${-dy}, ${-(props.height-41.33) / 2}, ${props.width}, ${(props.height - 41.33)}`;
 });
 
 /**
@@ -66,9 +45,6 @@ const viewBox = computed(() => {
  * process data
  *
  */
-
-// let treeData = null;
-// const setTreeData = () => {
 // hierarchy data
 const treeData = hierarchy({ text: 'catalog', depth: 0, children: props.catalogs });
 treeData.descendants().forEach((d, i) => {
@@ -78,10 +54,6 @@ treeData.descendants().forEach((d, i) => {
   if (d.children) d._children = d.children;
   // if (d.children && d.depth >= 2) d.children = null;
 });
-
-// };
-
-// setTreeData()
 
 /**
  *
@@ -96,18 +68,11 @@ const buildTree = () => {
     const tinyTree = tree().nodeSize([dx, dy])(treeData);
     nodesData.value = tinyTree.descendants();
     linksData.value = tinyTree.links();
-    console.log(linksData.value);
   }
 }
 
 // init build tree
 buildTree()
-
-// watch([props.height, props.width], () => {
-//   console.log('rebuild');
-//   buildTree()
-// })
-
 
 // generate svg path based on link data
 const linkPathGenerator = (link) => {
@@ -117,23 +82,10 @@ const linkPathGenerator = (link) => {
   return linkGenerator(link);
 };
 
-// generate svg text based on node data
-const textGenerator = (node, type = "truncate") => {
-  // text max width
-  const len = Math.floor((dy).value / 14);
-  const text = node.data.text
-
-  if (text.length > len && type === "truncate") {
-    return `${text.substring(0, len).trim()}...`;
-  } else {
-    return text;
-  }
-};
-
 const headingColorMap = {
   0: {
-    text: 'text-purple-500',
-    hoverBg: 'hover:bg-purple-100',
+    text: 'text-gray-500',
+    hoverBg: 'hover:bg-gray-100',
   },
   2: {
     text: 'text-purple-500',
@@ -159,9 +111,9 @@ const headingColorMap = {
 
 const btnColorMap = {
   0: {
-    withChildrenBg: 'bg-purple-500',
-    withoutChildrenBg: 'bg-purple-200',
-    border: 'border-purple-300'
+    withChildrenBg: 'bg-gray-500',
+    withoutChildrenBg: 'bg-gray-200',
+    border: 'border-gray-300'
   },
   2: {
     withChildrenBg: 'bg-purple-500',
@@ -190,6 +142,15 @@ const btnColorMap = {
   }
 }
 
+const pathColorMap = {
+  0: 'stroke-gray-200',
+  2: 'stroke-purple-200',
+  3: 'stroke-red-200',
+  4: 'stroke-green-200',
+  5: 'stroke-blue-200',
+  6: 'stroke-gray-200'
+}
+
 
 /**
  *
@@ -212,16 +173,12 @@ onMounted(() => {
   select("#tree-catalog").call(zoomController);
 });
 
-const resizeTransform = () => {
+const resetTransform = () => {
   select("#tree-catalog")
     .transition()
     .duration(200)
     .call(zoomController.transform, zoomIdentity);
 };
-
-// watch([props.height, props.width], () => {
-//   resizeTransform()
-// })
 
 // adjust tree transform (translate) when toggle heading
 const adjustTransform = (node, isExpand) => {
@@ -264,279 +221,265 @@ const toggleHeadingHandler = (node) => {
     buildTree();
     adjustTransform(node, true);
   }
+  changeToggleAllCatalogItemState('')
 };
+
+const toggleAllCatalogItemState = inject('toggleAllCatalogItemState')
+
+const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState')
+
+const recursiveExpandHeadingNode = (node) => {
+  if(node._children) {
+    node.children = node._children
+    node.children.forEach(subNode => {
+      if(subNode._children) {
+        recursiveExpandHeadingNode(subNode)
+      }
+    })
+  }
+}
+
+watch(toggleAllCatalogItemState, () => {
+  if (toggleAllCatalogItemState.value === 'expand') {
+    treeData.descendants().forEach((node) => {
+      recursiveExpandHeadingNode(node)
+    })
+  } else if (toggleAllCatalogItemState.value === 'collapse') {
+    treeData.descendants().forEach((node) => {
+      if (node.data.depth !== 0 && node._children) {
+        node.children = null
+      }
+    })
+  }
+
+  buildTree();
+  resetTransform()
+})
+
+const syncCatalogToggleState = useState('syncCatalogToggleState')
+
+/**
+ *
+ * manual change catalog type
+ *
+ */
+const catalogType = useState('catalogType')
+const toggleCatalogFloat = useState('toggleCatalogFloat')
+
+const changeCatalogType = (value) => {
+  if (value === 'sidebarList') {
+    toggleCatalogFloat.value = false
+  } else {
+    toggleCatalogFloat.value = true
+  }
+  catalogType.value = value
+}
+
+const toggleFloatCatalogTypeHandler = () => {
+  if (catalogType.value === 'floatTree') {
+    changeCatalogType('floatList')
+  } else {
+    changeCatalogType('floatTree')
+  }
+}
+
+const toggleCatalogFloatHandler = () => {
+  if (catalogType.value === 'sidebarList') {
+    changeCatalogType('floatList')
+  } else {
+    changeCatalogType('sidebarList')
+  }
+}
 </script>
 
 <template>
-  <svg
-    id="tree-catalog"
-    class="select-none"
-    :viewBox="viewBox"
-  >
-    <!-- gradient colors for path -->
-    <defs>
-      <linearGradient
-        id="gradientColor0To2"
-      >
-        <stop
-          offset="10%"
-          stop-color="#a855f7"
-          stop-opacity="5%"
-        />
-        <stop
-          offset="50%"
-          stop-color="#a855f7"
-          stop-opacity="30%"
-        />
-        <stop
-          offset="100%"
-          stop-color="#a855f7"
-          stop-opacity="100%"
-        />
-      </linearGradient>
-      <linearGradient
-        id="gradientColor2To3"
-      >
-        <stop
-          offset="10%"
-          stop-color="#ef4444"
-          stop-opacity="5%"
-        />
-        <stop
-          offset="50%"
-          stop-color="#ef4444"
-          stop-opacity="30%"
-        />
-        <stop
-          offset="100%"
-          stop-color="#ef4444"
-          stop-opacity="100%"
-        />
-      </linearGradient>
-      <linearGradient
-        id="gradientColor3To4"
-      >
-        <stop
-          offset="10%"
-          stop-color="#22c55e"
-          stop-opacity="5%"
-        />
-        <stop
-          offset="50%"
-          stop-color="#22c55e"
-          stop-opacity="30%"
-        />
-        <stop
-          offset="100%"
-          stop-color="#22c55e"
-          stop-opacity="100%"
-        />
-      </linearGradient>
-      <linearGradient
-        id="gradientColor4To5"
-      >
-        <stop
-          offset="10%"
-          stop-color="#3b82f6"
-          stop-opacity="5%"
-        />
-        <stop
-          offset="50%"
-          stop-color="#3b82f6"
-          stop-opacity="30%"
-        />
-        <stop
-          offset="100%"
-          stop-color="#3b82f6"
-          stop-opacity="100%"
-        />
-      </linearGradient>
-      <linearGradient
-        id="gradientColor5To6"
-      >
-        <stop
-          offset="10%"
-          stop-color="#6b7280"
-          stop-opacity="5%"
-        />
-        <stop
-          offset="50%"
-          stop-color="#6b7280"
-          stop-opacity="30%"
-        />
-        <stop
-          offset="100%"
-          stop-color="#6b7280"
-          stop-opacity="100%"
-        />
-      </linearGradient>
-    </defs>
-    <!-- collapsible tree container -->
-    <g
-      :transform="`translate(${transform.x}, ${transform.y}) scale(${transform.k}) `"
+  <div>
+    <!-- tree catalog -->
+    <svg
+      id="tree-catalog"
+      class="grow select-none"
+      :viewBox="viewBox"
     >
-      <!-- tree links container -->
+      <!-- collapsible tree container -->
       <g
-        fill="none"
-        stroke="#E5E7EB"
-        stroke-opacity="1"
-        stroke-width="1.5"
+        :transform="`translate(${transform.x}, ${transform.y}) scale(${transform.k}) `"
       >
-        <TransitionGroup
-          enter-from-class="opacity-0"
-          enter-active-class="transition-all delay-200 duration-200 ease-in"
-          enter-to-class="opacity-100"
-        >
-          <path
-            v-for="link of linksData"
-            :key="link.target.id"
-            :d="linkPathGenerator(link)"
-            class="transition-all duration-200"
-            stroke-width="2"
-            :stroke="`url(#gradientColor${link.source.data.depth}To${link.target.data.depth})`"
-          />
-        </TransitionGroup>
-      </g>
 
-      <!-- tree nodes container -->
-      <g
-        pointer-events="all"
-        style="font: 14px sans-serif"
-      >
-        <TransitionGroup
-          enter-from-class="opacity-0"
-          enter-active-class="transition-all delay-200 duration-200 ease-in"
-          enter-to-class="opacity-100"
-          @after-enter="currentClickNodeId = null"
-          @after-leave="currentClickNodeId = null"
+        <!-- tree links container -->
+        <g
+          fill="none"
+          stroke="#E5E7EB"
+          stroke-opacity="1"
+          stroke-width="1.5"
         >
-          <g
-            v-for="node of nodesData"
-            :key="node.id"
-            cursor="pointer"
-            :transform="`translate(${node.y}, ${node.x})`"
-            :class="node.id === currentClickNodeId ? 'transition-transform duration-200' : ''"
+          <TransitionGroup
+            enter-from-class="opacity-0"
+            enter-active-class="transition-all delay-200 duration-200 ease-in"
+            enter-to-class="opacity-100"
           >
-            <foreignObject
-              :x="node.parent ? '0rem' : '-3.5rem'"
-              y="-1.5rem"
-              width="7rem"
-              height="3rem"
+            <path
+              v-for="link of linksData"
+              :key="link.target.id"
+              :d="linkPathGenerator(link)"
+              class="stroke-width-2 transition-all duration-200"
+              :class="pathColorMap[link.target.data.depth]"
+            />
+          </TransitionGroup>
+        </g>
+
+        <!-- tree nodes container -->
+        <g
+          pointer-events="all"
+          style="font: 14px sans-serif"
+        >
+          <TransitionGroup
+            enter-from-class="opacity-0"
+            enter-active-class="transition-all delay-200 duration-200 ease-in"
+            enter-to-class="opacity-100"
+            @after-enter="currentClickNodeId = null"
+            @after-leave="currentClickNodeId = null"
+          >
+            <g
+              v-for="node of nodesData"
+              :key="node.id"
+              cursor="pointer"
+              :transform="`translate(${node.y}, ${node.x})`"
+              class="transition-all duration-200"
             >
-              <div
-                class="w-full h-full flex items-center gap-0.5"
+              <foreignObject
+                :x="node.parent ? '0rem' : '-3.5rem'"
+                y="-1.5rem"
+                width="7rem"
+                height="3rem"
               >
-                <button
-                  v-if="node.data.depth !== 0 && node._children"
-                  class="shrink-0 w-4 h-4 flex justify-center items-center border-2 rounded-full"
-                  :class="`${btnColorMap[node.data.depth].border} ${btnColorMap[node.data.depth].withChildrenBg}`"
-                  :disabled="!node._children"
-                  @click="toggleHeadingHandler(node)"
-                >
-                  <IconCustom
-                    name="ion:add"
-                    class="text-white transition-transform duration-200"
-                    :class="node.children ? 'rotate-45' : 'rotate-0'"
-                  />
-
-                </button>
                 <div
-                  v-else
-                  class="shrink-0 w-4 h-4 flex justify-center items-center"
+                  class="w-full h-full flex items-center gap-0.5"
                 >
+                  <button
+                    v-if="node.data.depth !== 0 && node._children"
+                    class="shrink-0 w-4 h-4 flex justify-center items-center border-2 rounded-full"
+                    :class="`${btnColorMap[node.data.depth].border} ${btnColorMap[node.data.depth].withChildrenBg}`"
+                    :disabled="!node._children"
+                    @click="toggleHeadingHandler(node)"
+                  >
+                    <IconCustom
+                      name="ion:add"
+                      class="text-white transition-transform duration-200"
+                      :class="node.children ? 'rotate-45' : 'rotate-0'"
+                    />
+
+                  </button>
                   <div
-                    class="w-2 h-2 rounded-full"
-                    :class="`${btnColorMap[node.data.depth].withoutChildrenBg}`"
-                  />
+                    v-else
+                    class="shrink-0 w-4 h-4 flex justify-center items-center"
+                  >
+                    <div
+                      class="w-2 h-2 rounded-full"
+                      :class="`${btnColorMap[node.data.depth].withoutChildrenBg}`"
+                    />
+                  </div>
+                  <a
+                    v-if="node.data.id"
+                    :href="`#${node.data.id}`"
+                    class="max-w-full p-1 text-xs font-bold text-left transition-colors duration-300 rounded"
+                    :class="`${headingColorMap[node.data.depth].text} ${headingColorMap[node.data.depth].hoverBg}`"
+                    style="text-shadow: 0px 0px 5px #f3f4f6, -3px 0px 3px #f3f4f6, 3px 0px 3px #f3f4f6, 0px 3px 3px #f3f4f6, 0px -3px 3px #f3f4f6; word-wrap: break-word;"
+                  >{{ node.data.text }}</a>
+                  <span
+                    v-else
+                    class="p-1 text-xs font-bold text-left"
+                    :class="`${headingColorMap[node.data.depth].text}`"
+                    style="text-shadow: 0px 0px 5px #f3f4f6, -3px 0px 3px #f3f4f6, 3px 0px 3px #f3f4f6, 0px 3px 3px #f3f4f6, 0px -3px 3px #f3f4f6;"
+                  >{{ node.data.text }}</span>
                 </div>
-
-                <a
-                  v-if="node.data.id"
-                  :href="`#${node.data.id}`"
-                  class="p-1 text-xs font-bold text-left transition-colors duration-300 rounded"
-                  style="text-shadow: 0px 0px 8px #f3f4f6, -1px 0px 8px #f3f4f6, 1px 0px 8px #f3f4f6, 0px 1px 8px #f3f4f6, 0px -1px 8px #f3f4f6;"
-                  :class="`${headingColorMap[node.data.depth].text} ${headingColorMap[node.data.depth].hoverBg}`"
-                >{{ node.data.text }}</a>
-                <span
-                  v-else
-                  class="p-1 text-xs font-bold text-left"
-                  :class="`${headingColorMap[node.data.depth].text}`"
-                >{{ node.data.text }}</span>
-              </div>
-            </foreignObject>
-
-            <!-- <text
-          class=""
-            dy="0.35em"
-            :x="node.parent ? '0.8em' : '-0.8em'"
-            :text-anchor="node.parent ? 'start' : 'end'"
-            :font-weight="node.parent ? 'normal' : 'bold'"
-            stroke-linejoin="round"
-            stroke-width="5"
-            stroke="#fff"
-          >
-            {{ textGenerator(node) }}
-          </text>
-          <text
-            dy="0.35em"
-            :x="node.parent ? '0.8em' : '-0.8em'"
-            :text-anchor="node.parent ? 'start' : 'end'"
-            :font-weight="node.parent ? 'normal' : 'bold'"
-          >
-            {{ textGenerator(node) }}
-          </text> -->
+              </foreignObject>
+            </g>
+          </TransitionGroup>
+        </g>
 
 
-            <!-- <svg
-            v-if="node.data.type === 'post'"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="#9CA3AF"
-            viewBox="0 0 16 16"
-            x="-0.6em"
-            y="-0.6em"
-          >
-            <path
-              d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"
-            />
-          </svg>
-          <svg
-            v-if="node.data.type === 'folder'"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            :fill="node.children ? '#93C5FD' : '#60A5FA'"
-            viewBox="0 0 16 16"
-            x="-0.6em"
-            y="-0.6em"
-          >
-            <path
-              d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"
-            />
-          </svg>
-          <svg
-            v-if="node.data.type === 'root'"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="#60A5FA"
-            viewBox="0 0 16 16"
-            x="-0.6em"
-            y="-0.6em"
-          >
-            <path
-              d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"
-            />
-          </svg> -->
-            <title>{{ textGenerator(node, "full") }}</title>
-          </g>
-        </TransitionGroup>
       </g>
-    </g>
-  </svg>
+    </svg>
+    <!-- control buttons container -->
+    <div
+      class="catalog-btn-container shrink-0 py-2 flex justify-between items-center gap-x-8 overflow-x-auto"
+    >
+      <div class="flex items-center gap-2">
+        <button
+          class="catalog-btn flex border-purple-400"
+          :class="syncCatalogToggleState ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
+          @click="syncCatalogToggleState = !syncCatalogToggleState"
+        >
+          <IconCustom
+            name="ic:outline-link"
+            class="w-4 h-4"
+          />
+        </button>
+
+        <button
+          class="catalog-btn flex text-green-400 hover:text-green-500 active:text-white bg-green-100 active:bg-green-500 border-green-400"
+          @click="changeToggleAllCatalogItemState('expand')"
+        >
+          <IconCustom
+            name="ic:outline-unfold-more"
+            class="w-4 h-4"
+          />
+        </button>
+
+        <button
+          class="catalog-btn flex text-red-400 hover:text-red-500 bg-red-100 active:text-white active:bg-red-500 border-red-400"
+          @click="changeToggleAllCatalogItemState('collapse')"
+        >
+          <IconCustom
+            name="ic:outline-unfold-less"
+            class="w-4 h-4"
+          />
+        </button>
+
+        <button
+          class="catalog-btn flex text-purple-400 hover:text-purple-500 bg-purple-100 active:text-white active:bg-purple-500 border-purple-400"
+          @click="resetTransform"
+        >
+          <IconCustom
+            name="ic:round-settings-backup-restore"
+            class="w-4 h-4"
+          />
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          class="catalog-btn flex border-purple-400"
+          :class="catalogType === 'floatTree' ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
+          @click="toggleFloatCatalogTypeHandler"
+        >
+          <IconCustom
+            name="ic:outline-account-tree"
+            class="w-4 h-4"
+          />
+        </button>
+        <button
+          class="catalog-btn hidden xl:flex border-purple-400"
+          :class="(catalogType === 'floatTree' || catalogType === 'floatList') ? 'text-white bg-purple-500 hover:bg-purple-400' : 'text-purple-500 hover:text-white bg-purple-100 hover:bg-purple-500'"
+          @click="toggleCatalogFloatHandler"
+        >
+          <IconCustom
+            :name="catalogType === 'sidebarList' ? 'mingcute:miniplayer-line' : 'mingcute:expand-player-line'"
+            class="w-4 h-4"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+.catalog-btn-container {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.catalog-btn {
+  @apply shrink-0 p-2 sm:p-1 justify-center items-center border transition-colors duration-300 rounded
+}
 </style>

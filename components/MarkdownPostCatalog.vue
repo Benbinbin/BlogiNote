@@ -55,9 +55,6 @@ onMounted(() => {
 
   // watch the window size and adjust the catalog state automatically
   watch(() => windowSize.value.width, () => {
-    console.log(windowSize.value.width);
-    console.log(toggleCatalogFloat.value);
-
     // set the fixed sidebar width when window resize
     sidebarWidth.value = (windowSize.value.width - 896) / 2
 
@@ -80,7 +77,7 @@ onMounted(() => {
  * expand or collapse catalog items
  *
  */
-const syncCatalogItemExpandOrCollapseState = useState('syncCatalogItemExpandOrCollapseState', () => false)
+const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
 
 // set value to "expand" or "collapse" or ""
 const toggleAllCatalogItemState = ref<'expand' | 'collapse' | ''>('')
@@ -118,7 +115,7 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
       <ListCatalog
         v-show="catalogType==='floatList'"
         :catalogs="props.catalogs"
-        class="grow flex flex-col-reverse gap-y-2 justify-between items-stretch overflow-hidden"
+        class="grow flex flex-col-reverse justify-between items-stretch overflow-hidden"
       />
 
       <TreeCatalog
@@ -126,6 +123,7 @@ provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
         :catalogs="props.catalogs"
         :width="contentWidth"
         :height="contentHeight"
+        class="grow flex flex-col overflow-hidden"
       />
     </ResizableFloatCard>
   </div>
