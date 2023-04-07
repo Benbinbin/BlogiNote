@@ -223,29 +223,29 @@ const pageScrollTop = usePageScrollTop()
 const showCatalog = useState('showCatalog')
 // active headings
 // the active headings is the heading shown in the viewport
-const activeH2Headings = ref<string | undefined>()
-const activeH3Headings = ref<string | undefined>()
-const activeH4Headings = ref<string | undefined>()
-const activeH5Headings = ref<string | undefined>()
-const activeH6Headings = ref<string | undefined>()
+const activeH2Heading = ref<string | undefined>()
+const activeH3Heading = ref<string | undefined>()
+const activeH4Heading = ref<string | undefined>()
+const activeH5Heading = ref<string | undefined>()
+const activeH6Heading = ref<string | undefined>()
 
 // provide for the catalog relative components
-provide('activeH2Headings', activeH2Headings)
-provide('activeH3Headings', activeH3Headings)
-provide('activeH4Headings', activeH4Headings)
-provide('activeH5Headings', activeH5Headings)
-provide('activeH6Headings', activeH6Headings)
+provide('activeH2Heading', activeH2Heading)
+provide('activeH3Heading', activeH3Heading)
+provide('activeH4Heading', activeH4Heading)
+provide('activeH5Heading', activeH5Heading)
+provide('activeH6Heading', activeH6Heading)
 
 function setActiveHeading(heading: HTMLElement) {
   const headingPathStr = heading?.dataset?.headingPath
 
   if (headingPathStr) {
     const headingPathObj = JSON.parse(headingPathStr)
-    activeH2Headings.value = headingPathObj['h2']
-    activeH3Headings.value = headingPathObj['h3']
-    activeH4Headings.value = headingPathObj['h4']
-    activeH5Headings.value = headingPathObj['h5']
-    activeH6Headings.value = headingPathObj['h6']
+    activeH2Heading.value = headingPathObj['h2']
+    activeH3Heading.value = headingPathObj['h3']
+    activeH4Heading.value = headingPathObj['h4']
+    activeH5Heading.value = headingPathObj['h5']
+    activeH6Heading.value = headingPathObj['h6']
   }
 }
 

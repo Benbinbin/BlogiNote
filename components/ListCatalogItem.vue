@@ -157,7 +157,7 @@ const borderColorMap: BorderColorMapType = {
 }
 
 // active heading
-const activeHeading = inject<string | undefined>(`activeH${props.depth}Headings`)
+const activeHeading = inject<string | undefined>(`activeH${props.depth}Heading`)
 </script>
 
 <template>

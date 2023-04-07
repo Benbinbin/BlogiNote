@@ -68,6 +68,8 @@ const buildTree = () => {
     const tinyTree = tree().nodeSize([dx, dy])(treeData);
     nodesData.value = tinyTree.descendants();
     linksData.value = tinyTree.links();
+
+    console.log(linksData.value);
   }
 }
 
@@ -143,14 +145,41 @@ const btnColorMap = {
 }
 
 const pathColorMap = {
-  0: 'stroke-gray-200',
-  2: 'stroke-purple-200',
-  3: 'stroke-red-200',
-  4: 'stroke-green-200',
-  5: 'stroke-blue-200',
-  6: 'stroke-gray-200'
+  0: {
+    normal:'stroke-gray-200',
+    active:'stroke-gray-400',
+  },
+  2: {
+    normal:'stroke-purple-200',
+    active:'stroke-purple-400',
+  },
+  3: {
+    normal:'stroke-red-200',
+    active:'stroke-red-400',
+  },
+  4: {
+    normal:'stroke-green-200',
+    active:'stroke-green-400',
+  },
+  5: {
+    normal:'stroke-blue-200',
+    active:'stroke-blue-400',
+  },
+  6: {
+    normal:'stroke-gray-200',
+    active:'stroke-gray-400'
+  },
 }
 
+// active heading
+const activeHeadings = {
+  0: undefined,
+  2: inject('activeH2Heading'),
+  3: inject('activeH3Heading'),
+  4: inject('activeH4Heading'),
+  5: inject('activeH5Heading'),
+  6: inject('activeH6Heading')
+}
 
 /**
  *
@@ -178,6 +207,8 @@ const resetTransform = () => {
     .transition()
     .duration(200)
     .call(zoomController.transform, zoomIdentity);
+
+    console.log(activeHeadings);
 };
 
 // adjust tree transform (translate) when toggle heading
@@ -321,8 +352,11 @@ const toggleCatalogFloatHandler = () => {
               v-for="link of linksData"
               :key="link.target.id"
               :d="linkPathGenerator(link)"
-              class="stroke-width-2 transition-all duration-200"
-              :class="pathColorMap[link.target.data.depth]"
+              class="transition-all duration-200"
+              :data-depth="link.target.data.depth"
+              :data-target-id="link.target.data.id"
+              :data-active-id="activeHeadings[link.target.data.depth]?.value"
+              :class="link.target.data.id === activeHeadings[link.target.data.depth]?.value ? `stroke-2 ${pathColorMap[link.target.data.depth].active}` : `stroke-1 ${pathColorMap[link.target.data.depth].normal}`"
             />
           </TransitionGroup>
         </g>
