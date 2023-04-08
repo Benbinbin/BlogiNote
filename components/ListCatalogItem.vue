@@ -165,18 +165,6 @@ const expand = computed(() => !collapsedHeadingsSet.value.has(props.item.id) )
 const collapseHeadingHandler = inject('collapseHeadingHandler') as (headingId: string) => void
 const expandHeadingHandler = inject('expandHeadingHandler') as (headingId: string) => void
 
-// toggle all headings
-// const toggleAllCatalogItemState = inject('toggleAllCatalogItemState') as Ref
-// const changeToggleAllCatalogItemState = inject('changeToggleAllCatalogItemState') as (value: 'expand' | 'collapse' | '') => void
-
-// watch(() => toggleAllCatalogItemState, () => {
-//   if (toggleAllCatalogItemState.value === 'expand') {
-//     expand.value = true
-//   } else if (toggleAllCatalogItemState.value === 'collapse') {
-//     expand.value = false
-//   }
-// })
-
 const toggleCatalogHandler = () => {
   // expand.value = !expand.value
   // changeToggleAllCatalogItemState('')

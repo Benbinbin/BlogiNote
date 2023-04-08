@@ -227,21 +227,8 @@ onUnmounted(() => {
   }
 })
 
-// sync the toggle headings
-const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
 
-const collapsedHeadingsSet = ref<Set<string>>(new Set())
-const collapseHeadingHandler = (headingId: string) => {
-  collapsedHeadingsSet.value.add(headingId)
-}
-
-const expandHeadingHandler = (headingId: string) => {
-  collapsedHeadingsSet.value.delete(headingId)
-}
-const expandAllHeadingsHandler = () => {
-  collapsedHeadingsSet.value.clear()
-}
-
+// get all heading id (with children)
 interface CatalogItem {
   id: string;
   depth: number;
@@ -250,22 +237,40 @@ interface CatalogItem {
 }
 
 const headingArr: string[] = []
-// get all heading id
-const recursiveGetHeading = (heading: CatalogItem) => {
-  headingArr.push(heading.id)
-  if(heading.children) {
+const recursiveGetHeadingWithChildren = (heading: CatalogItem) => {
+  if (heading.children) {
+    headingArr.push(heading.id)
     heading.children.forEach(subHeading => {
-      recursiveGetHeading(subHeading)
+      recursiveGetHeadingWithChildren(subHeading)
     })
   }
 }
 
-if(props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+if (props.data?.body?.toc && props.data.body.toc.links.length > 0) {
   props.data.body.toc.links.forEach((heading: CatalogItem) => {
-    recursiveGetHeading(heading)
+    recursiveGetHeadingWithChildren(heading)
   })
 }
 
+// sync the toggle headings
+const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
+
+const collapsedHeadingsSet = ref<Set<string>>(new Set())
+
+onUnmounted(() => {
+  // clear all collapsed heading when unmounted
+  collapsedHeadingsSet.value.clear()
+})
+
+const collapseHeadingHandler = (headingId: string) => {
+  collapsedHeadingsSet.value.add(headingId)
+}
+const expandHeadingHandler = (headingId: string) => {
+  collapsedHeadingsSet.value.delete(headingId)
+}
+const expandAllHeadingsHandler = () => {
+  collapsedHeadingsSet.value.clear()
+}
 const collapseAllHeadingsHandler = () => {
   collapsedHeadingsSet.value = new Set(headingArr)
 }
@@ -281,13 +286,14 @@ const detailNodeArr = ref<null | NodeListOf<HTMLDetailsElement>>(null)
 const addClickListener = (list: NodeListOf<HTMLDetailsElement>) => {
   list.forEach((element) => {
     element.addEventListener('click', (event) => {
+      event.stopPropagation()
       // if toggle the heading manually (by click)
       if(syncCatalogToggleState.value) {
         // and sync catalog toggle state is true
         const detailsElem = event.currentTarget as HTMLDetailsElement
         const headingId = detailsElem?.dataset?.headingId
 
-        if(headingId) {
+        if(headingId && headingArr.includes(headingId)) {
           event.preventDefault() // prevent the default toggle action
           // change the collapsed heading set instead
           // let programming toggle (open or collapse) <details>
@@ -331,6 +337,10 @@ watch([collapsedHeadingsSet, syncCatalogToggleState], () => {
     })
   }
 }, { deep: true, immediate: true })
+
+// onUnmounted(() => {
+//   unWatchHeading()
+// })
 // #endregion
 </script>
 
