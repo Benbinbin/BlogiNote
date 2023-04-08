@@ -8,7 +8,6 @@ let pagefind: any;
 
 if (!process.dev) {
   try {
-    // @vite-ignore
     pagefind = await import(/* @vite-ignore */pagefindPath);
 
     if (baseURL !== '/') {
@@ -17,12 +16,8 @@ if (!process.dev) {
       })
     }
   } catch (error) {
-    // if (process.env.NODE_ENV === 'development') {
       console.log(error);
-    // }
   }
-
-  // console.log(pagefind);
 }
 
 // search modal

@@ -179,58 +179,53 @@ function setActiveHeading(heading: HTMLElement) {
 let observer:IntersectionObserver
 const articleDOM = ref<HTMLElement | null>(null) // get the article DOM
 
-// limited the observer just work on the client side
-// and only observer when the article has toc
-// if(process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
-  onMounted(() => {
-    if (articleDOM.value) {
-      // get the headings DOM of article
-      const headingDomList = articleDOM.value.querySelectorAll('h2, h3, h4, h5, h6')
+onMounted(() => {
+  if (articleDOM.value) {
+    // get the headings DOM of article
+    const headingDomList = articleDOM.value.querySelectorAll('h2, h3, h4, h5, h6')
 
-      // set intersection observer for these headings DOM
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const changeHeading = entry.target
-          // console.log(changeHeading);
-          const id = changeHeading.id
-          if (entry.intersectionRatio > 0) {
-            // when the heading appear in viewport
-            // reset the active headings
-            setActiveHeading(changeHeading as HTMLElement)
-          } else if (entry.boundingClientRect.y > 0) {
-            // when the heading disappear at the bottom
-            // it mean the user scroll up to see the previous content
-            // so we should fallback to the previous heading
-            let index;
-            for (let i = 0; i < headingDomList.length; i++) {
-              const item = headingDomList[i]
-              if(item.id === id) {
-                index = i
-                break;
-              }
-            }
-            if(index && index-1>= 0) {
-              const prevHeading = headingDomList[index-1]
-              setActiveHeading(prevHeading as HTMLElement)
+    // set intersection observer for these headings DOM
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const changeHeading = entry.target
+        const id = changeHeading.id
+        if (entry.intersectionRatio > 0) {
+          // when the heading appear in viewport
+          // reset the active headings
+          setActiveHeading(changeHeading as HTMLElement)
+        } else if (entry.boundingClientRect.y > 0) {
+          // when the heading disappear at the bottom
+          // it mean the user scroll up to see the previous content
+          // so we should fallback to the previous heading
+          let index;
+          for (let i = 0; i < headingDomList.length; i++) {
+            const item = headingDomList[i]
+            if(item.id === id) {
+              index = i
+              break;
             }
           }
-        })
+          if(index && index-1>= 0) {
+            const prevHeading = headingDomList[index-1]
+            setActiveHeading(prevHeading as HTMLElement)
+          }
+        }
       })
+    })
 
-      if (headingDomList.length > 0) {
-        headingDomList.forEach((heading) => {
-          observer.observe(heading)
-        })
-      }
+    if (headingDomList.length > 0) {
+      headingDomList.forEach((heading) => {
+        observer.observe(heading)
+      })
     }
-  })
+  }
+})
 
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect()
-    }
-  })
-// }
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+})
 
 // sync the toggle headings
 const syncCatalogToggleState = useState('syncCatalogToggleState', () => false)
@@ -254,17 +249,8 @@ interface CatalogItem {
   children?: CatalogItem[]
 }
 
-// const recursiveCollapseHeading = (link: CatalogItem) => {
-//   collapsedHeadingsSet.value.add(link.id)
-//   if (link.children) {
-//     link.children.forEach(subLink => {
-//       recursiveCollapseHeading(subLink)
-//     })
-//   }
-// }
-
-// get all heading id
 const headingArr: string[] = []
+// get all heading id
 const recursiveGetHeading = (heading: CatalogItem) => {
   headingArr.push(heading.id)
   if(heading.children) {
@@ -284,39 +270,58 @@ const collapseAllHeadingsHandler = () => {
   collapsedHeadingsSet.value = new Set(headingArr)
 }
 
-// const toggleAllCatalogItemState = ref<'expand' | 'collapse' | ''>('')
-// const changeToggleAllCatalogItemState = (value: 'expand' | 'collapse' | '') => {
-//   toggleAllCatalogItemState.value = value
-// }
-
 provide('collapsedHeadingsSet', collapsedHeadingsSet)
 provide('collapseHeadingHandler', collapseHeadingHandler)
 provide('collapseAllHeadingsHandler', collapseAllHeadingsHandler)
 provide('expandHeadingHandler', expandHeadingHandler)
 provide('expandAllHeadingsHandler', expandAllHeadingsHandler)
-// provide('toggleAllCatalogItemState', toggleAllCatalogItemState)
-// provide('changeToggleAllCatalogItemState', changeToggleAllCatalogItemState)
 
 const detailNodeArr = ref<null | NodeListOf<HTMLDetailsElement>>(null)
 
-// limited the watch just work on the client side
-// if (process.client && props.data?.body?.toc && props.data.body.toc.links.length > 0) {
+const addClickListener = (list: NodeListOf<HTMLDetailsElement>) => {
+  list.forEach((element) => {
+    element.addEventListener('click', (event) => {
+      // if toggle the heading manually (by click)
+      if(syncCatalogToggleState.value) {
+        // and sync catalog toggle state is true
+        const detailsElem = event.currentTarget as HTMLDetailsElement
+        const headingId = detailsElem?.dataset?.headingId
+
+        if(headingId) {
+          event.preventDefault() // prevent the default toggle action
+          // change the collapsed heading set instead
+          // let programming toggle (open or collapse) <details>
+          // (see the next watch function 👇)
+          if(detailsElem.open) {
+            collapseHeadingHandler(headingId)
+          } else {
+            expandHeadingHandler(headingId)
+          }
+        }
+      }
+    })
+  })
+}
+
 onMounted(() => {
   if (articleDOM.value) {
+    // get all <details> elements
     detailNodeArr.value = articleDOM.value.querySelectorAll('details')
+
+    if(detailNodeArr.value && detailNodeArr.value.length > 0) {
+      // add click event listener for each <details> element
+      addClickListener(detailNodeArr.value)
+    }
   }
 })
 
+// watch collapsed heading set change
 watch([collapsedHeadingsSet, syncCatalogToggleState], () => {
-  console.log(collapsedHeadingsSet.value);
-
   if(syncCatalogToggleState.value && detailNodeArr.value && detailNodeArr.value.length > 0) {
 
     detailNodeArr.value.forEach(node => {
       const headingId = node?.dataset?.headingId
-      console.log(headingId);
-
-      // programming toggle <details> open or collapse
+      // then programming toggle (open or collapse) <details>
       // refer to https://web.dev/learn/html/details/
       if(headingId && collapsedHeadingsSet.value.has(headingId)) {
         node.removeAttribute('open')
@@ -326,7 +331,6 @@ watch([collapsedHeadingsSet, syncCatalogToggleState], () => {
     })
   }
 }, { deep: true, immediate: true })
-// }
 // #endregion
 </script>
 

@@ -9,8 +9,6 @@ const route = useRoute()
  */
 const { data, pending } = await useAsyncData(`${route.path}`, () => queryContent(route.path).findOne())
 
-// console.log(data);
-
 /**
  *
  * catalog (it's the toc for markdown article)
