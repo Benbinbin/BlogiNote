@@ -64,7 +64,7 @@ const nextArticleName = ref('')
 // #region series
 const seriesList: any = ref([])
 // show or hide series modal
-const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
+const showSeriesModal = useState('showSeriesModal')
 if (props.data?.series) {
   // if this post belong to a series
   // fetch articles list based on series

@@ -71,9 +71,9 @@ const onAfterEnter = (el:HTMLElement) => {
 // control the scroll behavior
 // fix the overscroll bug
 const subNavDOM = ref<null | HTMLElement>(null)
-const scrollHandler = (event: WheelEvent) => {
+const scrollWheelHandler = (event: WheelEvent) => {
   if(subNavDOM.value) {
-    overscrollHandler(event, subNavDOM.value)
+    overscrollWheelHandler(event, subNavDOM.value)
   }
 }
 
@@ -158,7 +158,7 @@ const showSearchModal = useShowSearchModal()
         class="sub-nav-scroll-container w-full max-h-[60vh] overflow-y-auto overscroll-y-container absolute -z-10 bottom-0 inset-x-0 hidden sm:flex justify-center items-start bg-gray-50 shadow-md shadow-gray-200"
         @mouseover="setSubNav(true)"
         @mouseleave="setSubNav(false)"
-        @wheel="scrollHandler"
+        @wheel="scrollWheelHandler"
       >
         <div class="sub-nav-items-container max-w-full px-6 py-8">
           <NuxtLink

@@ -1,5 +1,5 @@
 // control the scroll behavior
-export default function overscrollHandler(event: WheelEvent, element: HTMLElement) {
+export function overscrollWheelHandler(event: WheelEvent, element: HTMLElement) {
   event.stopPropagation()
 
   if (element) {

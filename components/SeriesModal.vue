@@ -5,18 +5,26 @@ const props = defineProps<{
   seriesList: any;
 }>()
 
-const showSeriesModal = useState('showSeriesModal')
+const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
 
 const showDetail = ref(false)
 
-// control the scroll behavior
-// fix the overscroll bug
-const seriesModalContentDOM = ref(null)
-const scrollHandler = (event: WheelEvent) => {
-  if (seriesModalContentDOM.value) {
-    overscrollHandler(event, seriesModalContentDOM.value)
+/**
+ *
+ * control the scroll behavior
+ *
+ */
+// stop body scroll when series modal show up
+watch(showSeriesModal, () => {
+  if (!document?.body) { return }
+
+  if (showSeriesModal.value) {
+    document.body.classList.add('overflow-hidden')
+  } else {
+    document.body.classList.remove('overflow-hidden')
   }
-}
+}, { immediate: true })
+
 
 /**
  *
@@ -81,13 +89,14 @@ onUnmounted(() => {
 <template>
   <div
     class="expand-window p-4 fixed inset-0 z-[80] flex justify-center items-center"
-    @wheel="$event.preventDefault()"
   >
     <div
       class="expand-window absolute inset-0 -z-10 flex justify-center items-center bg-black/30 backdrop-blur"
       @click="showSeriesModal=false"
     />
-    <div class="modal-container flex flex-col lg:max-w-4xl">
+    <div
+      class="modal-container flex flex-col lg:max-w-4xl"
+    >
       <h2 class="px-4 py-4 sm:py-6 text-lg sm:text-xl font-bold text-center bg-white border-b rounded-t-lg">
         {{ props.seriesName }}
       </h2>
@@ -95,7 +104,6 @@ onUnmounted(() => {
         v-if="seriesList && seriesList.length > 0"
         ref="seriesModalContentDOM"
         class="modal-content-container pl-8 md:pl-12 pr-4 py-4 list-decimal space-y-2 overflow-y-auto bg-white"
-        @wheel="scrollHandler"
       >
         <li
           v-for="article in seriesList"
