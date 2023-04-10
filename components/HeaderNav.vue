@@ -86,7 +86,7 @@ const showSearchModal = useState('showSearchModal')
 </script>
 
 <template>
-  <div class="relative">
+  <nav class="relative">
     <div
       class="px-4 py-3 grid grid-cols-3 items-center gap-2 text-sm bg-gray-50 border-b"
       :class="showSubNav ? 'border-gray-200' : 'border-gray-50 shadow-md shadow-gray-200'"
@@ -192,7 +192,7 @@ const showSearchModal = useState('showSearchModal')
         </div>
       </div>
     </Transition>
-  </div>
+  </nav>
 </template>
 
 <style scoped lang="scss">

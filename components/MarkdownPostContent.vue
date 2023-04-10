@@ -82,7 +82,11 @@ if (process.client) {
 </script>
 
 <template>
-  <div ref="articleContainerDOM">
+  <!-- the "data-pagefind-body" is the index mark for pagefind -->
+  <div
+    ref="articleContainerDOM"
+    data-pagefind-body
+  >
     <ContentRenderer
       :value="props.data"
       class="markdown-post-content-container selection:text-white selection:bg-purple-400"
