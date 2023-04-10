@@ -78,10 +78,3 @@ export const useFileTypeMap = () => useState('fileTypeMap', () => {
     }
   }
 })
-
-/**
- *
- * search modal
- *
- */
-export const useShowSearchModal = () => useState<Boolean>('showSearchModal', () => false)

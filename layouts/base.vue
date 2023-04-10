@@ -87,23 +87,7 @@ onMounted(() => {
   }
 })
 
-/**
- *
- * search modal
- *
- */
-const showSearchModal = useShowSearchModal()
-
-// stop body scroll when search modal show up
-watch(showSearchModal, () => {
-  if (!document?.body) { return }
-
-  if (showSearchModal.value) {
-    document.body.classList.add('overflow-hidden')
-  } else {
-    document.body.classList.remove('overflow-hidden')
-  }
-})
+const showSearchModal = useState('showSearchModal')
 
 // keyboard shortcuts for search modal
 const ModalKeyListener = function (event: KeyboardEvent) {

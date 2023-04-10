@@ -21,32 +21,51 @@ if (!process.dev) {
 }
 
 // search modal
-const showSearchModal = useShowSearchModal()
+const showSearchModal = useState<Boolean>('showSearchModal', () => false)
 
-const searchInput = ref<HTMLElement | null>(null) // get the input DOM
+// stop body scroll when search modal show up
+watch(showSearchModal, () => {
+  if (!document?.body) { return }
+
+  if (showSearchModal.value) {
+    document.body.classList.add('overflow-hidden')
+  } else {
+    document.body.classList.remove('overflow-hidden')
+  }
+})
+
+const searchInputDOM = ref<HTMLElement | null>(null) // get the input DOM
 
 // when the search modal show up, auto focus the input box
 onMounted(() => {
   watch(showSearchModal, () => {
-    if (searchInput.value && showSearchModal.value) {
+    if (searchInputDOM.value && showSearchModal.value) {
       nextTick(() => {
-        searchInput.value?.focus()
+        searchInputDOM.value?.focus()
       })
     }
   })
 })
 
 const focusInputHandler = () => {
-  if (searchInput.value) {
-    searchInput.value.focus()
+  if (searchInputDOM.value) {
+    searchInputDOM.value.focus()
   }
 }
 
+// listen input and then search
+const searchState = ref<'waiting' | 'solved'>('waiting')
+const inputText = ref<string>('')
 const searchResults = ref<any[]>([])
-const appConfig = useAppConfig()
+
+watch(inputText, () => {
+  searchState.value = 'waiting'
+})
 
 let timer: (null | ReturnType<typeof setTimeout>) = null
-const debouncedSearch = (key: string, delay:number = 300) => {
+const appConfig = useAppConfig()
+
+const debouncedSearch = (key: string, delay: number = 300) => {
   if (timer) {
     clearTimeout(timer)
   }
@@ -54,21 +73,27 @@ const debouncedSearch = (key: string, delay:number = 300) => {
   if (key) {
     timer = setTimeout(async () => {
       if (pagefind) {
-        const metaResults = await pagefind.search(key);
+        try {
+          const metaResults = await pagefind.search(key);
 
-        timer = null
-        if (metaResults.results.length > 0) {
-          const resultsData = await Promise.all(metaResults.results.map((r: any) => r.data()));
+          searchState.value = 'solved'
 
-          let filterResults = []
+          timer = null
+          if (metaResults.results.length > 0) {
+            const resultsData = await Promise.all(metaResults.results.map((r: any) => r.data()));
 
-          if (appConfig?.bloginote?.search?.exclude && appConfig.bloginote.search.exclude.length > 0) {
-            filterResults = resultsData.filter(item => !appConfig.bloginote.search.exclude.includes(item.url))
+            let filterResults = []
+
+            if (appConfig?.bloginote?.search?.exclude && appConfig.bloginote.search.exclude.length > 0) {
+              filterResults = resultsData.filter(item => !appConfig.bloginote.search.exclude.includes(item.url))
+            }
+
+            searchResults.value = filterResults;
+          } else {
+            searchResults.value = []
           }
-
-          searchResults.value = filterResults;
-        } else {
-          searchResults.value = []
+        } catch (error) {
+          searchState.value = 'solved'
         }
       }
     }, delay)
@@ -76,14 +101,8 @@ const debouncedSearch = (key: string, delay:number = 300) => {
     timer = null
     searchResults.value = []
     inputText.value = ''
+    searchState.value = 'solved'
   }
-}
-
-const inputText = ref<string>('')
-
-const clearInputTextHandler = () => {
-  inputText.value = ''
-  searchResults.value = []
 }
 
 const inputHandler = (event: Event) => {
@@ -92,6 +111,12 @@ const inputHandler = (event: Event) => {
     pagefind.preload(target.value);
     debouncedSearch(target.value)
   }
+}
+
+const clearInputTextHandler = () => {
+  inputText.value = ''
+  searchResults.value = []
+  searchState.value = 'waiting'
 }
 </script>
 
@@ -114,7 +139,7 @@ const inputHandler = (event: Event) => {
         </button>
 
         <input
-          ref="searchInput"
+          ref="searchInputDOM"
           v-model="inputText"
           type="text"
           placeholder="Search Content"
@@ -142,6 +167,26 @@ const inputHandler = (event: Event) => {
       </div>
 
       <div class="modal-content-container px-4 overflow-y-auto bg-white rounded-b-lg">
+        <div
+          v-show="!inputText"
+          class="p-16 flex flex-col justify-center items-center gap-y-8 text-purple-400"
+        >
+          <IconCustom
+            name="fluent:text-t-28-filled"
+            class="w-12 h-12"
+          />
+          <p>Type to Search</p>
+        </div>
+        <div
+          v-show="inputText && searchState === 'waiting'"
+          class="p-16 flex flex-col justify-center items-center gap-y-8 text-purple-400"
+        >
+          <IconCustom
+            name="fluent:slide-search-28-filled"
+            class="w-12 h-12 animate-bounce"
+          />
+          <p>Searching</p>
+        </div>
         <ul
           v-show="searchResults.length>0"
           class="search-result p-4 space-y-2"
@@ -166,12 +211,12 @@ const inputHandler = (event: Event) => {
           </li>
         </ul>
         <div
-          v-show="!(searchResults.length>0)"
-          class="p-16 flex flex-col justify-center items-center space-y-8"
+          v-show="inputText && searchState === 'solved' && !(searchResults.length > 0)"
+          class="p-16 flex flex-col justify-center items-center gap-y-8 text-red-400"
         >
           <IconCustom
             name="fluent:mail-inbox-dismiss-28-filled"
-            class="w-12 h-12 text-purple-400"
+            class="w-12 h-12 "
           />
           <p>Oops! There is no result.</p>
         </div>

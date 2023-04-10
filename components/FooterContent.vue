@@ -17,7 +17,7 @@ const appConfig = useAppConfig()
         <span v-else>{{ appConfig.bloginote.author }}</span>
       </p>
       <p>
-        theme <a
+        Theme <a
           href="https://github.com/Benbinbin/BlogiNote"
           target="_blank"
           class="text-blue-400"
@@ -28,11 +28,7 @@ const appConfig = useAppConfig()
           href="https://icones.js.org/"
           target="_blank"
           class="text-blue-400"
-        >Icônes</a>, <a
-          href="https://icons8.com/"
-          target="_blank"
-          class="text-blue-400"
-        >Icons8</a>
+        >Icônes</a>
       </p>
     </div>
   </div>

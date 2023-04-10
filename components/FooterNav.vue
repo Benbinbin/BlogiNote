@@ -62,7 +62,7 @@ const getTheme = (path = '') => {
  * search modal
  *
  */
-const showSearchModal = useShowSearchModal()
+const showSearchModal = useState('showSearchModal')
 </script>
 
 <template>

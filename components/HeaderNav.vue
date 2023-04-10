@@ -82,7 +82,7 @@ const scrollWheelHandler = (event: WheelEvent) => {
  * search modal
  *
  */
-const showSearchModal = useShowSearchModal()
+const showSearchModal = useState('showSearchModal')
 </script>
 
 <template>
