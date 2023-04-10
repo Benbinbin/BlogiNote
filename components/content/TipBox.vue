@@ -24,65 +24,65 @@ const defaultTypeMap = {
   tip: {
     icon: 'bi:lightbulb-fill',
     name: 'Tip',
-    bgColorClass: 'bg-yellow-100',
-    textColorClass: 'text-yellow-500',
+    bgColorClass: 'bg-yellow-50',
+    textColorClass: 'text-orange-500',
     borderColorClass: 'border-yellow-400'
   },
   announce: {
-    icon: 'bi:megaphone',
+    icon: 'bi:megaphone-fill',
     name: 'Announce',
-    bgColorClass: 'bg-purple-100',
-    textColorClass: 'text-purple-500',
+    bgColorClass: 'bg-purple-50',
+    textColorClass: 'text-purple-600',
     borderColorClass: 'border-purple-400'
   },
   warning: {
     icon: 'bi:exclamation-triangle-fill',
     name: 'Warning',
-    bgColorClass: 'bg-red-100',
+    bgColorClass: 'bg-red-50',
     textColorClass: 'text-red-500',
     borderColorClass: 'border-red-400'
   },
   fun: {
     icon: 'bi:balloon-fill',
     name: 'Fun',
-    bgColorClass: 'bg-cyan-100',
-    textColorClass: 'text-cyan-500',
-    borderColorClass: 'border-cyan-300'
+    bgColorClass: 'bg-cyan-50',
+    textColorClass: 'text-sky-600',
+    borderColorClass: 'border-cyan-400'
   },
   achieve: {
     icon: 'bi:award-fill',
     name: 'Achieve',
-    bgColorClass: 'bg-orange-100',
-    textColorClass: 'text-orange-500',
-    borderColorClass: 'border-orange-200'
+    bgColorClass: 'bg-orange-50',
+    textColorClass: 'text-orange-600',
+    borderColorClass: 'border-orange-400'
   },
   question: {
     icon: 'bi:question-circle-fill',
     name: 'Question',
-    bgColorClass: 'bg-fuchsia-100',
-    textColorClass: 'text-fuchsia-500',
-    borderColorClass: 'border-fuchsia-300'
+    bgColorClass: 'bg-fuchsia-50',
+    textColorClass: 'text-fuchsia-600',
+    borderColorClass: 'border-fuchsia-400'
   },
   good: {
     icon: 'bi:hand-thumbs-up-fill',
     name: 'Good',
     bgColorClass: 'bg-green-100',
-    textColorClass: 'text-green-500',
-    borderColorClass: 'border-green-300'
+    textColorClass: 'text-green-600',
+    borderColorClass: 'border-green-500'
   },
   bad: {
     icon: 'bi:hand-thumbs-down-fill',
     name: 'Bad',
-    bgColorClass: 'bg-red-100',
+    bgColorClass: 'bg-red-50',
     textColorClass: 'text-red-500',
-    borderColorClass: 'border-red-300'
+    borderColorClass: 'border-red-400'
   },
   tldr: {
     icon: 'bi:chat-left-text-fill',
     name: 'TL;DR',
     bgColorClass: 'bg-gray-100',
-    textColorClass: 'text-gray-700',
-    borderColorClass: 'border-gray-300'
+    textColorClass: 'text-gray-800',
+    borderColorClass: 'border-gray-400'
   }
 }
 
@@ -167,13 +167,28 @@ if (borderColorStyleValue.value) {
 </script>
 
 <template>
-  <div class="my-4 px-4 lg:px-6 py-2 border rounded-md" :class="containerClass" :style="containerStyle">
-    <p v-if="nameValue" class="font-bold flex items-center gap-2">
-      <IconCustom v-if="iconValue" :name="iconValue" class="w-4 h-4" />
+  <div
+    class="my-4 px-4 lg:px-6 py-2 border rounded-md"
+    :class="containerClass"
+    :style="containerStyle"
+  >
+    <p
+      v-if="nameValue"
+      class="font-bold flex items-center gap-2"
+    >
+      <IconCustom
+        v-if="iconValue"
+        :name="iconValue"
+        class="w-4 h-4"
+      />
       <span v-if="nameValue">{{ nameValue }}</span>
     </p>
 
-    <IconCustom v-else-if="iconValue && !nameValue" :name="iconValue" class="w-4 h-4" />
+    <IconCustom
+      v-else-if="iconValue && !nameValue"
+      :name="iconValue"
+      class="w-4 h-4"
+    />
     <div>
       <slot />
     </div>
