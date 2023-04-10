@@ -169,10 +169,10 @@ if (process.client) {
 
   ul,
   ol {
-    @apply pl-4 my-2.5;
+    @apply ml-4;
 
     li {
-      @apply my-2.5;
+      @apply leading-loose;
     }
   }
 
