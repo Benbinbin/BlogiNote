@@ -76,8 +76,6 @@ const debouncedSearch = (key: string, delay: number = 300) => {
         try {
           const metaResults = await pagefind.search(key);
 
-          searchState.value = 'solved'
-
           timer = null
           if (metaResults.results.length > 0) {
             const resultsData = await Promise.all(metaResults.results.map((r: any) => r.data()));
@@ -93,6 +91,8 @@ const debouncedSearch = (key: string, delay: number = 300) => {
             searchResults.value = []
           }
         } catch (error) {
+          console.log(error);
+        } finally {
           searchState.value = 'solved'
         }
       }
