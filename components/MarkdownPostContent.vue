@@ -201,20 +201,23 @@ if (process.client) {
   }
 
   table {
-    @apply my-0.5;
-  }
+    @apply mx-auto my-0.5 bg-gray-50 border border-gray-300 table-auto;
 
-  table {
-    @apply mx-auto table-auto;
+    thead {
+      @apply bg-gray-200;
+    }
 
-    thead tr,
-    tr:nth-child(2n) {
+    tbody tr:nth-child(2n) {
       @apply bg-gray-100;
+    }
+
+    th {
+      @apply min-w-[6rem] sm:min-w-fit;
     }
 
     th,
     td {
-      @apply px-4 py-2 border border-gray-200 text-center;
+      @apply px-4 py-2 text-center border border-gray-300;
     }
   }
 
