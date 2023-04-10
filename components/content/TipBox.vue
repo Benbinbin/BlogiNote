@@ -11,6 +11,18 @@ const props = defineProps<{
   borderColorStyle?: string;
 }>()
 
+interface DefaultTypeItem {
+  icon: string;
+  name: string;
+  bgColorClass: string;
+    textColorClass: string;
+    borderColorClass: string;
+}
+
+interface DefaultType {
+  [propName: string]: DefaultTypeItem
+}
+
 // some default types:
 // tip
 // announce
@@ -20,13 +32,13 @@ const props = defineProps<{
 // question
 // good
 // bad
-const defaultTypeMap = {
+const defaultTypeMap: DefaultType = {
   tip: {
     icon: 'bi:lightbulb-fill',
     name: 'Tip',
-    bgColorClass: 'bg-yellow-50',
-    textColorClass: 'text-orange-500',
-    borderColorClass: 'border-yellow-400'
+    bgColorClass: 'bg-amber-50',
+    textColorClass: 'text-amber-500',
+    borderColorClass: 'border-amber-400'
   },
   announce: {
     icon: 'bi:megaphone-fill',
@@ -109,34 +121,42 @@ if (typeValue) {
 }
 
 if (props.icon) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   iconValue.value = props.icon
 }
 
 if (props.name) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   nameValue.value = props.name
 }
 
 if (props.bgColorClass) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   bgColorClassValue.value = props.bgColorClass
 }
 
 if (props.textColorClass) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   textColorClassValue.value = props.textColorClass
 }
 
 if (props.bgColorStyle) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   bgColorStyleValue.value = props.bgColorStyle
 }
 
 if (props.textColorStyle) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   textColorStyleValue.value = props.textColorStyle
 }
 
 if (props.borderColorClass) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   borderColorClassValue.value = props.borderColorClass
 }
 
 if (props.borderColorStyle) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
   borderColorStyleValue.value = props.borderColorStyle
 }
 
