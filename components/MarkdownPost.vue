@@ -110,24 +110,24 @@ if (props.data?.series) {
 
 // if the page metadata has the information about previous or next article
 // rewrite the default value
-if (props.data.value?.prevArticleUrl) {
+if (props.data?.prevArticleUrl) {
   // eslint-disable-next-line vue/no-setup-props-destructure
-  prevArticleUrl.value = props.data.value.prevArticleUrl
+  prevArticleUrl.value = props.data.prevArticleUrl
 }
 
-if (props.data.value?.prevArticleName) {
+if (props.data?.prevArticleName) {
   // eslint-disable-next-line vue/no-setup-props-destructure
-  prevArticleName.value = props.data.value.prevArticleName
+  prevArticleName.value = props.data.prevArticleName
 }
 
-if (props.data.value?.nextArticleUrl) {
+if (props.data?.nextArticleUrl) {
   // eslint-disable-next-line vue/no-setup-props-destructure
-  nextArticleUrl.value = props.data.value.nextArticleUrl
+  nextArticleUrl.value = props.data.nextArticleUrl
 }
 
-if (props.data.value?.nextArticleName) {
+if (props.data?.nextArticleName) {
   // eslint-disable-next-line vue/no-setup-props-destructure
-  nextArticleName.value = props.data.value.nextArticleName
+  nextArticleName.value = props.data.nextArticleName
 }
 // #endregion
 
