@@ -12,12 +12,21 @@ BlogiNote is a [Nuxt Theme](https://nuxt.com/docs/guide/going-further/layers) ba
 :bookmark_tabs: [Documentation](https://documentation.bloginote.benbinbin.com/)
 
 ## Features
-- content driving website, it can generate web pages based on lots of formats of files, like markdown, json, csv and more
-- support [MDC syntax](https://content.nuxtjs.org/guide/writing/mdc) which supercharges markdown to be a more powerful tool, because Vue components can be used in it
-- provide navigation page and filter feature to query articles more convenient
-- full text search
+:sparkles: Content driving: generate web pages based on markdown, json, csv and more
+
+:sparkles: Vue components in Markdown: with [MDC syntax](https://content.nuxtjs.org/guide/writing/mdc) you can use vue components inside markdown file
+
+:sparkles: List Page: a list page make the filter and query articles more convenient
+
+:sparkles: Full text search: you can search content everywhere powered by [Pagefind](https://pagefind.app/) 🎥 [Demo](https://youtu.be/OotBwk88Y38)
+
+:sparkles: Tree Catalog: you can catch the outline of the article easily with a Mind Map powered by [D3.js](https://d3js.org/) 🎥 [Demo](https://youtu.be/dxR8Oh0a4E4)
+
+:sparkles: Toggle Heading: you can toggle the heading to show or hide the following content, it's so useful to read a long long post 🎥 [Demo1](https://youtu.be/2OVF7ZLpopE) [Demo2](https://youtu.be/U8ylBVHekRM)
 
 :muscle: it will keep evolving to add more features
+
+🎥 More demo please checkout the [Youtube playlist](https://youtube.com/playlist?list=PLqLRbo_6ezAEpy7KjFbXTgjndhJr0M5Zj)
 
 ## Usage
 Use the [starter template](https://github.com/Benbinbin/BlogiNote-Starter-Template) to build your own project with the BlogiNote theme.

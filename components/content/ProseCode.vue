@@ -94,7 +94,7 @@ if (props.filename) {
  */
 type CopyState = 'wait' | 'process' | 'success' | 'fail'
 const copyState = ref<CopyState>('wait')
-const clipboard = ref(null)
+const clipboard = ref<null | Navigator>(null)
 
 onMounted(() => {
   clipboard.value = navigator.clipboard
@@ -157,7 +157,10 @@ onMounted(() => {
       :class="props.language === 'mermaid' ? 'bg-gray-50 border-gray-300' : 'border-gray-600 bg-gray-900'"
     >
       <div class="shrink-0">
-        <button v-show="codeLines > 3 && props.language !== 'mermaid'" @click="toggleExpand">
+        <button
+          v-show="codeLines > 3 && props.language !== 'mermaid'"
+          @click="toggleExpand"
+        >
           <IconCustom
             name="material-symbols:keyboard-arrow-down-rounded"
             class="w-4 h-4 text-gray-400 transition-transform duration-300"
@@ -166,7 +169,10 @@ onMounted(() => {
         </button>
       </div>
 
-      <div v-if="props.filename" class="code-filename-container grow flex items-center gap-2 overflow-x-auto">
+      <div
+        v-if="props.filename"
+        class="code-filename-container grow flex items-center gap-2 overflow-x-auto"
+      >
         <NuxtLink
           v-if="urlRegex.test(props.filename)"
           :to="props.filename"
@@ -174,11 +180,20 @@ onMounted(() => {
           class=" no-underline transition-colors duration-300"
           style="text-decoration-line: none; color: #94a3b8;"
         >
-          <IconCustom name="bi:link-45deg" class="shrink-0 w-4 h-4" />
+          <IconCustom
+            name="bi:link-45deg"
+            class="shrink-0 w-4 h-4"
+          />
           <!-- <span class="shrink-0 text-xs">{{ props.filename }}</span> -->
         </NuxtLink>
-        <div v-else class=" flex items-center gap-2 text-gray-400 ">
-          <IconCustom name="bi:file-earmark-code" class="shrink-0 w-4 h-4 " />
+        <div
+          v-else
+          class=" flex items-center gap-2 text-gray-400 "
+        >
+          <IconCustom
+            name="bi:file-earmark-code"
+            class="shrink-0 w-4 h-4 "
+          />
           <span class="shrink-0 text-xs">{{ props.filename }}</span>
         </div>
       </div>
@@ -190,9 +205,21 @@ onMounted(() => {
           :disabled="copyState !== 'wait' || !clipboard"
           @click="copyHandler"
         >
-          <IconCustom v-show="copyState === 'wait'" name="uil:copy" class="w-4 h-4" />
-          <IconCustom v-show="copyState === 'process'" name="eos-icons:loading" class="w-4 h-4 text-purple-500" />
-          <IconCustom v-show="copyState === 'success'" name="uil:check" class="w-4 h-4 text-green-500" />
+          <IconCustom
+            v-show="copyState === 'wait'"
+            name="uil:copy"
+            class="w-4 h-4"
+          />
+          <IconCustom
+            v-show="copyState === 'process'"
+            name="eos-icons:loading"
+            class="w-4 h-4 text-purple-500"
+          />
+          <IconCustom
+            v-show="copyState === 'success'"
+            name="uil:check"
+            class="w-4 h-4 text-green-500"
+          />
           <IconCustom
             v-show="copyState === 'fail'"
             name="icon-park-outline:file-failed-one"
@@ -212,8 +239,17 @@ onMounted(() => {
       </div>
     </div>
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-if="props.language === 'mermaid'" class="mermaid p-4 rounded-b-lg" v-html="mermaidGraph" />
-    <div v-else ref="codeContainer" class="relative px-2 bg-gray-900 rounded-b-lg" :class="expand ? '' : 'max-h-[72px] overflow-y-hidden'">
+    <div
+      v-if="props.language === 'mermaid'"
+      class="mermaid p-4 rounded-b-lg"
+      v-html="mermaidGraph"
+    />
+    <div
+      v-else
+      ref="codeContainer"
+      class="relative px-2 bg-gray-900 rounded-b-lg"
+      :class="expand ? '' : 'max-h-[72px] overflow-y-hidden'"
+    >
       <div
         v-show="!expand"
         class="absolute inset-0 z-10 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px] rounded-b-lg"
