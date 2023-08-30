@@ -9,21 +9,24 @@ const props = defineProps<{
   textColorStyle?: string;
   borderColorClass?: string;
   borderColorStyle?: string;
+  boxClass?: string;
+  boxStyle?: string;
+  open?: string;
 }>()
 
 interface DefaultTypeItem {
   icon: string;
   name: string;
-  bgColorClass: string;
-    textColorClass: string;
-    borderColorClass: string;
+  boxClass: string;
 }
 
 interface DefaultType {
   [propName: string]: DefaultTypeItem
 }
 
-// some default types:
+/**
+ * some default types for TipBox
+ */
 // tip
 // announce
 // warning
@@ -36,68 +39,51 @@ const defaultTypeMap: DefaultType = {
   tip: {
     icon: 'bi:lightbulb-fill',
     name: 'Tip',
-    bgColorClass: 'bg-amber-50',
-    textColorClass: 'text-amber-500',
-    borderColorClass: 'border-amber-400'
+    boxClass: 'text-amber-500 bg-amber-50 border-amber-400'
   },
   announce: {
     icon: 'bi:megaphone-fill',
     name: 'Announce',
-    bgColorClass: 'bg-purple-50',
-    textColorClass: 'text-purple-600',
-    borderColorClass: 'border-purple-400'
+    boxClass: 'text-purple-600 bg-purple-50 border-purple-400'
   },
   warning: {
     icon: 'bi:exclamation-triangle-fill',
     name: 'Warning',
-    bgColorClass: 'bg-red-50',
-    textColorClass: 'text-red-500',
-    borderColorClass: 'border-red-400'
+    boxClass: 'text-red-500 bg-red-50 border-red-400'
   },
   fun: {
     icon: 'bi:balloon-fill',
     name: 'Fun',
-    bgColorClass: 'bg-cyan-50',
-    textColorClass: 'text-sky-600',
-    borderColorClass: 'border-cyan-400'
+    boxClass: 'text-sky-600 bg-cyan-50 border-cyan-400'
   },
   achieve: {
     icon: 'bi:award-fill',
     name: 'Achieve',
-    bgColorClass: 'bg-orange-50',
-    textColorClass: 'text-orange-600',
-    borderColorClass: 'border-orange-400'
+    boxClass: 'text-orange-600 bg-orange-50 border-orange-400'
   },
   question: {
     icon: 'bi:question-circle-fill',
     name: 'Question',
-    bgColorClass: 'bg-fuchsia-50',
-    textColorClass: 'text-fuchsia-600',
-    borderColorClass: 'border-fuchsia-400'
+    boxClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-400'
   },
   good: {
     icon: 'bi:hand-thumbs-up-fill',
     name: 'Good',
-    bgColorClass: 'bg-green-100',
-    textColorClass: 'text-green-600',
-    borderColorClass: 'border-green-500'
+    boxClass: 'text-green-600 bg-green-100 border-green-500'
   },
   bad: {
     icon: 'bi:hand-thumbs-down-fill',
     name: 'Bad',
-    bgColorClass: 'bg-red-50',
-    textColorClass: 'text-red-500',
-    borderColorClass: 'border-red-400'
+    boxClass: 'text-red-500 bg-red-50 border-red-400'
   },
   tldr: {
     icon: 'bi:chat-left-text-fill',
     name: 'TL;DR',
-    bgColorClass: 'bg-gray-100',
-    textColorClass: 'text-gray-800',
-    borderColorClass: 'border-gray-400'
+    boxClass: 'text-gray-800 bg-gray-100 border-gray-400'
   }
 }
 
+const openState = ref(props.open ? props.open === 'true' : true)
 const iconValue = ref('')
 const nameValue = ref('')
 const bgColorClassValue = ref('')
@@ -106,6 +92,8 @@ const textColorClassValue = ref('')
 const textColorStyleValue = ref('')
 const borderColorClassValue = ref('')
 const borderColorStyleValue = ref('')
+const boxClassValue = ref('')
+const boxStyle = ref('')
 
 const typeValue = props.type ? props.type.toLowerCase() : ''
 
@@ -114,9 +102,7 @@ if (typeValue) {
   if (defaultType) {
     iconValue.value = defaultType.icon
     nameValue.value = defaultType.name
-    bgColorClassValue.value = defaultType.bgColorClass
-    textColorClassValue.value = defaultType.textColorClass
-    borderColorClassValue.value = defaultType.borderColorClass
+    boxClassValue.value = defaultType.boxClass
   }
 }
 
@@ -160,6 +146,15 @@ if (props.borderColorStyle) {
   borderColorStyleValue.value = props.borderColorStyle
 }
 
+if(props.boxClass) {
+  boxClassValue.value = props.boxClass
+}
+
+if(props.boxStyle) {
+  boxStyle.value = props.boxStyle
+}
+
+// combine the class and style props to a string
 const containerClass = ref('')
 const containerStyle = ref('')
 
@@ -167,6 +162,7 @@ if (!nameValue.value) {
   containerClass.value += ' ' + 'flex items-center gap-4'
 }
 
+// style setting has higher priority than class setting
 if (bgColorStyleValue.value) {
   containerStyle.value += ' ' + `background-color: ${bgColorStyleValue.value};`
 } else if (bgColorClassValue.value) {
@@ -184,35 +180,40 @@ if (borderColorStyleValue.value) {
 } else if (borderColorClassValue.value) {
   containerClass.value += ' ' + borderColorClassValue.value
 }
+
+// boxClass and boxStyle will rewrite the other class and style setting
+if(boxClassValue.value) {
+  containerClass.value = boxClassValue.value
+}
+
+if(boxStyle.value) {
+  containerClass.value = boxStyle.value
+}
 </script>
 
 <template>
-  <div
+  <details
     class="my-4 px-4 lg:px-6 py-2 border rounded-md"
     :class="containerClass"
     :style="containerStyle"
+    :open="openState"
   >
-    <p
-      v-if="nameValue"
-      class="font-bold flex items-center gap-2"
+    <!-- box header -->
+    <summary
+      class="my-4 font-bold flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity duration-300"
     >
       <IconCustom
-        v-if="iconValue"
-        :name="iconValue"
+        :name="iconValue || 'bi:lightbulb-fill'"
         class="w-4 h-4"
       />
-      <span v-if="nameValue">{{ nameValue }}</span>
-    </p>
+      <span>{{ nameValue || 'Tip' }}</span>
+    </summary>
 
-    <IconCustom
-      v-else-if="iconValue && !nameValue"
-      :name="iconValue"
-      class="w-4 h-4"
-    />
+    <!-- box content -->
     <div>
       <slot />
     </div>
-  </div>
+  </details>
 </template>
 
 <style scoped>

@@ -4,6 +4,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  avatarClass: {
+    type: String,
+    default: 'hidden lg:block w-28 h-28 rounded-full'
+  },
   colorClass: {
     type: String,
     default: 'text-purple-500 bg-purple-100/20 border-purple-100'
@@ -34,8 +38,8 @@ const props = defineProps({
     <img
       v-if="props.avatar"
       :src="props.avatar"
+      :class="avatarClass"
       alt="avatar"
-      class="hidden lg:block w-28 h-28 rounded-full"
     >
   </div>
 </template>
