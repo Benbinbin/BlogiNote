@@ -1,5 +1,7 @@
-import { createResolver } from '@nuxt/kit'
-const { resolve } = createResolver(import.meta.url)
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+
+const currentDir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   app: {
@@ -30,7 +32,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    [resolve('./modules/copyFilesToPublic'), { cleanFolders: ['public/article'] }],
+    [join(currentDir, './modules/copyFilesToPublic'), { cleanFolders: ['public/article'] }],
     '@nuxt/content',
     '@nuxtjs/tailwindcss'
   ],
