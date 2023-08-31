@@ -93,7 +93,7 @@ const textColorStyleValue = ref('')
 const borderColorClassValue = ref('')
 const borderColorStyleValue = ref('')
 const boxClassValue = ref('')
-const boxStyle = ref('')
+const boxStyleValue = ref('')
 
 const typeValue = props.type ? props.type.toLowerCase() : ''
 
@@ -151,7 +151,7 @@ if(props.boxClass) {
 }
 
 if(props.boxStyle) {
-  boxStyle.value = props.boxStyle
+  boxStyleValue.value = props.boxStyle
 }
 
 // combine the class and style props to a string
@@ -186,8 +186,8 @@ if(boxClassValue.value) {
   containerClass.value = boxClassValue.value
 }
 
-if(boxStyle.value) {
-  containerClass.value = boxStyle.value
+if(boxStyleValue.value) {
+  containerStyle.value = boxStyleValue.value
 }
 </script>
 
