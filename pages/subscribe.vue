@@ -15,13 +15,16 @@ const config = useRuntimeConfig()
           <h1>
             Subscribe
           </h1>
-          <div class="max-w-prose mx-auto p-4 space-y-4 ">
-            <div class="flex items-center gap-2">
+          <p class="text-center">
+            <span class="text-sm text-gray-400">click the following icons to copy</span>
+          </p>
+          <div class="mx-auto p-8 flex flex-wrap justify-center items-center gap-16">
+            <div class="flex flex-col items-center gap-2">
               <CopyContent
                 :content="`${config.public.hostname}/rss.xml`"
                 :icon-name="'fa-solid:rss-square'"
                 :icon-color-class="'text-orange-400'"
-                :icon-size-class="'w-6 h-6'"
+                :icon-size-class="'w-36 h-36'"
               />
               <NuxtLink
                 to="/rss.xml"
@@ -32,12 +35,12 @@ const config = useRuntimeConfig()
               </NuxtLink>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-col items-center gap-2">
               <CopyContent
                 :content="`${config.public.hostname}/sitemap.xml`"
                 :icon-name="'majesticons:sitemap'"
                 :icon-color-class="'text-purple-400'"
-                :icon-size-class="'w-6 h-6'"
+                :icon-size-class="'w-36 h-36'"
               />
               <NuxtLink
                 to="/sitemap.xml"
@@ -64,10 +67,6 @@ const config = useRuntimeConfig()
 
   h2 {
     @apply py-8 text-2xl font-bold text-center
-  }
-
-  p {
-    @apply py-4 text-lg text-gray-500
   }
 }
 </style>

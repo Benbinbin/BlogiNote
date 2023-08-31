@@ -36,6 +36,7 @@
     "@nuxt/content": "2.8.0",
     "@nuxt/kit": "3.7.0",
     "@nuxtjs/tailwindcss": "6.8.0",
+    "bloginote-copy-files-module": "0.1.1",
     "d3-hierarchy": "^3.1.2",
     "d3-selection": "^3.0.0",
     "d3-shape": "^3.2.0",

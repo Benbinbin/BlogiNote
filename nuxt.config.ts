@@ -1,8 +1,3 @@
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-
-const currentDir = dirname(fileURLToPath(import.meta.url))
-
 export default defineNuxtConfig({
   app: {
     // baseURL: '/'
@@ -32,7 +27,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    [join(currentDir, './modules/copyFilesToPublic'), { cleanFolders: ['public/article'] }],
+    ['bloginote-copy-files-module', { cleanFolders: ['public/article'] }],
     '@nuxt/content',
     '@nuxtjs/tailwindcss'
   ],
