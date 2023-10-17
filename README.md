@@ -9,7 +9,7 @@ BlogiNote is a [Nuxt Theme](https://nuxt.com/docs/guide/going-further/layers) ba
 
 :pencil: [Starter Template](https://github.com/Benbinbin/BlogiNote-Starter-Template)
 
-:bookmark_tabs: [Documentation](https://documentation.bloginote.benbinbin.com/)
+:bookmark_tabs: [Documentation](https://blogi-note-documentation.vercel.app/)
 
 ## Features
 :sparkles: Content driving: generate web pages based on markdown, json, csv and more
@@ -31,7 +31,7 @@ BlogiNote is a [Nuxt Theme](https://nuxt.com/docs/guide/going-further/layers) ba
 ## Usage
 Use the [starter template](https://github.com/Benbinbin/BlogiNote-Starter-Template) to build your own project with the BlogiNote theme.
 
-:point_right: You can check out [this tutorial](https://documentation.bloginote.benbinbin.com/article/tutorial/get-start) for more information.
+:point_right: You can check out [this tutorial](https://blogi-note-documentation.vercel.app/article/tutorial/get-start) for more information.
 
 ## Develop
 You can also build your own template based on BlogiNote, adding some Remark plugins to extend the markdown syntax, or building some Vue components to add more custom features.
