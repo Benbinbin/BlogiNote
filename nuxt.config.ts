@@ -26,11 +26,7 @@ export default defineNuxtConfig({
       hostname: 'https://bloginote.benbinbin.com'
     }
   },
-  modules: [
-    ['bloginote-copy-files-module', { cleanFolders: ['public/article'] }],
-    '@nuxt/content',
-    '@nuxtjs/tailwindcss'
-  ],
+  modules: [['bloginote-copy-files-module', { cleanFolders: ['public/article'] }], '@nuxt/content', '@nuxtjs/tailwindcss', '@nuxt/eslint'],
   // https://content.nuxtjs.org
   content: {
     navigation: {
