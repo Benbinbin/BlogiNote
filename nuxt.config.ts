@@ -58,5 +58,20 @@ export default defineNuxtConfig({
     },
     // ignores: ['images', 'attachment']
     ignores: [],
-  }
+  },
+  eslint: {
+    config: {
+      stylistic: true
+    }
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler",
+        },
+      },
+    },
+  },
+  compatibilityDate: '2024-10-30',
 })
