@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const props = defineProps<{
-  currentPath: string;
-  seriesName: string;
-  seriesList: any;
+  currentPath: string
+  seriesName: string
+  seriesList: any
 }>()
 
-const showSeriesModal = useState<Boolean>('showSeriesModal', () => false)
+const showSeriesModal = useState<boolean>('showSeriesModal', () => false)
 
 const showDetail = ref(false)
 
@@ -15,16 +15,17 @@ const showDetail = ref(false)
  *
  */
 // stop body scroll when series modal show up
-watch(showSeriesModal, () => {
-  if (!document?.body) { return }
+onMounted(() => {
+  if (!document?.body) return
 
-  if (showSeriesModal.value) {
-    document.body.classList.add('overflow-hidden')
-  } else {
-    document.body.classList.remove('overflow-hidden')
-  }
-}, { immediate: true })
+  document.body.classList.add('overflow-hidden')
+})
 
+onUnmounted(() => {
+  if (!document?.body) return
+
+  document.body.classList.remove('overflow-hidden')
+})
 
 /**
  *
@@ -35,12 +36,13 @@ const router = useRouter()
 const itemRefs = ref<HTMLElement[]>([])
 const itemNum = ref(0)
 let currentIndex = -1
-const ModalKeyListener = function (event:KeyboardEvent) {
+const ModalKeyListener = function (event: KeyboardEvent) {
   if (event.key === 'Escape') {
     // press Esc key to hide modal
     // emits('close')
     showSeriesModal.value = false
-  } else if (event.key === 'ArrowDown') {
+  }
+  else if (event.key === 'ArrowDown') {
     // navigate to next item
     currentIndex = currentIndex + 1
 
@@ -53,7 +55,8 @@ const ModalKeyListener = function (event:KeyboardEvent) {
     if (target) {
       target.focus()
     }
-  } else if (event.key === 'ArrowUp') {
+  }
+  else if (event.key === 'ArrowUp') {
     // navigate to prev item
     currentIndex = currentIndex - 1
 
@@ -66,7 +69,8 @@ const ModalKeyListener = function (event:KeyboardEvent) {
     if (target) {
       target.focus()
     }
-  } else if (event.key === 'Enter') {
+  }
+  else if (event.key === 'Enter') {
     const targetPath = props.seriesList[currentIndex]._path
     router.push({ path: targetPath })
     // emits('close')
@@ -177,5 +181,4 @@ onUnmounted(() => {
 .modal-content-container::-webkit-scrollbar {
   display: none;
 }
-
 </style>
