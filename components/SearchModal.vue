@@ -1,12 +1,12 @@
 <script setup lang="ts">
-const pagefindPath = "/_pagefind/pagefind.js"
+const pagefindPath = "/pagefind/pagefind.js"
 
 const runtimeConfig = useRuntimeConfig()
 const baseURL = runtimeConfig.app.baseURL
 
 let pagefind: any;
 
-if (!process.dev) {
+if (!import.meta.dev) {
   try {
     pagefind = await import(/* @vite-ignore */pagefindPath);
 
@@ -21,7 +21,7 @@ if (!process.dev) {
 }
 
 // search modal
-const showSearchModal = useState<Boolean>('showSearchModal', () => false)
+const showSearchModal = useState<boolean>('showSearchModal', () => false)
 
 // stop body scroll when search modal show up
 watch(showSearchModal, () => {
