@@ -3,6 +3,7 @@ import { defineComponent, h, nextTick, ref } from '#imports'
 import TabGroupHeader from './TabGroupHeader.vue'
 
 // refer to @nuxt-themes/docus-edge module component: components/content/CodeGroup.vue
+// refer to @nuxt-themes/elements
 export default defineComponent({
   setup(props, { slots }) {
 
@@ -29,7 +30,7 @@ export default defineComponent({
 
       const tabNameArr: string[] = []
       const tabNodes = slotArr.filter((slot: any) => {
-        if (slot?.type?.tag === 'TabItem') {
+        if (slot?.type?.tag === 'tab-item') {
           if (slot.props.name) {
             tabNameArr.push(slot.props.name)
           } else {
